@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<!-- 
+Template Name: Pinkman - Responsive Bootstrap 4 Admin Dashboard Template
+Author: Hencework
+
+License: You must have a valid license purchased only from themeforest to legally use the template for your project.
+-->
+<html lang="en" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	xmlns:th="http://www.thymeleaf.org">
+
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport"
+	content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<title>Pinkman I CRM Dashboard</title>
+<meta name="description"
+	content="A responsive bootstrap 4 admin dashboard template by hencework" />
+
+<!-- Favicon -->
+<link rel="shortcut icon" href="favicon.ico">
+<link rel="icon" th:href="@{/new/favicon.ico}" type="image/x-icon">
+
+<!-- vector map CSS -->
+<link th:href="@{/new/vendors/vectormap/jquery-jvectormap-2.0.3.css}"
+	rel="stylesheet" type="text/css" />
+<link th:href="@{/new/vendors/dropzone/dist/dropzone.css}"
+	rel="stylesheet" type="text/css" />
+
+<!-- Toggles CSS -->
+<link th:href="@{/new/vendors/jquery-toggles/css/toggles.css}"
+	rel="stylesheet" type="text/css">
+<link
+	th:href="@{/new/vendors/jquery-toggles/css/themes/toggles-light.css}"
+	rel="stylesheet" type="text/css">
+
+<!-- Toastr CSS -->
+<link
+	th:href="@{/new/vendors/jquery-toast-plugin/dist/jquery.toast.min.css}"
+	rel="stylesheet" type="text/css">
+
+<!-- Custom CSS -->
+
+<link th:href="@{/new/vendors/select2/dist/css/select2.min.css}"
+	rel="stylesheet" type="text/css" />
+
+<!-- Daterangepicker CSS -->
+<link th:href="@{/new/vendors/daterangepicker/daterangepicker.css}"
+	rel="stylesheet" type="text/css" />
+<link th:href="@{/new/dist/css/style.css}" rel="stylesheet"
+	type="text/css">
+<script th:src="@{/new/vendors/jquery/dist/jquery.min.js}"></script>
+<script th:src="@{/new/vendors/echarts/dist/echarts-en.min.js}"></script>
+
+<!-- <link
+	th:href="@{/new/vendors/datatables.net-dt/css/jquery.dataTables.min.css}"
+	rel="stylesheet" type="text/css" /> -->
+<link
+	th:href="@{/new/vendors/datatables.net-responsive-dt/css/responsive.dataTables.min.css}"
+	rel="stylesheet" type="text/css" />
+
+
+</head>
+
+<body>
+	<!-- Preloader -->
+	<div class="preloader-it">
+		<div class="loader-pendulums"></div>
+	</div>
+	<!-- /Preloader -->
+
+	<!-- HK Wrapper -->
+	<div class="hk-wrapper hk-vertical-nav">
+
+		<!-- Top Navbar -->
+
+		<nav th:replace="fragments/navi.html::navi"></nav>
+		<form role="search" class="navbar-search">
+			<div class="position-relative">
+				<a href="javascript:void(0);" class="navbar-search-icon"><i
+					class="ion ion-ios-search"></i></a> <input type="text"
+					name="example-input1-group2" class="form-control"
+					placeholder="Type here to Search"> <a
+					id="navbar_search_close" class="navbar-search-close" href="#"><i
+					class="ion ion-ios-close"></i></a>
+			</div>
+		</form>
+		<!-- /Top Navbar -->
+
+		<!-- Vertical Nav -->
+		<nav th:replace="fragments/sidebar.html::bar"></nav>
+		<div id="hk_nav_backdrop" class="hk-nav-backdrop"></div>
+		<!-- /Vertical Nav -->
+
+		
+		<!-- Main Content -->
+		<div class="hk-pg-wrapper">
+			<!-- Container -->
+			<div layout:fragment="content">
+				<!-- Row -->
+
+				<!-- /Row -->
+			</div>
+			<!-- /Container -->
+
+			<!-- Footer -->
+			<div class="hk-footer-wrap container">
+				<footer class="footer">
+					<div class="row">
+						<div class="col-md-6 col-sm-12">
+							<!-- <p>
+								Developed by<a href="https://www.dlconsultgh.com/" class="text-dark"
+									target="_blank">DL Consult</a> © 2019
+							</p> -->
+						</div>
+						
+					</div>
+				</footer>
+			</div>
+			<!-- /Footer -->
+		</div>
+		<!-- /Main Content -->
+
+	</div>
+	<!-- /HK Wrapper -->
+
+	<!-- jQuery -->
+
+
+	<!-- Bootstrap Core JavaScript -->
+	<script th:src="@{/new/vendors/popper.js/dist/umd/popper.min.js}"></script>
+	<script th:src="@{/new/vendors/bootstrap/dist/js/bootstrap.min.js}"></script>
+
+	<!-- Slimscroll JavaScript -->
+	<script th:src="@{/new/dist/js/jquery.slimscroll.js}"></script>
+
+	<!-- Fancy Dropdown JS -->
+	<script th:src="@{/new/dist/js/dropdown-bootstrap-extended.js}"></script>
+
+	<!-- FeatherIcons JavaScript -->
+	<script th:src="@{/new/dist/js/feather.min.js}"></script>
+
+	<!-- Toggles JavaScript -->
+	<script th:src="@{/new/vendors/jquery-toggles/toggles.min.js}"></script>
+	<script th:src="@{/new/dist/js/toggle-data.js}"></script>
+
+	<!-- Counter Animation JavaScript -->
+	<script th:src="@{/new/vendors/waypoints/lib/jquery.waypoints.min.js}"></script>
+	<script
+		th:src="@{/new/vendors/jquery.counterup/jquery.counterup.min.js}"></script>
+
+	<!-- Sparkline JavaScript -->
+	<!-- 	<script
+		th:src="@{/new/vendors/jquery.sparkline/dist/jquery.sparkline.min.js}"></script>
+
+	Vector Maps JavaScript
+	<script
+		th:src="@{/new/vendors/vectormap/jquery-jvectormap-2.0.3.min.js}"></script>
+	<script
+		th:src="@{/new/vendors/vectormap/jquery-jvectormap-world-mill-en.js}"></script>
+	<script th:src="@{/new/vendors/vectormap/jquery-jvectormap-de-merc.js}"></script>
+	<script th:src="@{/new/dist/js/vectormap-data.js}"></script>
+ -->
+	<!-- Owl JavaScript -->
+	<!-- 	<script th:src="@{/new/vendors/owl.carousel/dist/owl.carousel.min.js}"></script>
+ -->
+	<!-- Toastr JS -->
+	<script
+		th:src="@{/new/vendors/jquery-toast-plugin/dist/jquery.toast.min.js}"></script>
+
+	<!-- Apex JavaScript -->
+	<script th:src="@{/new/vendors/apexcharts/dist/apexcharts.min.js}"></script>
+	<script th:src="@{/new/dist/js/irregular-data-series.js}"></script>
+
+	<!-- forms -->
+	<script th:src="@{/new/vendors/moment/min/moment.min.js}"></script>
+	<script th:src="@{/new/vendors/daterangepicker/daterangepicker.js}"></script>
+	<script th:src="@{/new/dist/js/daterangepicker-data.js}"></script>
+	<script th:src="@{/new/vendors/select2/dist/js/select2.full.min.js}"></script>
+	<script th:src="@{/new/dist/js/select2-data.js}"></script>
+
+
+
+	<!-- Init JavaScript -->
+	<script th:src="@{/new/dist/js/init.js}"></script>
+	<!-- <script th:src="@{/new/dist/js/dashboard-data.js}"></script>
+	 -->
+
+
+	<script
+		th:src="@{/new/vendors/datatables.net/js/jquery.dataTables.min.js}"></script>
+	<script
+		th:src="@{/new/vendors/datatables.net-bs4/js/dataTables.bootstrap4.min.js}"></script>
+	<script
+		th:src="@{/new/vendors/datatables.net-dt/js/dataTables.dataTables.min.js}"></script>
+	<script
+		th:src="@{/new/vendors/datatables.net-buttons/js/dataTables.buttons.min.js}"></script>
+	<script
+		th:src="@{/new/vendors/datatables.net-buttons-bs4/js/buttons.bootstrap4.min.js}"></script>
+	<script
+		th:src="@{/new/vendors/datatables.net-buttons/js/buttons.flash.min.js}"></script>
+	<!-- <script th:src="@{/new/vendors/jszip/dist/jszip.min.js}"></script>
+	<script th:src="@{/new/vendors/pdfmake/build/pdfmake.min.js}"></script> -->
+	<!-- <script th:src="@{/new/vendors/pdfmake/build/vfs_fonts.js}"></script> -->
+	<script
+		th:src="@{/new/vendors/datatables.net-buttons/js/buttons.html5.min.js}"></script>
+	<script
+		th:src="@{/new/vendors/datatables.net-buttons/js/buttons.print.min.js}"></script>
+	<script
+		th:src="@{/new/vendors/datatables.net-responsive/js/dataTables.responsive.min.js}"></script>
+	<script th:src="@{/new/dist/js/dataTables-data.js}"></script>
+	
+	<script th:src="@{/new/vendors/dropzone/dist/dropzone.js}"></script>
+
+	<script th:src="@{/new/vendors/tinymce/tinymce.min.js}"></script>
+
+	<!-- Tinymce Wysuhtml5 Init JavaScript -->
+	<script th:src="@{/new/dist/js/tinymce-data.js}"></script>
+  <script th:src="@{/new/dist/stomp.js}"></script>
+
+
+<script type="text/javascript" th:inline="javascript">
+	   
+   var client;
+   var ip;
+    $(document).ready(function() {
+    	 
+    	$.ajax({
+         	url:[[@{/get/server/ip}]],
+         	type:'get',
+         	success: function(serve){
+      		 ip=serve;
+     
+        
+    
+        
+      if(window.WebSocket) {
+        var  destination;
+
+        
+        client = Stomp.client('ws://'+ip+':61614');
+
+
+          // this allows to display debug logs directly on the web page
+          client.debug = function(str) {
+            $("#debug").append(str + "\n");
+          };
+          
+          // the client is notified when it is connected to the server.
+          client.connect('admin', 'admin', function(frame) {
+            client.debug("connected to Stomp");
+     
+            client.subscribe('manager', function(message) {
+           // alert(message);
+       
+            	 notifyMe(message) ;
+            });
+          });
+          return false;
+
+  
+
+   
+     
+    }}
+    	 });
+
+    
+    } );
+    
+
+  
+    
+    function notifyMe(message) {
+        if (!window.Notification) {
+            console.log('Browser does not support notifications.');
+        } else {
+            // check if permission is already granted
+            if (Notification.permission === 'granted') {
+                // show notification here
+			//$('#onboardingWideFormModal').modal('toggle');
+			
+                var notify = new Notification('Hi there!', {
+                	 body: message.body,
+                     icon: [[@{/img/avatar1.jpg}]],
+                    
+                });
+                notify.onclick = function(event) {
+                	  event.preventDefault(); // prevent the browser from focusing the Notification's tab
+                	  window.open([[@{/admin/dashboard}]], '_self');
+                	}
+            } else {
+                // request permission from user
+                Notification.requestPermission().then(function (p) {
+                    if (p === 'granted') {
+                        // show notification here
+                        var notify = new Notification('Hi there!', {
+                            body: message.body,
+                            icon: [[@{/img/avatar1.jpg}]],
+                        });
+                    } else {
+                        console.log('User blocked notifications.');
+                    }
+                }).catch(function (err) {
+                    console.error(err);
+                });
+            }
+        }
+    }
+    
+    
+
+    </script>
+   	
+</body>
+
+</html>

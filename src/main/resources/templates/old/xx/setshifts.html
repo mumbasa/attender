@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org"
+  layout:decorate="~{fragments/blank}">
+  
+          <div class="content" layout:fragment="content">  
+  <script type="text/javascript">
+
+	function adder(){
+		
+	
+			var form = $('.horizontal-form');
+			var formdata = false;
+
+			formdata = new FormData(form[0]);
+			$.ajax({
+				url:'/attendance/add/shift',
+				data : formdata,
+				type : 'post',
+				processData : false,
+				contentType : false,
+				cache : false,
+				success:function(data){
+					iziToast.show({
+					    title: 'Success',
+					    theme:'dark',
+					    message: 'User added successfully',
+					        position: 'topCenter' // bottomRight, bottomLeft, topRight, topLeft, topCenter, bottomCenter, center 		
+					});
+					form[0].reset();
+				}
+				
+				
+			});
+		}
+		
+  
+  
+  </script>
+  
+  
+          <div class="row" >          
+					
+							<div class="col-lg-6">
+									<div class="card card-default">
+										<div class="card-header card-header-border-bottom">
+											<h2>Add Time Shift</h2>
+										</div>
+										<div class="card-body">
+											<form th:action="@{/addholiday}" class="horizontal-form" method="post">
+												<div class="form-group row">
+													<div class="col-12 col-md-3 text-right">
+														<label for="">Shift Name</label>
+													</div>
+													<div class="col-12 col-md-9">
+														<input type="text" class="form-control" name="name" placeholder="Shift Name" >
+													</div>
+												</div>
+												<div class="form-group row">
+													<div class="col-12 col-md-3 text-right">
+														<label for="">From</label>
+													</div>
+													<div class="col-12 col-md-9">
+														<input type="time" class="form-control" name="start" placeholder="from">
+													</div>
+												</div>
+												
+														<div class="form-group row">
+													<div class="col-12 col-md-3 text-right">
+														<label for="">To</label>
+													</div>
+													<div class="col-12 col-md-9">
+														<input type="time" class="form-control" name="close" placeholder="Password">
+													</div>
+												</div>
+												
+													<div class="form-group row">
+													<div class="col-12 col-md-3 text-right">
+														<label for="">hours</label>
+													</div>
+													<div class="col-12 col-md-9">
+														<input type="number" class="form-control" name="hours" placeholder="Password">
+													</div>
+												</div>
+												
+												<div class="form-group row">
+													<div class="col-12 col-md-3 text-right">
+													<label for="exampleFormControlSelect12">Type select</label>
+													</div>
+															<div class="col-md-6 mb-6">
+													
+													<select class="form-control" id="exampleFormControlSelect12" name="type">
+														<option th:each="d:${types}" th:text="${d.value}" th:value="${d.id}">1</option>
+													</select>
+													
+													</div>
+												</div>
+											
+												<div class="form-footer pt-5 border-top">
+													<button type="button" class="btn btn-primary btn-default" th:onclick="adder()">Add Shift</button>
+												</div>
+											</form>
+										</div>
+									</div>
+					
+					
+					
+								</div>
+</div>
+					
+
+            </div>
+          
+
+
+</html>

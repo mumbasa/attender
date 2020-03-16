@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org"
+  layout:decorate="~{fragments/blank}" >
+<head>
+<meta charset="UTF-8">
+<title>Uploaded Data</title>
+</head>
+<body>
+
+     <div layout:fragment="content">
+       
+           <!-- Breadcrumb -->
+            <nav class="hk-breadcrumb" aria-label="breadcrumb">
+                <ol class="breadcrumb breadcrumb-light bg-transparent">
+                    <li class="breadcrumb-item"><a href="#">Tables</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Uploaded Data</li>
+                </ol>
+            </nav>
+            <!-- /Breadcrumb -->
+
+            <!-- Container -->
+            <div class="container">
+
+                <!-- Title -->
+                <div class="hk-pg-header">
+                    <h4 class="hk-pg-title"><span class="pg-title-icon"><span class="feather-icon"><i data-feather="database"></i></span></span>Data Table</h4>
+                </div>
+                <!-- /Title -->
+
+                <!-- Row -->
+                <div class="row">
+                    <div class="col-xl-12">
+                        <section class="hk-sec-wrapper">
+                            <div class="row">
+                                <div class="col-sm">
+                                    <div class="table-wrap">
+                                        <table id="datable_1" class="table table-hover w-100 display pb-30">
+                                            <thead>
+                                               <tr>
+														<th scope="col">#</th>
+														<th scope="col">Year</th>
+														<th scope="col">Month</th>
+														<th scope="col">Rows</th>
+														<th scope="col"></th>
+													</tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr th:each="u,iterator : ${att}">
+														<td scope="row" class="align-middle"  th:text="${iterator.index+1}" >1</td>
+														<td th:text="${u.year}" class="align-middle">Lucia</td>
+														<td th:text="${{u.monthName}}" class="align-middle">Christ</td>
+														<td th:text="${{u.valueOne}}"  class="align-middle">@Lucia</td>
+														<td ><button type="button" class="btn btn-danger" th:onClick="|window.location.href='/attendance/admin/delete/data/${u.monthId}/${u.year}'|" >Delete</button> 
+														</td>
+													</tr>
+                                           
+                                            </tbody>
+                                            <tfoot>
+                                                <tr>
+                                                <tr>
+														<th scope="col">#</th>
+														<th scope="col">Year</th>
+														<th scope="col">Month</th>
+														<th scope="col">Rows</th>
+														<th scope="col"></th>
+													</tr>
+                                            </tfoot>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+                      </div>
+                </div>
+                <!-- /Row -->
+
+            </div>
+            <!-- /Container -->
+     
+     
+     </div>
+     
+    
+     
+</body>
+</html>

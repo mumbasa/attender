@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	xmlns:th="http://www.thymeleaf.org"
+	layout:decorate="~{fragments/blank}">
+
+
+<div class="content" layout:fragment="content">
+	<script type="text/javascript">
+		function deleteHoliday(id) {
+			console.log(id);
+			$.ajax({
+				url : '/attendance/admin/delete/holiday/' + id,
+				type : 'GET',
+				contentType : "application/json; charset=utf-8",
+				cache : false,
+
+			}).done(
+					function(data) {
+						$(".card-body").load(
+								location.href + " .card-body");
+						alert('holiday deleted');
+
+					});
+
+		}
+	</script>
+
+	<div class="row">
+		<div class="col-lg-9">
+			<div class="card card-default">
+				<div class="card-header card-header-border-bottom">
+					<h2>
+						Holidays in <span th:text="${year}"> </span>
+					</h2>
+				</div>
+				<div class="card-body">
+					<table class="table table-striped">
+						<thead>
+							<tr>
+								<th scope="col">#</th>
+								<th scope="col">Date</th>
+								<th scope="col">Holiday</th>
+								<th scope="col">Actual Date</th>
+								<th scope="col">Type</th>
+								<th scope="col"></th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr th:each="h,iterator : ${holidays}">
+								<td th:text="${iterator.index+1}" scope="row">1</td>
+								<td th:text="${h.date}">Lucia</td>
+								<td th:text="${h.holiday}">Christ</td>
+								<td th:text="${h.realHoliday}">@Lucia</td>
+								<td th:text="${h.type}">@Lucia</td>
+								<td><button class="btn btn-danger"
+										th:onclick="'deleteHoliday('+${h.id}+')'">Delete</button></td>
+
+							</tr>
+
+						</tbody>
+					</table>
+				</div>
+			</div>
+
+		</div>
+	</div>
+
+
+</div>
+
+
+
+</html>

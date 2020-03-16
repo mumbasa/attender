@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	xmlns:th="http://www.thymeleaf.org"
+	layout:decorate="~{fragments/blank}">
+<head>
+<meta charset="UTF-8">
+<title>Staff Shift Setting</title>
+<link th:href="@{/new/vendors/fullcalendar/packages/core/main.css}"
+	rel="stylesheet" type="text/css" />
+<link th:href="@{/new/vendors/fullcalendar/packages/daygrid/main.css}"
+	rel="stylesheet" type="text/css" />
+<link th:href="@{/new/vendors/fullcalendar/packages/list/main.css}"
+	rel="stylesheet" type="text/css" />
+<link th:href="@{/new/vendors/fullcalendar/packages/timegrid/main.css}"
+	rel="stylesheet" type="text/css" />
+</head>
+<body>
+
+	<div layout:fragment="content">
+		<script>
+			var calendar;
+			
+			
+			document.addEventListener('DOMContentLoaded', function() {
+				
+				var shiftEvent=[];
+				
+				var id =$('#calendar').data('id');
+
+				$.ajax({
+					url:'/attendance/admin/get/staff/'+parseInt(id)+'/shifts',
+					type:'get',
+					processData : false,
+					contentType : false,
+					cache : false,
+					success:function(data){
+					for(var e in data){
+						var event={
+							  id:data[e].id,
+						      title: data[e].type.shiftType,
+						      start: data[e].date+'T'+data[e].type.startString+":00",
+						      end: data[e].date+'T'+ data[e].type.closeString+":00",
+						      textColor:'white',
+						      backgroundColor:data[e].type.colour,
+						      borderColor:data[e].type.colour,
+						      extendedProps: {
+						        department: 'BioChemistry'
+						      },
+						      description: 'Lecture'
+						    }
+						shiftEvent.push(event);
+					}
+						$.ajax({
+							url:'/attendance/admin/get/staff/'+parseInt(id)+'/approved/leaves',
+							type:'get',
+							processData : false,
+							contentType : false,
+							cache : false,
+							success:function(data){
+							for(var e in data){
+								var event={
+									  id:data[e],
+								      title: data[e].leave,
+								      start: data[e].start+"T00:00:00",
+								      end: data[e].end+"T23:59:00",
+								      textColor:'white',
+								      backgroundColor:"red",
+								      borderColor:"red",
+								      extendedProps: {
+								        department: 'BioChemistry'
+								      },
+								      description: 'Lecture'
+								    }
+								shiftEvent.push(event);
+								
+								
+							}
+							
+							
+							$.ajax({
+								url:'/attendance/admin/get/staff/'+parseInt(id)+'/unavailable/shifts',
+								type:'get',
+								processData : false,
+								contentType : false,
+								cache : false,
+								success:function(data){
+								for(var e in data){
+									var event={
+											 id:data[e].id,
+										      title: data[e].type.shiftType+':X',
+										      start: data[e].date+'T'+data[e].type.startString+":00",
+										      end: data[e].date+'T'+ data[e].type.closeString+":00",
+										      textColor:'red',
+										      backgroundColor:"white",
+										      borderColor:'white',
+										      extendedProps: {
+										        department: 'BioChemistry'
+										      },
+										      description: 'Lecture'
+									    }
+									shiftEvent.push(event);
+									
+									
+								}
+							
+							
+							console.log(shiftEvent);
+							
+							
+							var Calendar = FullCalendar.Calendar;
+							var Draggable = FullCalendarInteraction.Draggable;
+
+							var containerEl = document.getElementById('external-events');
+							var calendarEl = document.getElementById('calendar');
+
+							// initialize the external events
+							// -----------------------------------------------------------------
+
+							new Draggable(containerEl, {
+								itemSelector : '.fc-event',
+								eventData : function(eventEl) {
+									return {
+										id:'new',
+										title : eventEl.innerText+':',
+										 color: $(eventEl).data('color'),
+										 textColor:'white',
+										 allday:false
+										 
+									
+									};
+								}
+							});
+
+							// initialize the calendar
+							// -----------------------------------------------------------------
+
+							calendar = new Calendar(calendarEl, {
+								plugins : [ 'interaction', 'dayGrid', 'list', 'timeGridPlugin' ],
+								header : {
+									left : 'prev,next today',
+									center : 'title',
+									right : 'dayGridMonth,dayGridDay'
+								},
+								  events:shiftEvent,
+								editable : true,
+								droppable : true, // this allows things to be dropped onto the calendar
+								drop : function(info) {
+
+								},
+								eventReceive : function(info) {
+									//alert(info.event.title);
+
+								},
+								eventDrop : function(info) {
+									
+									if(info.event.id=="new"){
+										alert(info.event.title + " was dropped on "
+												+ info.event.start.toISOString());
+
+										if (!confirm("Are you sure about this change?")) {
+											info.revert();
+										}
+									}else{
+										info.revert();
+
+									}
+									//
+									
+									
+								},
+								eventClick : function(info) {
+									if(info.event.id=="new"){
+									
+										info.event.remove();
+									}
+									//
+
+								},
+								
+
+							});
+
+							calendar.render();	
+							
+							}
+						
+						
+						});
+					
+							}});
+					
+			}
+				
+				});});
+
+			function data(id) {
+				 $.ajax({
+			            url: '/attendance/admin/add/staff/'+id+'/shiftdate',
+			            type: 'POST',
+			            data: {
+	                        dates: JSON.stringify(calendar.getEvents().map(function (e)
+	                        {
+	                            return {
+	                                start: e.start,
+	                                end: e.end,
+	                                title: e.title,
+	                            }
+	                        }))
+	                    },
+	                    dataType: "json",
+
+			            success: function (response) {
+			                //get the response from server and process it
+			            	$.toast({
+								heading: 'Success!',
+								text: '<p>Staff Shift created successfully',
+								position: 'top-right',
+								loaderBg:'#f68daf',
+								class: 'jq-toast-dark',
+								hideAfter: 3500, 
+								stack: 6,
+								showHideTransition: 'fade'
+							});
+			            }
+			        });
+			}
+			
+		</script>
+		<!-- Breadcrumb -->
+		<nav class="hk-breadcrumb" aria-label="breadcrumb">
+			<ol class="breadcrumb breadcrumb-light bg-transparent">
+				<li class="breadcrumb-item"><a href="#">Tables</a></li>
+				<li class="breadcrumb-item active" aria-current="page">Set
+					Staff Shift</li>
+			</ol>
+		</nav>
+		<!-- /Breadcrumb -->
+
+		<!-- Container -->
+		<div>
+
+			<!-- Title -->
+			<div class="hk-pg-header">
+				<h4 class="hk-pg-title">
+					<span class="pg-title-icon"><span class="feather-icon"><i
+							data-feather="calendar"></i></span></span>Set Staff Shift
+				</h4>
+			</div>
+			<!-- /Title -->
+
+			<!-- Row -->
+			<div class="row">
+				<div id='external-events' class="col-md-2 mb-10">
+
+					<H4 class="mb-5">Shifts</h4>
+
+					<div class='fc-event bg-sky mb-2 p-2 text-center'
+						data-color="dodgerblue" data-start="06:00" data-end="12:00">Morning
+						Shift</div>
+					<div class='fc-event bg-orange mb-2  p-2 text-center'
+						data-color="orange">Afternoon Shift</div>
+					<div class='fc-event bg-dark-20 mb-2  p-2 text-center'
+						data-color="black">Night Shift</div>
+					<div class='fc-event bg-success p-2 text-center' data-color="green">Off
+						Day</div>
+					<button class="btn btn-teal  mt-4 col-md-12"
+						th:onclick="'data('+${id}+')'">Set Staff Shift</button>
+
+
+				</div>
+
+				<div class="col-md-10">
+					<div class="col-md-12 ">
+						<div class="float-right mb-4">
+							<button class="btn btn-info  mt-4 col-md-12" data-toggle="modal"
+								data-target="#exampleModalLarge01">View Unavailable
+								Shifts</button>
+						</div>
+					</div>
+					<div id="calendar" th:data-id="${id}" class="col-md-12  p-3 card">
+					</div>
+					<!-- Modal -->
+					<div class="modal fade" id="exampleModalLarge01" tabindex="-1"
+						role="dialog" aria-labelledby="exampleModalLarge01"
+						aria-hidden="true">
+						<div class="modal-dialog modal-lg" role="document">
+							<div class="modal-content">
+								<div class="modal-header">
+									<h5 class="modal-title">Modal title</h5>
+									<button type="button" class="close" data-dismiss="modal"
+										aria-label="Close">
+										<span aria-hidden="true">&times;</span>
+									</button>
+								</div>
+								<div class="modal-body">
+									<section class="hk-sec-wrapper">
+										<div class="row">
+											<div class="col-sm">
+												<div class="table-wrap">
+													<table id="datable_1"
+														class="table table-hover w-100 display">
+														<thead>
+															<tr>
+																<th>#</th>
+																<th>Date</th>
+																<th>Shift</th>
+																<th>Start</th>
+																<th>Closing</th>
+															</tr>
+														</thead>
+														<tbody>
+															<tr th:each="a,i:${shifts}">
+																<td th:text="${i.index+1}">Tiger Nixon</td>
+																<td th:text=${a.date}>System Architect</td>
+																<td th:text="${a.type.shiftType}">Edinburgh</td>
+																<td th:text="${a.type.startString}">61</td>
+																<td th:text="${a.type.closeString}">2011/04/25</td>
+															</tr>
+
+														</tbody>
+													</table>
+												</div>
+											</div>
+										</div>
+									</section>
+								</div>
+								<div class="modal-footer">
+									<button type="button" class="btn btn-secondary"
+										data-dismiss="modal">Close</button>
+									<button type="button" class="btn btn-primary">Save
+										changes</button>
+								</div>
+							</div>
+						</div>
+					</div>
+					<!-- Modal -->
+				</div>
+
+			</div>
+
+			<!-- /Row -->
+
+		</div>
+		<!-- /Container -->
+
+<script th:src="@{/new/vendors/fullcalendar/packages/core/main.js}"></script>
+	<script th:src="@{/new/vendors/fullcalendar/packages/daygrid/main.js}"></script>
+	<script
+		th:src="@{/new/vendors/fullcalendar/packages/interaction/main.js}"></script>
+	<script th:src="@{/new/vendors/fullcalendar/packages/list/main.js}"></script>
+	<script th:src="@{/new/vendors/fullcalendar/packages/timegrid/main.js}"></script>
+
+	</div>
+
+
+
+</body>
+</html>

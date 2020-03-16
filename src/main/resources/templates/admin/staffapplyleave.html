@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org"
+  layout:decorate="~{fragments/blank}" >
+<head>
+<meta charset="UTF-8">
+<title>Apply For Leave</title>
+
+</head>
+<body>
+
+  <div layout:fragment="content">
+
+
+	<script type="text/javascript" th:inline="javascript">
+	$(document).ready(function(){
+		$( "#leaveType" ).change(function() {
+			$("#number").val(0);
+			$("#remaining").val(0);
+			$("#but").removeAttr("always");
+			$.ajax({
+				url:[[@{/admin/staff/leave/type/days}]],
+				data:'id='+$("#leaveType").val(),
+				type:'get',
+				success:function(data){
+					console.log(data.quantity2);
+					if(data.id==0&data.quantity2==0){
+						$("#but").attr("always",1);	
+					}
+					$("#number").val(data.id-data.quantity);
+					$("#remaining").val((data.id-data.quantity));
+					$("#remaining").attr("data-leave",data.id-data.quantity);
+				}
+				
+				
+				
+				
+			});
+			
+		});
+		
+		
+		
+		$( "#number" ).change(function() {
+			  var leaveRem= parseInt($("#remaining").attr("data-leave"))-parseInt($("#number").val());
+			  $("#remaining").val(leaveRem);
+			  if(leaveRem<0){
+				 var activate= $('#but').attr('always');
+				  if(activate !='1'){
+				  $('#but').prop('disabled', true);
+				  }
+			  }else{
+				  $('#but').removeAttr('disabled'); 
+				  
+			  }
+			});
+		
+		
+		
+		
+	});
+	
+	
+	function sele(){
+		
+
+		var form = $('.former');
+		var formdata = false;
+		formdata = new FormData(form[0]);
+		
+		
+			$.ajax({
+				url:[[@{/admin/add/staff/leave}]],
+				data:formdata,
+				type:'post',
+				processData : false,
+				contentType : false,
+				cache : false,
+				success:function(data){
+			
+						$.toast({
+							heading: 'Success!',
+							text: '<p>Your leave has been filed added successfully pending approval </p>',
+							position: 'top-right',
+							loaderBg:'#f68daf',
+							class: 'jq-toast-success',
+							hideAfter: 3500, 
+							stack: 6,
+							showHideTransition: 'fade'
+						});
+				       
+						 form[0].reset();
+						
+						
+				
+				}
+				
+			}); 
+			  
+			 }
+	
+	
+		
+	
+	
+	</script>
+	
+		
+	
+	
+		  
+  
+   <nav class="hk-breadcrumb" aria-label="breadcrumb">
+                <ol class="breadcrumb breadcrumb-light bg-transparent">
+                    <li class="breadcrumb-item"><a href="#">Forms</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Leave Application</li>
+                </ol>
+            </nav>
+            <!-- /Breadcrumb -->
+
+            <!-- Container -->
+            <div class="container">
+                <!-- Title -->
+                <div class="hk-pg-header">
+                    <h4 class="hk-pg-title"><span class="pg-title-icon"><span class="feather-icon"><i data-feather="calendar"></i></span></span>Apply For Leave</h4>
+                </div>
+                <!-- /Title -->
+
+                <!-- Row -->
+                <div class="row">
+                    <div class="col-xl-6">
+                        <section class="hk-sec-wrapper">
+                            <div class="row">
+                                <div class="col-sm">
+                                    <form class="former">
+                                     
+
+											<div class="row">
+                                            <div class="col-md-12 mb-10">
+                                                <label for="country">Leave Type</label>
+                                                <select class="form-control custom-select d-block w-100" id="leaveType" name="type">
+                                                    <option th:each="a:${leaves}" th:value="${a.id}" th:text="${a.leave}">Choose...</option>
+                                                </select>
+                                            </div>
+                                            
+                                            
+                                            
+                                                                                       
+                                           
+                                        </div>
+                                   
+		<div class="row">
+                                        <div class="col-md-12 mb-10">
+                                            <label for="address">Start Date</label>
+                                            <input class="form-control" id="address" name="start" placeholder="1234 Main St" type="date">
+                                        </div>
+</div>	
+	 									                                        <div class="row">
+                                            <div class="col-md-12 mb-10">
+                                                <label for="number">Days Applied For</label>
+                                               <input class="form-control" id="number" placeholder="number of days" name="days" type="number" min="0">
+
+                                            </div>
+                                         
+                                            
+                                        </div>
+                                        
+                                         <div class="row">
+                                            <div class="col-md-12 mb-10">
+                                                <label for="number">Days Remaining</label>
+                                               <!--  th:data-leave="${days.leaveDaysSum-days.daysTakenSum}"  -->
+                                               <input class="form-control" id="remaining"   name="days" type="number" disabled="disabled">
+
+                                            </div>
+                                         
+                                            
+                                        </div>
+                                        
+                                        <button id="but" class="btn btn-primary col-md-12 mt-4" type="button" onclick="sele()">Apply</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </section>
+                     </div>
+                </div>
+                <!-- /Row -->
+            </div>
+            <!-- /Container -->
+  
+  
+  </div>
+  
+  
+</body>
+</html>

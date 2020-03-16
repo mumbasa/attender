@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" xmlns:th="http://www.thymeleaf.org">
+
+<aside class="left-sidebar bg-sidebar" th:fragment="bar">
+	<div id="sidebar" class="sidebar sidebar-with-footer">
+		<!-- Aplication Brand -->
+		<div class="app-brand">
+			<svg class="brand-icon"
+					xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid"
+					width="30" height="33" viewBox="0 0 30 33">
+                  <g fill="none" fill-rule="evenodd">
+                    <path class="logo-fill-blue" fill="#7DBCFF"
+						d="M0 4v25l8 4V0zM22 4v25l8 4V0z" />
+                    <path class="logo-fill-white" fill="#FFF"
+						d="M11 4v25l8 4V0z" />
+                  </g>
+                </svg> <span class="brand-name">Clock-In Dashboard</span>
+		</div>
+		<!-- begin sidebar scrollbar -->
+		<div class="sidebar-scrollbar">
+
+			<!-- sidebar menu -->
+			<ul class="nav sidebar-inner" id="sidebar-menu">
+
+
+
+				<li class="has-sub" th:if="${#authorization.expression('hasAnyAuthority(''Manager'',''SystemAdministrator'')')}" ><a class="sidenav-item-link"
+					th:href="@{/admin/dashboard}"> <i
+						class="mdi mdi-view-dashboard-outline"></i> <span class="nav-text">Dashboard</span>
+				</a></li>
+
+
+
+
+
+				<li class="has-sub" th:if="${#authorization.expression('hasAuthority(''SystemAdministrator'')')}"><a class="sidenav-item-link"
+					href="javascript:void(0)" data-toggle="collapse"
+					data-target="#ui-elements" aria-expanded="false"
+					aria-controls="ui-elements"> <i
+						class="mdi mdi-folder-multiple-outline"></i> <span
+						class="nav-text">Enrollments</span> <b class="caret"></b>
+				</a>
+					<ul class="collapse" id="ui-elements" data-parent="#sidebar-menu">
+						<div class="sub-menu">
+
+
+							<li class="has-sub"><a class="sidenav-item-link"
+								th:href="@{/admin/enrolstaff}"> <span class="nav-text">Enrol
+										Staff</span>
+
+							</a>
+							<li class="has-sub"><a class="sidenav-item-link"
+								th:href="@{/admin/staff/batch}" aria-controls="icons"> <span
+									class="nav-text">Enrol Staff Batch</span>
+							</a>
+							<li class="has-sub"><a class="sidenav-item-link"
+								th:href="@{/admin/newholiday}" aria-controls="icons"> <span
+									class="nav-text">Add Holidays/Breaks</span>
+							</a>
+							<li class="has-sub"><a class="sidenav-item-link"
+								th:href="@{/admin/staffleave}" aria-controls="forms"> <span
+									class="nav-text">Add Staff Leave</span>
+							</a></li>
+
+
+							<li class="has-sub"><a class="sidenav-item-link"
+								th:href="@{/admin/holidays/current}" aria-controls="maps"> <span
+									class="nav-text">Holidays</span>
+							</a></li>
+
+
+
+
+							<li class="has-sub"><a class="sidenav-item-link"
+								th:href="@{/admin/add/department}" aria-controls="widgets">
+									<span class="nav-text">Assign Departments</span>
+
+							</a></li>
+
+
+
+						</div>
+					</ul></li>
+
+
+
+
+	<li class="has-sub" th:if="${#authorization.expression('hasAuthority(''Clerk'')')}"><a class="sidenav-item-link"
+					href="javascript:void(0)" data-toggle="collapse"
+					data-target="#ui-elements" aria-expanded="false"
+					aria-controls="ui-elements"> <i
+						class="mdi mdi-folder-multiple-outline"></i> <span
+						class="nav-text">Enrollments</span> <b class="caret"></b>
+				</a>
+					<ul class="collapse" id="ui-elements" data-parent="#sidebar-menu">
+						<div class="sub-menu">
+
+
+				
+							<li class="has-sub"><a class="sidenav-item-link"
+								th:href="@{/admin/staffleave}" aria-controls="forms"> <span
+									class="nav-text">Add Staff Leave</span>
+							</a></li>
+
+
+							<li class="has-sub"><a class="sidenav-item-link"
+								th:href="@{/admin/get/leaves}" aria-controls="maps"> <span
+									class="nav-text">View Leave Data</span>
+							</a></li>
+
+
+
+
+
+					
+
+
+
+						</div>
+					</ul></li>
+
+
+
+				<li class="has-sub"><a class="sidenav-item-link"
+					href="javascript:void(0)" data-toggle="collapse"
+					data-target="#charts" aria-expanded="false" aria-controls="charts">
+						<i class="mdi mdi-chart-pie"></i> <span class="nav-text">Reports</span>
+						<b class="caret"></b>
+				</a>
+					<ul class="collapse" id="charts" data-parent="#sidebar-menu">
+						<div class="sub-menu">
+
+
+
+							<li th:if="${#authorization.expression('hasAuthority(''SystemAdministrator'')')}"><a class="sidenav-item-link"
+								th:href="@{/admin/upload/attendance}"> <span
+									class="nav-text">Upload Report</span>
+
+							</a></li>
+
+
+							<li class="has-sub" ><a class="sidenav-item-link"
+								th:href="@{/admin/get/leaves}" aria-controls="maps"> <span
+									class="nav-text">View Leave Data</span>
+							</a></li>
+
+
+							<li class="has-sub" th:if="${#authorization.expression('hasAnyAuthority(''Manager'',''SystemAdministrator'')')}" ><a class="sidenav-item-link"
+								th:href="@{/admin/view/report}"> <span class="nav-text">View
+										Report</span>
+
+							</a></li>
+
+
+
+
+						</div>
+					</ul></li>
+
+
+
+
+
+				<li th:if="${#authorization.expression('hasAuthority(''SystemAdministrator'')')}" class="has-sub"><a class="sidenav-item-link"
+					href="javascript:void(0)" data-toggle="collapse"
+					data-target="#pages" aria-expanded="false" aria-controls="pages">
+						<i class="mdi mdi-image-filter-none"></i> <span class="nav-text">Settings</span>
+						<b class="caret"></b>
+				</a>
+					<ul class="collapse" id="pages" data-parent="#sidebar-menu">
+						<div class="sub-menu">
+
+
+
+							<li><a class="sidenav-item-link"
+								th:href="@{/admin/enroluser}"> <span class="nav-text">Add
+										Users</span>
+
+							</a></li>
+
+							<li class="has-sub"><a class="sidenav-item-link"
+								th:href="@{/admin/allusers}"> <span class="nav-text">All
+										Users</span>
+							</a></li>
+
+							<li class="has-sub"><a class="sidenav-item-link"
+								th:href="@{/admin/all/staff}" aria-controls="maps"> <span
+									class="nav-text">All Staff</span>
+							</a></li>
+
+							<li><a class="sidenav-item-link"
+								th:href="@{/admin/view/data}"> <span class="nav-text">Data
+										Operation</span>
+							</a></li>
+							
+							<li><a class="sidenav-item-link"
+								th:href="@{/admin/set/worktimes}"> <span class="nav-text">Set Working Times</span>
+							</a></li>
+							<li class="has-sub"><a class="sidenav-item-link"
+								th:href="@{/admin/add/department}" aria-controls="others"> <span
+									class="nav-text">Add Departments</span>
+							</a></li>
+						</div>
+					</ul></li>
+
+
+
+
+
+				<li class="has-sub active expand"><a class="sidenav-item-link"
+					href="javascript:void(0)" data-toggle="collapse"
+					data-target="#documentation" aria-expanded="false"
+					aria-controls="documentation"> <i
+						class="mdi mdi-book-open-page-variant"></i> <span class="nav-text">Documentation</span>
+						<b class="caret"></b>
+				</a>
+					<ul class="collapse show" id="documentation"
+						data-parent="#sidebar-menu">
+						<div class="sub-menu">
+
+
+
+							<li class="section-title">Getting Started</li>
+
+
+
+
+
+
+							<li><a 	th:href="@{/admin/intro}" class="sidenav-item-link" href="introduction.html">
+									<span class="nav-text">Introduction</span>
+
+							</a></li>
+
+
+
+
+
+
+							<li class="active"><a class="sidenav-item-link"
+								href="setup.html"> <span class="nav-text">Setup</span>
+
+							</a></li>
+
+
+
+
+
+
+
+
+
+
+
+
+						</div>
+					</ul></li>
+
+
+
+			</ul>
+
+		</div>
+
+	</div>
+</aside>
+</html>

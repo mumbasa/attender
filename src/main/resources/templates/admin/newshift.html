@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org"
+  layout:decorate="~{fragments/blank}" >
+<head>
+<meta charset="UTF-8">
+<title>New Shift</title>
+
+</head>
+<body>
+        
+       
+  <div layout:fragment="content">
+
+
+	<script type="text/javascript">
+	
+	function sele(){
+		var form = $('.former');
+		var formdata = false;
+		formdata = new FormData(form[0]);
+		
+			$.ajax({
+				url:'/attendance/admin/add/shift',
+				data:formdata,
+				type:'post',
+				processData : false,
+				contentType : false,
+				cache : false,
+				success:function(data){
+					//if(data==1){
+						$.toast({
+							heading: 'Success!',
+							text: '<p>New Shift added successfully</p>',
+							position: 'top-right',
+							loaderBg:'#f68daf',
+							class: 'jq-toast-dark',
+							hideAfter: 3500, 
+							stack: 6,
+							showHideTransition: 'fade'
+						});
+				       
+						 form[0].reset();
+						
+						
+				
+				}
+				
+			}); 
+			  
+			
+	
+		
+	}
+	
+	</script>
+	
+		
+		  
+  
+   <nav class="hk-breadcrumb" aria-label="breadcrumb">
+                <ol class="breadcrumb breadcrumb-light bg-transparent">
+                    <li class="breadcrumb-item"><a href="#">Forms</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">New Shift</li>
+                </ol>
+            </nav>
+            <!-- /Breadcrumb -->
+
+            <!-- Container -->
+            <div class="container">
+                <!-- Title -->
+                <div class="hk-pg-header">
+                    <h4 class="hk-pg-title"><span class="pg-title-icon"><span class="feather-icon"><i data-feather="align-left"></i></span></span>Add New Shift</h4>
+                </div>
+                <!-- /Title -->
+
+                <!-- Row -->
+                <div class="row">
+                    <div class="col-xl-12">
+                        <section class="hk-sec-wrapper">
+                            <div class="row">
+                                <div class="col-sm">
+                                    <form class="former">
+                                        <div class="row">
+                                            <div class="col-md-12 form-group">
+                                                <label for="firstName">Shift</label>
+                                                <input class="form-control" id="firstName" name="name" placeholder="" value="" type="text">
+                                            </div>
+                                          
+                                        </div>
+
+
+
+											<div class="row">
+                                            <div class="col-md-6 mb-10">
+                                                <label for="country">Starting Time</label>
+                                           <input class="form-control" id="zip" placeholder="" type="time" name="start">
+
+                                            </div>
+                                             <div class="col-md-6 mb-10">
+                                                <label for="zip">Closing Time</label>
+                                                <input class="form-control" id="zip" placeholder="" type="time" name="close">
+                                            </div>
+                                            
+                                            
+                                                                                     
+                                           
+                                        </div>
+                                         <div class="row">
+                                            <div class="col-md-12 mb-10">
+                                                <label for="type">Hours</label>
+                                                 <input class="form-control" id="zip" placeholder="" type="number" name="hours">
+
+                                            </div>
+                                            
+                                           
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-12 mb-10">
+                                                <label for="type">Staff Type</label>
+                                                <select class="form-control custom-select d-block w-100" id="type" name="type">
+                                    <option th:each="a:${stafftypes}" th:value="${a.id}" th:text="${a.value}">Choose...</option>
+
+                                                </select>
+                                            </div>
+                                            
+                                           
+                                        </div>
+                                         
+                                  
+
+<div class="row">
+                                            <div class="col-md-12 mb-10">
+                                                <label for="zip">Shift Color</label>
+                    <input class="form-control" id="zip" placeholder="" type="text" name="color">
+                                               
+                                            </div>
+                                            
+                                           
+                                        </div>
+                                         
+                                        
+                                     
+                                        <hr>
+                                        <button class="btn btn-primary col-md-12" type="button" onclick="sele()">Set Shift</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </section>
+                     </div>
+                </div>
+                <!-- /Row -->
+            </div>
+            <!-- /Container -->
+  
+  
+  </div>
+  
+  
+</body>
+</html>

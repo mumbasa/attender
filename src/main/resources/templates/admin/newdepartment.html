@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org"
+  layout:decorate="~{fragments/blank}" >
+<head>
+<meta charset="UTF-8">
+<title>Enroll Staff</title>
+
+</head>
+<body>
+
+  <div layout:fragment="content">
+
+
+	<script type="text/javascript">
+	
+	function sele(){
+		
+
+		var form = $('.former');
+		var formdata = false;
+		formdata = new FormData(form[0]);
+		
+		
+		
+		var img =$('#imgs').attr('src');
+		Webcam.upload( img, '/attendance/add/staff/pic', function(code, text) {
+			$('#pict').val(text);
+			 
+			$.ajax({
+				url:'/attendance/admin/add/staff/'+text,
+				data:formdata,
+				type:'post',
+				processData : false,
+				contentType : false,
+				cache : false,
+				success:function(data){
+					if(data==1){
+						$.toast({
+							heading: 'Success!',
+							text: '<p>Staff have successfully added. The staff ID for the biometric system is </p><button class="btn btn-primary btn-sm mt-10">Play again</button>',
+							position: 'top-right',
+							loaderBg:'#f68daf',
+							class: 'jq-toast-success',
+							hideAfter: 3500, 
+							stack: 6,
+							showHideTransition: 'fade'
+						});
+				       
+						 form[0].reset();
+						 document.getElementById('cover').innerHTML = 
+								'<img id="imgs" src=""/>';
+						
+					}
+				}
+				
+			}); 
+			  
+			 });
+	
+	
+		
+	}
+	
+	</script>
+	
+		<script type="text/javascript">
+		
+	
+		
+		
+		function take_snapshot() {
+			// take snapshot and get image data
+			Webcam.snap( function(data_uri) {
+				// display results in page
+				document.getElementById('cover').innerHTML = 
+				'<img id="imgs" src="'+data_uri+'"/>';
+			} );
+		}
+			
+$( document ).ready(function() {
+	Webcam.set({
+		width: 300,
+		height: 240,
+		image_format: 'jpeg',
+		jpeg_quality: 90
+	});
+	Webcam.attach( '#my_camera' );
+	
+	
+	
+			
+	});
+	
+	
+	
+		</script>
+		  
+  
+   <nav class="hk-breadcrumb" aria-label="breadcrumb">
+                <ol class="breadcrumb breadcrumb-light bg-transparent">
+                    <li class="breadcrumb-item"><a href="#">Forms</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Enroll new staff</li>
+                </ol>
+            </nav>
+            <!-- /Breadcrumb -->
+
+            <!-- Container -->
+            <div class="container">
+                <!-- Title -->
+                <div class="hk-pg-header">
+                    <h4 class="hk-pg-title"><span class="pg-title-icon"><span class="feather-icon"><i data-feather="align-left"></i></span></span>Add New Staff</h4>
+                </div>
+                <!-- /Title -->
+
+                <!-- Row -->
+                <div class="row">
+                    <div class="col-xl-12">
+                        <section class="hk-sec-wrapper">
+                            <div class="row">
+                                <div class="col-sm">
+                                    <form class="former">
+                                        <div class="row">
+                                            <div class="col-md-6 form-group">
+                                                <label for="firstName">First name</label>
+                                                <input class="form-control" id="firstName" name="fname" placeholder="" value="" type="text">
+                                            </div>
+                                            <div class="col-md-6 form-group">
+                                                <label for="lastName">Last name</label>
+                                                <input class="form-control" id="lastName" name="lname" placeholder="" value="" type="text">
+                                            </div>
+                                        </div>
+
+
+
+											<div class="row">
+                                            <div class="col-md-5 mb-10">
+                                                <label for="country">Nationality</label>
+                                                <select class="form-control custom-select d-block w-100" id="country" name="country">
+                                                    <option value="">Choose...</option>
+                                                    <option>United States</option>
+                                                </select>
+                                            </div>
+                                             <div class="col-md-3 mb-10">
+                                                <label for="zip">Date of Birth</label>
+                                                <input class="form-control" id="zip" placeholder="" type="date" name="dob">
+                                            </div>
+                                            
+                                            
+                                            <div class="col-md-4 mb-10">
+                                                <label for="mobile">Gender</label>
+      											 <select class="form-control custom-select d-block w-100" id="ws" name="sex">
+                                                    <option >Male</option>
+                                                    <option>Female</option>
+                                                </select>
+                                            </div>                                              
+                                           
+                                        </div>
+                                        <hr>
+										 <h6 class="form-group">Contact Details</h6>
+										
+
+                                        <div class="form-group">
+                                            <label for="address">Address</label>
+                                            <input class="form-control" id="address" name="address" placeholder="1234 Main St" type="text">
+                                        </div>
+
+	
+	 									<div class="form-group" style="display: none;">
+                                            <input class="form-control" id="pict" name="pic" type="text">
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-md-6 mb-10">
+                                                <label for="email">Email</label>
+                                               <input class="form-control" id="email" placeholder="your email" name="email" type="email">
+
+                                            </div>
+                                            <div class="col-md-6 mb-10">
+                                                <label for="mob">Mobile Number</label>
+                                 <input class="form-control" id="mob" placeholder="your mobile number" name="mobile" type="tel">
+
+                                            </div>
+                                            
+                                        </div>
+                                        
+                                          <hr>
+										 <h6 class="form-group">Work Details</h6>
+										
+                                        <div class="row">
+                                            <div class="col-md-7 mb-10">
+                                            <label for="address2">Department</label>
+                                               <select class="form-control custom-select d-block w-100" id="state" name="dept">
+                                                    <option th:each="a:${depts}" th:value="${a.id}" th:text="${a.department}">Choose...</option>
+                                                </select>
+                                        </div>
+                                        
+                                           <div class="col-md-5 mb-10">
+                                            <label for="emp">Date Employed</label>
+                                           <input class="form-control" id="emp" placeholder="your mobile number" name="emp" type="date">
+                                              
+                                        </div>
+</div>
+                                        <div class="row">
+                                            <div class="col-md-5 mb-10">
+                                                <label for="type">Staff Type</label>
+                                                <select class="form-control custom-select d-block w-100" id="type" name="type">
+                                    <option th:each="a:${types}" th:value="${a.id}" th:text="${a.value}">Choose...</option>
+
+                                                </select>
+                                            </div>
+                                            
+                                            <div class="col-md-3 mb-10 custom-control custom-checkbox">
+                                                 <label for="ws">Can work on Saturdays</label>
+                                            
+                                           <select class="form-control custom-select d-block w-100" id="ws" name="weekend">
+                                                    <option value="1" >Yes</option>
+                                                    <option value="0">No</option>
+                                                </select>
+                                     
+                                            </div>
+                                        </div>
+                                         
+                                   
+                                        <hr>
+
+                                        <h6 class="form-group">Capture Face</h6>
+
+                                        
+                                        <div class="row">
+                                            <div class="col-md-6 form-group">
+                                               
+                                                <div id="cover"></div>
+                                               
+                                            </div>
+                                            <div class="col-md-6 form-group">
+                                               
+                                                <div id="my_camera"></div>
+                                               
+                                               <button type="button" class="btn btn-primary" onclick="take_snapshot()" >Take Snapshot</button>
+                                               </div>
+                                        </div>
+                                    
+                                        <hr>
+                                        <button class="btn btn-primary" type="button" onclick="sele()">Add Staff</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </section>
+                     </div>
+                </div>
+                <!-- /Row -->
+            </div>
+            <!-- /Container -->
+  
+  
+  </div>
+  
+  
+</body>
+</html>

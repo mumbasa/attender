@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	xmlns:th="http://www.thymeleaf.org"
+	layout:decorate="~{fragments/blank}">
+<head>
+<meta charset="UTF-8">
+<title>My Kins</title>
+
+</head>
+<body>
+
+
+	<div layout:fragment="content">
+
+
+		<script type="text/javascript">
+	
+	function addkin(){
+	
+
+		var form = $('.former');
+		var formdata = false;
+		formdata = new FormData(form[0]);
+		
+			$.ajax({
+				url:'/attendance/admin/staff/add/kin',
+				data:formdata,
+				type:'post',
+				processData : false,
+				contentType : false,
+				cache : false,
+				success:function(data){
+				
+						$.toast({
+							heading: 'Success!',
+							text: '<p>New Kin added successfully</p>',
+							position: 'top-right',
+							loaderBg:'#f68daf',
+							class: 'jq-toast-dark',
+							hideAfter: 3500, 
+							stack: 6,
+							showHideTransition: 'fade'
+						});
+				       
+						 form[0].reset();
+						
+						
+				
+				}
+				
+			}); 
+			  
+			
+	
+		
+	}
+			
+			
+	function upKin(id){
+			var form = $('.former'+id);
+		var formdata = false;
+		formdata = new FormData(form[0]);
+		
+			$.ajax({
+				url:'/attendance/admin/staff/update/kin/'+id,
+				data:formdata,
+				type:'post',
+				processData : false,
+				contentType : false,
+				cache : false,
+				success:function(data){
+					//if(data==1){
+						$.toast({
+							heading: 'Success!',
+							text: '<p>Kin updated successfully</p>',
+							position: 'top-right',
+							loaderBg:'#f68daf',
+							class: 'jq-toast-dark',
+							hideAfter: 3500, 
+							stack: 6,
+							showHideTransition: 'fade'
+						});
+				       
+						 form[0].reset();
+						
+						
+				
+				}
+				
+			}); 
+			  
+			
+	
+		
+	}
+			
+			
+	function delKin(id){
+		
+	
+	
+			$.ajax({
+				url:'/attendance/admin/staff/delete/kin/'+id,
+				type:'get',
+				processData : false,
+				contentType : false,
+				cache : false,
+				success:function(data){
+					//if(data==1){
+						$.toast({
+							heading: 'Success!',
+							text: '<p>Kin Deleted successfully</p>',
+							position: 'top-right',
+							loaderBg:'#f68daf',
+							class: 'jq-toast-dark',
+							hideAfter: 3500, 
+							stack: 6,
+							showHideTransition: 'fade'
+						});
+				       
+						 form[0].reset();
+						
+						
+				
+				}
+				
+			}); 
+			  
+			
+	
+		
+	}
+	
+	</script>
+
+
+
+
+		<nav class="hk-breadcrumb" aria-label="breadcrumb">
+			<ol class="breadcrumb breadcrumb-light bg-transparent">
+				<li class="breadcrumb-item"><a href="#">Data</a></li>
+				<li class="breadcrumb-item active" aria-current="page">Kins</li>
+			</ol>
+		</nav>
+		<!-- /Breadcrumb -->
+
+		<!-- Container -->
+		<div class="container">
+			<!-- Title -->
+			<div class="hk-pg-header">
+				<h4 class="hk-pg-title">
+					<span class="pg-title-icon"><span class="feather-icon"><i
+							data-feather="align-left"></i></span></span>Add New Kin
+				</h4>
+				<button type="button" class="btn btn-primary" data-toggle="modal"
+					data-target="#addkin">Add Kin</button>
+
+			</div>
+			<!-- /Title -->
+
+			<!-- Row -->
+			<!-- /Row -->
+
+
+			<div class="row">
+				<div class="col-xl-12">
+					<section class="hk-sec-wrapper">
+						<h5 class="hk-sec-title">My Next of Kins</h5>
+						<div class="row">
+							<div class="col-sm">
+								<div class="table-wrap">
+									<table id="datable_1"
+										class="table table-hover w-100 display pb-30">
+										<thead>
+											<tr>
+												<th>#</th>
+												<th>Name</th>
+												<th>Gender</th>
+												<th>Relationship</th>
+												<th>Contact</th>
+												<th>Date Added</th>
+												<th></th>
+
+											</tr>
+										</thead>
+										<tbody>
+											<tr th:each="a,i:${kins}">
+												<td th:text="${i.index+1}">Tiger Nixon</td>
+												<td th:text="${a.name}">System Architect</td>
+												<td th:text="${a.gender}">Edinburgh</td>
+												<td th:text="${a.relationship}">61</td>
+												<td th:text="${a.contact}">2011/04/25</td>
+												<td th:text="${a.dateAdded}">$320,800</td>
+												<td><button class="btn btn-sm  btn-primary" data-toggle="modal" th:data-target="'#kinedit'+${a.id}">Update</button> 
+												
+													<div class="modal fade" th:id="kinedit+${a.id}" tabindex="-1"
+			role="dialog" aria-labelledby="exampleModalLarge01"
+			aria-hidden="true">
+			<div class="modal-dialog modal-lg" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title">Update Kin Information</h5>
+						<button type="button" class="close" data-dismiss="modal"
+							aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+					<div class="modal-body">
+						<div class="row">
+							<div class="col-xl-12">
+								<section class="hk-sec-wrapper">
+									<div class="row">
+										<div class="col-sm">
+											<form th:class="'former'+${a.id}">
+												<div class="row">
+													<div class="col-md-12 form-group">
+														<label for="firstName">Name</label> <input
+															class="form-control" id="firstName" name="name"
+															placeholder="" th:value="${a.name}" type="text">
+													</div>
+
+												</div>
+
+
+
+												<div class="row">
+													<div class="col-md-6 mb-10">
+														<label for="country">Gender</label> <select
+															class="form-control custom-select d-block w-100"
+															id="type" name="gender" th:value="${a.gender}">
+															<option value="Male">Male</option>
+															<option value="Female">Female</option>
+
+														</select>
+													</div>
+													<div class="col-md-6 mb-10">
+														<label for="zip">Relationship</label> <select
+															class="form-control custom-select d-block w-100"
+															id="type" name="relation" >
+															<option >Child</option>
+															<option >Spouse</option>
+															<option >Parent</option>
+															<option >Grand Parent</option>
+															<option >Cousin</option>
+															<option >In-Law</option>
+															<option >Friend</option>
+															<option >Uncle</option>
+															<option >Aunt</option>
+															<option >Partner</option>
+															<option >Niece</option>
+															<option >Nephew</option>
+														</select>
+													</div>
+
+
+
+
+												</div>
+												<div class="row">
+													<div class="col-md-12 mb-10">
+														<label for="type">contact</label> <input
+															class="form-control" id="zip" placeholder=""
+															type="text" name="contact" th:value="${a.contact}">
+
+													</div>
+
+
+												</div>
+
+											</form>
+										</div>
+									</div>
+								</section>
+							</div>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-secondary"
+							data-dismiss="modal">Close</button>
+						<button type="button" class="btn btn-primary" th:onclick="'upKin('+${a.id}+')'">Update Kin</button>
+					</div>
+				</div>
+			</div>
+		</div>
+												
+												
+												<button class="btn btn-sm btn-danger" data-toggle="modal"
+					th:data-target="'#kinconfirm'+${a.id}">Delete</button>
+												
+													<div class="modal fade" th:id="'kinconfirm'+${a.id}" tabindex="-1"
+			role="dialog" aria-labelledby="exampleModalLarge01"
+			aria-hidden="true">
+			<div class="modal-dialog modal-sm" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title">Confirm Delete</h5>
+						<button type="button" class="close" data-dismiss="modal"
+							aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+					<div class="modal-body bg-red">
+					<p class="text-white" >Are you sure you want to delete?</p>
+						</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-secondary"
+							data-dismiss="modal">Cancel</button>
+						<button type="button" class="btn btn-danger" th:onclick="'delKin('+${a.id}+')'" data-dismiss="modal">Delete Kin</button>
+					</div>
+				</div>
+			</div>
+		</div>
+												
+												
+												</td>
+											</tr>
+
+										</tbody>
+										<tfoot>
+											<tr>
+												<th>#</th>
+												<th>Name</th>
+												<th>Gender</th>
+												<th>Relationship</th>
+												<th>Contact</th>
+												<th>Date Added</th>
+												<th></th>
+
+											</tr>
+										</tfoot>
+									</table>
+								</div>
+							</div>
+						</div>
+					</section>
+				</div>
+			</div>
+
+		</div>
+		<!-- /Container -->
+		<div class="modal fade" id="exampleModalLarge01" tabindex="-1"
+			role="dialog" aria-labelledby="exampleModalLarge01"
+			aria-hidden="true">
+			<div class="modal-dialog modal-lg" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title">Add New Kin</h5>
+						<button type="button" class="close" data-dismiss="modal"
+							aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+					<div class="modal-body">
+						<div class="row">
+							<div class="col-xl-12">
+								<section class="hk-sec-wrapper">
+									<div class="row">
+										<div class="col-sm">
+											<form class="former">
+												<div class="row">
+													<div class="col-md-12 form-group">
+														<label for="firstName">Name</label> <input
+															class="form-control" id="firstName" name="name"
+															placeholder="" value="" type="text">
+													</div>
+
+												</div>
+
+
+
+												<div class="row">
+													<div class="col-md-6 mb-10">
+														<label for="country">Gender</label> <select
+															class="form-control custom-select d-block w-100"
+															id="type" name="gender">
+															<option value="Male">Male</option>
+															<option value="Female">Female</option>
+
+														</select>
+													</div>
+													<div class="col-md-6 mb-10">
+														<label for="zip">Relationship</label> <select
+															class="form-control custom-select d-block w-100"
+															id="type" name="relation">
+															<option >Child</option>
+															<option >Spouse</option>
+															<option >Parent</option>
+															<option >Grand Parent</option>
+															<option >Cousin</option>
+															<option >In-Law</option>
+															<option >Friend</option>
+															<option >Uncle</option>
+															<option >Aunt</option>
+															<option >Partner</option>
+															<option >Niece</option>
+															<option >Nephew</option>
+														</select>
+													</div>
+
+
+
+
+												</div>
+												<div class="row">
+													<div class="col-md-12 mb-10">
+														<label for="type">contact</label> <input
+															class="form-control" id="zip" placeholder=""
+															type="text" name="contact">
+
+													</div>
+
+
+												</div>
+
+											</form>
+										</div>
+									</div>
+								</section>
+							</div>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-secondary"
+							data-dismiss="modal">Close</button>
+						<button type="button" class="btn btn-primary" onclick="addkin()">Save Kin</button>
+					</div>
+				</div>
+			</div>
+		</div>
+
+	</div>
+
+
+</body>
+</html>

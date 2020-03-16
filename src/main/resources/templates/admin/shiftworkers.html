@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org"
+  layout:decorate="~{fragments/blank}" >
+<head>
+<meta charset="UTF-8">
+<title>Department Shift Workers</title>
+</head>
+<body>
+
+     <div layout:fragment="content">
+       
+           <!-- Breadcrumb -->
+            <nav class="hk-breadcrumb" aria-label="breadcrumb">
+                <ol class="breadcrumb breadcrumb-light bg-transparent">
+                    <li class="breadcrumb-item"><a href="#">Data</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Shift Workers </li>
+                </ol>
+            </nav>
+            <!-- /Breadcrumb -->
+
+            <!-- Container -->
+            <div >
+
+                <!-- Title -->
+                <div class="hk-pg-header">
+                    <h4 class="hk-pg-title"><span class="pg-title-icon"><span class="feather-icon"><i data-feather="database"></i></span></span>Shift Workers</h4>
+                </div>
+                <!-- /Title -->
+
+                <!-- Row -->
+                <div class="row">
+                    <div class="col-xl-12">
+                        <section class="hk-sec-wrapper">
+                            <div class="row">
+                                <div class="col-sm">
+                                    <div class="table-wrap">
+                                        <table id="datable_1" class="table table-hover w-100 display pb-30">
+                                            <thead>
+                                                <tr>
+                                                <th>#</th>
+                                                    <th>Name</th>
+                                                    <th>Gender</th>
+                                                    <th>Staff Type</th>
+                                                    <th>Department</th>
+                                                    <th>  </th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr th:each="a,i:${staff}">
+                                                    <td th:text="${i.index+1}">Tiger Nixon</td>
+                                            <td th:text="${a.name}" style="text-transform: capitalize;">System Architect</td>
+                                                    
+                                                    <td th:text="${a.gender}">System Architect</td>
+                                                    <td th:text="${a.staffType}">Edinburgh</td>
+                                                    <td th:text="${a.department}">61</td>
+                                                    <td><a class="btn btn-sm text-white btn-info" th:href="@{'/admin/staff/'+${a.id}+'/set/shifts'}">Set Shifts</a> <a class="btn btn-sm text-white btn-success" th:href="@{'/admin/staff/'+${a.id}+'/get/shifts'}">View Shifts</a> <a class="btn btn-sm text-white btn-danger">View Unavailable Days</a> </td>
+                                                </tr>
+                                           
+                                            </tbody>
+                                            <tfoot>
+                                                <tr>
+                                                 <th>#</th>
+                                                    <th>Name</th>
+                                                    <th>Gender</th>
+                                                    <th>Staff Type</th>
+                                                    <th>Department</th>
+                                                    <th>  </th>
+                                                </tr>
+                                            </tfoot>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+                      </div>
+                </div>
+                <!-- /Row -->
+
+            </div>
+            <!-- /Container -->
+     
+     
+     </div>
+     
+    
+     
+</body>
+</html>

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org"
+  layout:decorate="~{fragments/blank}">
+  
+          <div class="content" layout:fragment="content">  
+          <div class="row" >          
+					
+							<div class="col-lg-6">
+			
+			
+						<div class="card card-default">
+										<div class="card-header card-header-border-bottom">
+											<h2>Batch Staff Enrol</h2>
+										</div>
+										<div class="card-body">
+											<form th:action="@{/upload/staffbatch}" method="post" enctype="multipart/form-data">
+												
+												<div class="form-group">
+													<label for="exampleFormControlFile1">Staff CSV file input</label>
+													<input type="file" name="file" class="form-control-file" id="exampleFormControlFile1">
+												</div>
+												<div class="form-footer pt-4 pt-5 mt-4 border-top">
+													<button type="submit" class="btn btn-primary btn-default">Submit</button>
+												</div>
+											</form>
+										</div>
+									</div>
+
+							
+			
+								</div>
+</div>
+					
+
+            </div>
+          
+
+
+       
+</html>

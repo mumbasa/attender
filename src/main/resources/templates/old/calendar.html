@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" xmlns:th="http://www.thymeleaf.org">
+  <head th:insert="fragments/head.html::header">
+  
+</head>
+
+
+  <body class="sidebar-fixed sidebar-dark header-light header-fixed" id="body">
+    <script>
+      NProgress.configure({ showSpinner: false });
+      NProgress.start();
+    </script>
+
+    <div class="mobile-sticky-body-overlay"></div>
+
+    <div class="wrapper">
+      
+    <aside th:insert="fragments/side.html::bar">
+
+      
+</aside>
+      <div class="page-wrapper">
+          <header class="main-header " id="header" th:insert="fragments/navi.html::navi"></header>
+
+
+        <div class="content-wrapper">
+          <div class="content">             
+          
+		<div class="col-md-8 col-lg-9">
+							<div class="card card-default">
+																	<div class="card-header card-header-border-bottom">
+							
+								<div class="panel-heading">
+									<h3 class="panel-title">Calendar</h3>
+								</div>
+								<div class="panel-body">
+
+									<!-- Calendar placeholder-->
+									<!-- ============================================ -->
+									<div id='demo-calendar'></div>
+									<!-- ============================================ -->
+
+								</div>
+							</div>
+						</div>
+					</div>
+
+</div>
+
+
+          
+
+
+        </div>
+
+             <footer th:insert="fragments/footer.html::footer"></footer>
+
+      </div>
+    </div>
+
+    
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDCn8TFXGg17HAUcNpkwtxxyT9Io9B_NcM" defer></script>
+<script th:src="@{/assets/plugins/jquery/jquery.min.js}"></script>
+<script th:src="@{/assets/plugins/bootstrap/js/bootstrap.bundle.min.js}"></script>
+<script th:src="@{/assets/plugins/toaster/toastr.min.js}"></script>
+<script th:src="@{/assets/plugins/slimscrollbar/jquery.slimscroll.min.js}"></script>
+<script th:src="@{/assets/plugins/charts/Chart.min.js}"></script>
+<script th:src="@{/assets/plugins/ladda/spin.min.js}"></script>
+<script th:src="@{/assets/plugins/ladda/ladda.min.js}"></script>
+<script th:src="@{/assets/plugins/jquery-mask-input/jquery.mask.min.js}"></script>
+<script th:src="@{/assets/plugins/select2/js/select2.min.js}"></script>
+<script th:src="@{/assets/plugins/jvectormap/jquery-jvectormap-2.0.3.min.js}"></script>
+<script th:src="@{/assets/plugins/jvectormap/jquery-jvectormap-world-mill.js}"></script>
+<script th:src="@{/assets/plugins/daterangepicker/moment.min.js}"></script>
+<script th:src="@{/assets/plugins/daterangepicker/daterangepicker.js}"></script>
+<script th:src="@{/assets/plugins/jekyll-search.min.js}"></script>
+<script th:src="@{/assets/js/sleek.js}"></script>
+<script th:src="@{/assets/js/chart.js}"></script>
+<script th:src="@{/assets/js/date-range.js}"></script>
+<script th:src="@{/assets/js/map.js}"></script>
+<script th:src="@{/assets/js/custom.js}"></script>
+
+	<script th:src="@{/fullcalendar/lib/moment.min.js}"></script>
+	<script th:src="@{/fullcalendar/lib/jquery-ui.custom.min.js}"></script>
+	<script th:src="@{/fullcalendar/fullcalendar.min.js}"></script>
+	<script th:src="@{/assets/js/fullcalendar.js}"></script>
+
+
+
+
+  </body>
+</html>

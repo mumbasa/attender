@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org"
+  layout:decorate="~{fragments/blank}" >
+<head>
+<meta charset="UTF-8">
+<title>My Unavailable Shifts</title>
+<link th:href="@{/new/vendors/fullcalendar/packages/core/main.css}"
+	rel="stylesheet" type="text/css" />
+<link th:href="@{/new/vendors/fullcalendar/packages/daygrid/main.css}"
+	rel="stylesheet" type="text/css" />
+<link th:href="@{/new/vendors/fullcalendar/packages/list/main.css}"
+	rel="stylesheet" type="text/css" />
+<link th:href="@{/new/vendors/fullcalendar/packages/timegrid/main.css}"
+	rel="stylesheet" type="text/css" />
+</head>
+<body>
+
+     <div layout:fragment="content">
+       <script type="text/javascript">
+	
+	function sele(id){
+		
+
+		
+			 
+			$.ajax({
+				url:'/attendance/admin/staff/delete/staffpref/'+id,
+				type:'get',
+				processData : false,
+				contentType : false,
+				cache : false,
+				success:function(data){
+			
+						$.toast({
+							heading: 'Success!',
+							text: '<p>Shift deleted successfully</p>',
+							position: 'top-right',
+							loaderBg:'#f68daf',
+							class: 'jq-toast-dark',
+							hideAfter: 3500, 
+							stack: 6,
+							showHideTransition: 'fade'
+						});
+				       
+						
+						
+				
+				}
+				
+			}); 
+			  
+			 }
+	
+	
+		
+	
+	
+	</script>
+	
+           <!-- Breadcrumb -->
+            <nav class="hk-breadcrumb" aria-label="breadcrumb">
+                <ol class="breadcrumb breadcrumb-light bg-transparent">
+                    <li class="breadcrumb-item"><a href="#">Data</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Unavailable Shifts</li>
+                </ol>
+            </nav>
+            <!-- /Breadcrumb -->
+
+            <!-- Container -->
+            <div class="container">
+
+                <!-- Title -->
+                <div class="hk-pg-header">
+                    <h4 class="hk-pg-title"><span class="pg-title-icon"><span class="feather-icon"><i data-feather="database"></i></span></span>Unavailable Dates</h4>
+                </div>
+                <!-- /Title -->
+
+                <!-- Row -->
+                <div class="row">
+                    <div class="col-xl-12">
+                        <section class="hk-sec-wrapper">
+                            <div class="row">
+                                <div class="col-sm">
+                                    <div class="table-wrap">
+                                        <table id="datable_1" class="table table-hover w-100 display pb-30">
+                                            <thead>
+                                                <tr>
+                                                <th>#</th>
+                                                    <th>Date</th>
+                                                    <th>Shift</th>
+                                                    <th>Start Time</th>
+                                                    <th>End Time</th>
+                                                    <th>  </th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr th:each="a,i:${shifts}">
+                                                    <td th:text="${i.index+1}">Tiger Nixon</td>
+                                                                                                       
+                                                    
+                                            <td th:text="${a.date}" style="text-transform: capitalize;">System Architect</td>
+                                                     <td th:text="${a.type.shiftType}">Edinburgh</td>
+                                                    <td th:text="${a.type.startString}">System Architect</td>
+                                                    <td th:text="${a.type.closeString}">61</td>
+                                                    <td>
+                                                    <button th:onclick="'sele('+${a.id}+')'" class="btn btn-sm btn-danger">Rescind</button>
+                                                    </td>
+                                                </tr>
+                                           
+                                            </tbody>
+                                            <tfoot>
+                                                <tr>
+                                                <th>#</th>
+                                                    <th>Date</th>
+                                                    <th>Shift</th>
+                                                    <th>Start Time</th>
+                                                    <th>End Time</th>
+                                                    <th>  </th>
+                                                </tr>
+                                            </tfoot>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+                      </div>
+                </div>
+                <!-- /Row -->
+
+            </div>
+            <!-- /Container -->
+     
+     
+     </div>
+     
+    
+     
+</body>
+</html>

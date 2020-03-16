@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	xmlns:th="http://www.thymeleaf.org"
+	layout:decorate="~{fragments/blank}">
+<head>
+<meta charset="UTF-8">
+<title th:text="${staff.name}+' Profile'">Insert title here</title>
+</head>
+<body>
+
+	<div class="row" layout:fragment="content">
+	
+	<script type="text/javascript">
+	 var labe = [ "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+ 		"Jul", "Aug", "Sep", "Oct", "Nov", "Dec" ];
+$(document).ready(function(){
+	
+	var eChart_4 = echarts.init(document.getElementById('e_chart_4'));
+	var early=[0,0,0,0,0,0,0,0,0,0,0,0,];
+	var late=[0,0,0,0,0,0,0,0,0,0,0,0,];
+	var absence=[0,0,0,0,0,0,0,0,0,0,0,0,];
+	var staffid=$("#id").attr("data-id");
+
+	$.ajax({
+		url:'/attendance/admin/get/staff/'+staffid+'/attendance/label',
+		type:'get',
+		success:function(data){
+			console.log('data---'+staffid);
+			 for ( var i in data) {
+			    var id =parseInt(data[i].value);
+			    early[id]=data[i].id;
+			    late[id]=data[i].quantity;
+			    absence[id]=data[i].quantity2;
+				}
+			 
+			 var option3 = {
+						color: ['#008d22', '#fabacf','#f36493','#feeff4'],		
+						tooltip: {
+							show: true,
+							trigger: 'axis',
+							backgroundColor: '#fff',
+							borderRadius:6,
+							padding:6,
+							axisPointer:{
+								lineStyle:{
+									width:0,
+								}
+							},
+							textStyle: {
+								color: '#324148',
+								fontFamily: '"Roboto", sans-serif',
+								fontSize: 12
+							}
+						},
+						
+						grid: {
+							top: '3%',
+							left: '3%',
+							right: '3%',
+							bottom: '3%',
+							containLabel: true
+						},
+						xAxis : [
+							{	
+								type : 'value',
+								
+								axisLine: {
+									show:false
+								},
+								axisTick: {
+									show:false
+								},
+								axisLabel: {
+									textStyle: {
+										color: '#5e7d8a'
+									}
+								},
+								splitLine: {
+									lineStyle: {
+										color: '#eaecec',
+									}
+								}
+							}
+						],
+						yAxis : [
+							{
+								type : 'category',
+								data : labe,
+								axisLine: {
+									show:false
+								},
+								axisTick: {
+									show:false
+								},
+								axisLabel: {
+									textStyle: {
+										color: '#5e7d8a'
+									}
+								}
+							}
+						],
+						series : [
+							{
+								name:'Early',
+								type:'bar',
+								stack: 'st1',
+								barMaxWidth: 30,
+								data:early,
+							},
+							{
+								name:'Late',
+								type:'bar',
+								stack: 'st1',
+								barMaxWidth: 30,
+								data:late,
+							},
+							{
+								name:'Absence',
+								type:'bar',
+								stack: 'st1',
+								barMaxWidth: 30,
+								data:absence,
+							}
+							,
+						]
+					};
+
+					eChart_4.setOption(option3);
+					eChart_4.resize();
+		}});
+	
+	
+	 var pos=[0,0,0,0,0,0,0,0,0,0,0,0,0];
+	 var neg=[0,0,0,0,0,0,0,0,0,0,0,0,0];
+	$.ajax({
+		url:'/attendance/admin/get/staff/'+staffid+'/deficit',
+		type:'get',
+		success:function(data){
+			console.log('data---'+staffid);
+			 for ( var i in data) {
+			    if(data[i].quantity<0){
+			    	neg[data[i].id-1]=data[i].quantity;
+			    	
+			    }else{
+			    	
+			    	pos[data[i].id-1]=data[i].quantity;
+	
+			    }	
+ 				 				
+				
+				}
+			 var eChart_9 = echarts.init(document.getElementById('e_chart_9'));
+		 		var option8 = {
+		 			color: ['#098901', '#ff8866'],
+		 			tooltip: {
+		 				show: true,
+		 				trigger: 'axis',
+		 				backgroundColor: '#fff',
+		 				borderRadius:6,
+		 				padding:6,
+		 				axisPointer:{
+		 					lineStyle:{
+		 						width:0,
+		 					}
+		 				},
+		 				textStyle: {
+		 					color: '#324148',
+		 					fontFamily: '"Roboto", sans-serif',
+		 					fontSize: 12
+		 				}	
+		 			},
+		 			
+		 			xAxis: [{
+		 				type: 'value',
+		 				axisLine: {
+		 					show:false
+		 				},
+		 				axisTick: {
+		 					show:false
+		 				},
+		 				axisLabel: {
+		 					textStyle: {
+		 						color: '#007d8a'
+		 					}
+		 				},
+		 				splitLine: {
+		 					lineStyle: {
+		 						color: '#eaecec',
+		 					}
+		 				}
+		 			}],
+		 			yAxis: {
+		 				type: 'category',
+		 				data: labe,
+		 				axisLine: {
+		 					show:false
+		 				},
+		 				axisTick: {
+		 					show:false
+		 				},
+		 				axisLabel: {
+		 					textStyle: {
+		 						color: '#5e7d8a'
+		 					}
+		 				}
+		 			},
+		 			grid: {
+		 				top: '3%',
+		 				left: '3%',
+		 				right: '3%',
+		 				bottom: '3%',
+		 				containLabel: true
+		 			},
+		 			series: [{
+		 					name:'overtime',
+		 					type:'bar',
+		 					stack: 'st1',
+		 					barMaxWidth: 30,
+		 					data:pos,
+		 					itemStyle: {
+		 						normal: {
+		 							barBorderRadius: [0, 6, 6, 0] ,
+		 						}
+		 					},
+		 				},
+		 				{
+		 					name:'deficit',
+		 					type:'bar',
+		 					stack: 'st1',
+		 					barMaxWidth: 30,
+		 					data:neg,
+		 					itemStyle: {
+		 						normal: {
+		 							barBorderRadius: [6, 0, 0, 6] ,
+		 						}
+		 					},
+		 				}]
+		 		};
+		 		eChart_9.setOption(option8);
+		 		eChart_9.resize();
+		 		
+		 			
+			
+		}
+		
+	});
+	
+});
+
+
+
+</script>
+		<div class="col-xl-12 pa-0">
+			<div class="profile-cover-wrap overlay-wrap">
+				<div class="profile-cover-img bg-brown"></div>
+				<div class="bg-overlay bg-trans-dark-60"></div>
+				<div class="container profile-cover-content py-50">
+					<div class="hk-row">
+						<div class="col-lg-6">
+							<div class="media align-items-center">
+								<div class="media-img-wrap  d-flex">
+									<div class="avatar">
+										<img th:src="'http://localhost/pics/'+${staff.picture}"
+											alt="user" class="avatar-img rounded-circle">
+									</div>
+								</div>
+								<div class="media-body">
+									<div
+										class="text-white text-capitalize display-6 mb-5 font-weight-400"
+										th:text="${staff.name}">Cecilia Rios</div>
+									<div class="font-14 text-white">
+										<span class="mr-5"><span class="font-weight-500 pr-5">Email</span><span
+											class="mr-5" th:text="${staff.email}">Followers</span></span><span><span
+											class="font-weight-500 pr-5">Contact :</span><span
+											th:text="${staff.mobile}">Following</span></span>
+									</div>
+								</div>
+							</div>
+						</div>
+						
+						                                   
+						
+						<div class="col-lg-6" id="id" th:data-id="${staff.bioID}">
+							<div class="button-list" th:if="${#authorization.expression('hasAuthority(''Manager'')')}">
+								<button   data-toggle="modal" data-target="#sendEmail"
+									class="btn btn-dark btn-wth-icon icon-wthot-bg btn-rounded"><span
+									class="btn-text">Message</span><span class="icon-label"><i
+										class="icon ion-md-mail"></i> </span></button> 
+										<button   data-toggle="modal" data-target="#exampleModalLarge01"
+									class="btn btn-info btn-wth-icon icon-wthot-bg btn-rounded"><span
+									class="btn-icon-wrap">Telegram <i class="fa fa-bullhorn"></i></span></button>
+											
+									
+								<button   data-toggle="modal" data-target="#sendSms"
+									class="btn btn-yellow btn-wth-icon icon-wthot-bg btn-rounded"><span
+									class="btn-icon-wrap">SMS <i class="icon ion-md-mail"></i></span></button>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="bg-white shadow-bottom">
+				<div class="container">
+					<ul class="nav nav-light nav-tabs" role="tablist">
+						<li class="nav-item active"><a href="#attendance" data-toggle="tab"
+							class="d-flex h-60p align-items-center nav-link active">Raw Attendance Data</a>
+						</li>
+						<li class="nav-item"><a href="#aggre" data-toggle="tab"
+							class="d-flex h-60p align-items-center nav-link">Monthly Aggregate</a></li>
+						<li class="nav-item"><a href="#graph" data-toggle="tab"
+							class="d-flex h-60p align-items-center nav-link">Data Visualize</a></li>
+						
+					</ul>
+				</div>
+			</div>
+			<div class="tab-content mt-sm-60 mt-30">
+				<div >
+					<div >
+						<div class="hk-row">
+							<div class="col-lg-12 tab-content">
+								<div class="card tab-pane show active fade" id="attendance" >
+									<div class="card-header">
+										<div class="media align-items-center">
+											
+											<div class="table table-responsive">
+
+												<table id="datable_1"
+													class="table table table-hover w-100 display pb-30">
+													<thead>
+														<tr>
+															<th>#</th>
+															<th>Date</th>
+															<th>Time In</th>
+															<th>Time Out</th>
+															<th>Hours worked</th>
+															<th>Deficit</th>
+															<th>Lateness</th>
+														</tr>
+													</thead>
+													<tbody>
+
+														<tr th:each="a,i:${attendance}">
+															<td th:text="${i.index+1}">System Architect</td>
+
+															<td th:text="${a.date}"
+																style="text-transform: capitalize;">System
+																Architect</td>
+
+															<td th:text="${a.timeIn}">System Architect</td>
+															<td th:text="${a.timeOut}">Edinburgh</td>
+															<td th:text="${a.hoursWorked}">61</td>
+															<td th:text="${a.deficit}">2011/04/25</td>
+
+															<td th:switch="${a.label}"><span
+																class="badge badge-success" th:case="Early"
+																th:text="${a.lateness}"></span> <span
+																class="badge badge-danger" th:case="Absent"
+																th:text="${a.lateness}"></span> <span
+																class="badge badge-warning" th:case="*"
+																th:text="${a.lateness}">Completed</span></td>
+
+														</tr>
+													</tbody>
+													<tfoot>
+														<tr>
+															<th>#</th>
+															<th>Date</th>
+															<th>Time In</th>
+															<th>Time Out</th>
+															<th>Hours worked</th>
+															<th>Deficit</th>
+															<th>Lateness</th>
+
+														</tr>
+													</tfoot>
+												</table>
+
+
+											</div>
+										</div>
+									</div>
+								</div>
+								
+								
+											<div class="card tab-pane fade" id="aggre">
+									<div class="card-header">
+										<div class="media align-items-center">
+											
+											<div class="table table-responsive">
+
+												<table id="datable_2"
+													class="table table-hover w-100 display pb-30">
+													<thead>
+														<tr>
+															<th>#</th>
+															<th>Year</th>
+															<th>Month</th>
+															<th>Avg Time In</th>
+															<th>lateness</th>
+															<th>Absents</th>
+															<th>Deficit</th>
+															<th>Lateness</th>
+														</tr>
+													</thead>
+													<tbody>
+
+														<tr th:each="a,i:${monthagg}">
+															<td th:text="${i.index+1}">System Architect</td>
+
+															<td th:text="${a.year}"
+																style="text-transform: capitalize;">System
+																Architect</td>
+																		<td th:text="${a.month}"
+																style="text-transform: capitalize;">System
+																Architect</td>
+															<td th:text="${a.avgTimeIn}">Completed</td>
+															<td th:text="${a.latenessount}">Edinburgh</td>
+															<td th:text="${a.absents}">61</td>
+															<td th:text="${a.deficit}">2011/04/25</td>
+
+															<td th:text="${a.latenessMins}">System Architect</td>
+
+															
+
+														</tr>
+													</tbody>
+													<tfoot>
+														<tr>
+																<th>#</th>
+															<th>Year</th>
+															<th>Month</th>
+															<th>Avg Time In</th>
+															<th>lateness</th>
+															<th>Absents</th>
+															<th>Deficit</th>
+															<th>Lateness</th>
+														</tr>
+													</tfoot>
+												</table>
+
+
+											</div>
+										</div>
+									</div>
+								</div>
+							
+							
+							
+					
+							
+							<div class="card tab-pane fade " id="graph">
+									<div class="card-header card-header-action">
+										<div class="media align-items-center">
+											
+											  <section class="hk-sec-wrapper">
+                            <h6 class="hk-sec-title">Attendance Data Chart</h6>
+                            <div class="row">
+                                <div class="col-sm">
+                                    <div id="e_chart_4" class="echart" style="height:400px; width:1000px;"></div>
+                                </div>
+                            </div>
+                            
+                            <hr class="hr-primary hr-3">
+                            <div class="row">
+                                <div class="col-sm">
+                                    <div id="e_chart_9" class="echart" style="height:400px; width:1000px;"></div>
+                                </div>
+                            </div>
+                        </section>
+                        
+                        
+										</div>
+										
+										
+									</div>
+								</div>
+							
+							
+							
+			
+											<div class="card tab-pane fade" id="leaves">
+									<div class="card-header">
+										<div class="media align-items-center">
+											
+											<div class="table table-responsive">
+
+												<table id="datables"
+													class="table table-hover w-100 display pb-30">
+													<thead>
+														<tr>
+															<th>#</th>
+															<th>Leave Type</th>
+															<th>From</th>
+															<th>To</th>
+															<th>Days</th>
+															<th>Date Approved</th>
+														</tr>
+													</thead>
+													<tbody>
+
+														<tr th:each="a,i:${leaves}">
+															<td th:text="${i.index+1}">System Architect</td>
+
+															<td th:text="${a.leave}"
+																style="text-transform: capitalize;">System
+																Architect</td>
+																	
+															<td th:text="${a.start}">Completed</td>
+															<td th:text="${a.end}">Edinburgh</td>
+															<td ></td>
+															<td ></td>
+
+															
+
+														</tr>
+													</tbody>
+													<tfoot>
+														<tr>
+																<th>#</th>
+															<th>Leave Type</th>
+															<th>From</th>
+															<th>To</th>
+															<th>Days</th>
+															<th>Date Approved</th>
+														</tr>
+													</tfoot>
+												</table>
+
+
+											</div>
+										</div>
+									</div>
+								</div>
+							
+							
+											
+							
+							
+							
+							
+								
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		
+		
+		
+		
+		</div>
+		
+		<div class="modal fade" id="exampleModalLarge01" tabindex="-1" role="dialog" aria-labelledby="exampleModalLarge01" aria-hidden="true">
+                                        <div class="modal-dialog modal-lg" role="document">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title">Send Telegram Message</h5>
+                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                        <span aria-hidden="true">&times;</span>
+                                                    </button>
+                                                </div>
+                                                <div class="modal-body">
+<div class="row">
+                                <div class="col-sm">
+                                    <div class="tinymce-wrap">
+                                        <textarea class="tinymce"></textarea>
+                                    </div>
+                                </div>
+                            </div>                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                                    <button type="button" class="btn btn-primary">Send Telegram</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    
+                                    
+         <div class="modal fade" id="sendSms" tabindex="-1" role="dialog" aria-labelledby="sendSms" aria-hidden="true">
+                                        <div class="modal-dialog modal-lg" role="document">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title">Send SMS</h5>
+                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                        <span aria-hidden="true">&times;</span>
+                                                    </button>
+                                                </div>
+                                                <div class="modal-body">
+                                                 <div class="row">
+                                <div class="col-sm">
+                                    <div class="tinymce-wrap">
+                                        <textarea ></textarea>
+                                    </div>
+                                </div>
+                            </div>          </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                                    <button type="button" class="btn btn-primary">Send SMS</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    
+                                    <div class="modal fade" id="sendEmail" tabindex="-1" role="dialog" aria-labelledby="sendemail" aria-hidden="true">
+                                        <div class="modal-dialog modal-lg" role="document">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title">Send Email</h5>
+                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                        <span aria-hidden="true">&times;</span>
+                                                    </button>
+                                                </div>
+                                                <div class="modal-body">
+<div class="row">
+                                <div class="col-sm">
+                                    <div class="tinymce-wrap">
+ <div class="row">
+                                            <div class="col-md-12 mb-10">
+                                                <label for="type">Subject</label>
+                                                 <input class="form-control" id="zip" placeholder="" type="text" name="subject">
+
+                                            </div>                                        <textarea class="tinymce"></textarea>
+                                    </div>
+                                </div>
+                            </div>                                                     </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                                    <button type="button" class="btn btn-primary">Send Email</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+	</div>
+</div>
+ 
+</body>
+</html>

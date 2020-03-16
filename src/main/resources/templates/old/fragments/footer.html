@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" xmlns:th="http://www.thymeleaf.org">
+ <footer class="footer mt-auto" th:fragment="footer">
+            <div class="copyright bg-white">
+              <p>
+                &copy; <span id="copy-year">2019</span> Clock-In Dashboard Bootstrap by
+                <a
+                  class="text-primary"
+                  href="http://www.iamabdus.com/"
+                  target="_blank"
+                  >IIR</a
+                >
+              </p>
+            </div>
+            <script th:inline="javascript">
+                var d = new Date();
+                var year = d.getFullYear();
+                document.getElementById("copy-year").innerHTML = year;
+            </script>
+          </footer>
+          </html>
+          

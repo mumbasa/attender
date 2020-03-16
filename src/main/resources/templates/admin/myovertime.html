@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org"
+  layout:decorate="~{fragments/blank}" >
+<head>
+<meta charset="UTF-8">
+<title>My Overtimes</title>
+</head>
+<body>
+
+     <div layout:fragment="content">
+       
+           <!-- Breadcrumb -->
+            <nav class="hk-breadcrumb" aria-label="breadcrumb">
+                <ol class="breadcrumb breadcrumb-light bg-transparent">
+                    <li class="breadcrumb-item"><a href="#">Tables</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Overtime Data</li>
+                </ol>
+            </nav>
+            <!-- /Breadcrumb -->
+
+            <!-- Container -->
+            <div>
+
+                <!-- Title -->
+                <div class="hk-pg-header">
+                    <h4 class="hk-pg-title"><span class="pg-title-icon"><span class="feather-icon"><i data-feather="database"></i></span></span>My Overtime Applications</h4>
+                </div>
+                <!-- /Title -->
+
+                <!-- Row -->
+                <div class="row">
+                    <div class="col-xl-12">
+                        <section class="hk-sec-wrapper">
+                            <div class="row">
+                                <div class="col-sm">
+                                    <div class="table-wrap">
+                                        <table id="datable_1" class="table table-hover w-100 display pb-30">
+                                            <thead>
+                                                <tr>
+                                                <th>#</th>
+                                                    <th>Date</th>
+                                                    <th>Start</th>
+                                                    <th>End Time</th>
+                                                    <th>Duration</th>
+                                                    <th>Reason</th>
+                                                    <th> Decision</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr th:each="a,i:${overtimes}">
+                                                    <td th:text="${i.index+1}">Tiger Nixon</td>
+                                                                                                       
+                                                    
+                                                     <td th:text="${a.date}">Edinburgh</td>
+                                                    <td th:text="${a.start}">System Architect</td>
+                                                    <td th:text="${a.end}">61</td>
+                                                    <td th:text=${a.duration}>2011/04/25</td>
+                                                    <td><button class="btn btn-sm btn-link"  data-container="body"  data-toggle="tooltip" data-placement="top" title="Overtime Reason" th:title="${a.reason}"> View Reason</button></td>
+                      <td th:text="${a.approvalDate==null?'Pending':a.approvalDate}">
+                                                    </td>
+                                                </tr>
+                                           
+                                            </tbody>
+                                            <tfoot>
+                                                <tr>
+                                                 <th>#</th>
+                                                    <th>Date</th>
+                                                    <th>Start</th>
+                                                    <th>End Time</th>
+                                                    <th>Duration</th>
+                                                    <th>Reason</th>
+                                                    <th> Decision</th>
+                                                </tr>
+                                            </tfoot>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+                      </div>
+                </div>
+                <!-- /Row -->
+
+            </div>
+            <!-- /Container -->
+     
+     
+     </div>
+     
+    
+     
+</body>
+</html>

@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	xmlns:th="http://www.thymeleaf.org"
+	layout:decorate="~{fragments/blank}">
+<head>
+<meta charset="UTF-8">
+<title>Staff Shift</title>
+<link th:href="@{/new/vendors/fullcalendar/packages/core/main.css}"
+	rel="stylesheet" type="text/css" />
+<link th:href="@{/new/vendors/fullcalendar/packages/daygrid/main.css}"
+	rel="stylesheet" type="text/css" />
+<link th:href="@{/new/vendors/fullcalendar/packages/list/main.css}"
+	rel="stylesheet" type="text/css" />
+<link th:href="@{/new/vendors/fullcalendar/packages/timegrid/main.css}"
+	rel="stylesheet" type="text/css" />
+</head>
+<body>
+
+	<div layout:fragment="content">
+		<script type="text/javascript" th:inline="javascript">
+		
+		function remove(id){
+			$.ajax({
+				url:[[@{/admin/delete/shift/}]]+id,
+				type:'get',
+				processData : false,
+				contentType : false,
+				cache : false,
+				success:function(data){
+					$.toast({
+						heading: 'Success!',
+						text: '<p>Staff Shift deleted successfully',
+						position: 'top-right',
+						loaderBg:'#f68daf',
+						class: 'jq-toast-dark',
+						hideAfter: 3500, 
+						stack: 6,
+						showHideTransition: 'fade'
+					});
+			
+		}
+			});}
+		
+		
+			$(document).ready(function(){  
+				var shiftEvent=[];
+				
+			
+
+				$.ajax({
+					url:[[@{/admin/staff/shifts}]],
+					type:'get',
+					processData : false,
+					contentType : false,
+					cache : false,
+					success:function(data){
+					for(var e in data){
+						console.log(data[e].staff.name);
+						var event={
+							id:data[e].id,
+						      title: data[e].staff.name,
+						      start: data[e].date+'T'+data[e].type.startString+":00",
+						      end: data[e].date+'T'+ data[e].type.closeString+":00",
+						      textColor:'white',
+						      backgroundColor:data[e].type.colour,
+						      borderColor:data[e].type.colour,
+						      extendedProps: {
+						        department: 'BioChemistry'
+						      },
+						      description: 'Lecture'
+						    }
+						shiftEvent.push(event);
+						
+						
+					}
+						
+					console.log(shiftEvent);
+
+					var calendar;
+						var Calendar = FullCalendar.Calendar;
+
+						var calendarEl = document.getElementById('calendar');
+
+						// initialize the external events
+						// -----------------------------------------------------------------
+
+					
+
+						// initialize the calendar
+						// -----------------------------------------------------------------
+
+						calendar = new Calendar(calendarEl, {
+							plugins : [ 'interaction', 'dayGrid', 'list' ],
+							header : {
+								left : 'prev,next today',
+								center : 'title',
+								right : 'dayGridMonth,dayGridDay,timeGridDay,list'
+							},
+							editable : false,
+							droppable : true, // this allows things to be dropped onto the calendar
+							  events:shiftEvent,
+							eventReceive : function(info) {
+								//alert(info.event.title);
+
+							},
+							eventDrop : function(info) {
+								alert(info.event.title + " was dropped on "
+										+ info.event.start.toISOString());
+
+								if (!confirm("Are you sure about this change?")) {
+									info.revert();
+								}
+							},
+							dateClick : function(info) {
+								if(info.date >= new Date()){
+								window.location.href = [[@{/admin/put/shift}]]+'?date='+info.dateStr;
+								}
+								
+
+							}
+							,
+							eventClick : function(info) {
+						
+								if((info.event.start>new Date())){
+									info.event.remove();
+									remove(info.event.id);
+									confirm('are you sure');
+								}
+								/* if(info.date > new Date()){
+								
+									info.event.remove();
+									alert(info.event.id);
+									} */
+							
+
+							}
+
+						});
+
+						calendar.render();
+				
+					
+					}
+					
+				}); 
+				
+				
+				} );
+		
+		</script>
+		<!-- Breadcrumb -->
+		<nav class="hk-breadcrumb" aria-label="breadcrumb">
+			<ol class="breadcrumb breadcrumb-light bg-transparent">
+				<li class="breadcrumb-item"><a href="#">Tables</a></li>
+				<li class="breadcrumb-item active" aria-current="page">Set
+					Staff Shift</li>
+			</ol>
+		</nav>
+		<!-- /Breadcrumb -->
+
+		<!-- Container -->
+		<div class="container">
+
+			<!-- Title -->
+			<div class="hk-pg-header">
+				<h4 class="hk-pg-title">
+					<span class="pg-title-icon"><span class="feather-icon"><i
+							data-feather="calendar"></i></span></span>Set Staff Shift
+				</h4>
+			</div>
+			<!-- /Title -->
+
+			<!-- Row -->
+			<div class="row">
+
+				<div id="calendar" class="col-md-12 p-3 card"></div>
+
+			</div>
+
+			<!-- /Row -->
+
+		</div>
+		<!-- /Container -->
+
+		<script th:src="@{/new/vendors/fullcalendar/packages/core/main.js}"></script>
+		<script th:src="@{/new/vendors/fullcalendar/packages/daygrid/main.js}"></script>
+		<script
+			th:src="@{/new/vendors/fullcalendar/packages/interaction/main.js}"></script>
+		<script th:src="@{/new/vendors/fullcalendar/packages/list/main.js}"></script>
+		<script
+			th:src="@{/new/vendors/fullcalendar/packages/timegrid/main.js}"></script>
+
+	</div>
+
+
+
+</body>
+</html>

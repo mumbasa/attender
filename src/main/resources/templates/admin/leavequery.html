@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	xmlns:th="http://www.thymeleaf.org"
+	layout:decorate="~{fragments/blank}">
+<head>
+<meta charset="UTF-8">
+<title>Leave Data  Query</title>
+
+</head>
+<body>
+
+	<div layout:fragment="content">
+
+
+		<script type="text/javascript">
+	
+	function query(){
+		
+
+		var form = $('.former');
+		var formdata = false;
+		formdata = new FormData(form[0]);
+		var head='<table id="datable_1" class="table table-hover w-100 display pb-30"> <thead> <tr> <th>#</th> <th>Date</th> <th>Staff</th> <th>Shift</th> <th>Start Time</th> <th>End Time</th> </tr> </thead> <tbody>';
+		var down='</tbody> <tfoot> <tr> <th>#</th> <th>Date</th> <th>Staff</th> <th>Shift</th> <th>Start Time</th> <th>End Time</th> </tr> </tfoot> </table>';
+		var row='';
+
+			$.ajax({
+				url:'/attendance/admin/query/leave',
+				data:formdata,
+				type:'post',
+				processData : false,
+				contentType : false,
+				cache : false,
+				success:function(data){
+				
+						$.toast({
+							heading: 'Success!',
+							text: data.length+" row(s) Data Accquired Successfully",
+							position: 'top-right',
+							loaderBg:'#f68daf',
+							class: 'jq-toast-dark',
+							hideAfter: 3500, 
+							stack: 6,
+							showHideTransition: 'fade'
+						});
+				       
+				for(var i in data){
+				var tr=	'<tr><td>'+i+1+'</td><td>'+data[i].staffName+'</td><td>'+data[i].leave+'</td>	<td>'+data[i].start+'</td><td>'+data[i].end+'</td><td>'+data[i].days+'</td></tr>';
+					row=row+tr;
+					
+				}
+				$('#tabber').append(row);
+								
+						 form[0].reset();
+					
+						
+					}
+				
+				
+			}); 
+			  
+			
+	
+	
+		
+	}
+	
+	</script>
+
+
+
+
+		<nav class="hk-breadcrumb" aria-label="breadcrumb">
+			<ol class="breadcrumb breadcrumb-light bg-transparent">
+				<li class="breadcrumb-item"><a href="#">Query</a></li>
+				<li class="breadcrumb-item active" aria-current="page">Shift</li>
+			</ol>
+		</nav>
+		<!-- /Breadcrumb -->
+
+		<!-- Container -->
+		<div class="container">
+			<!-- Title -->
+			<div class="hk-pg-header">
+				<h4 class="hk-pg-title">
+					<span class="pg-title-icon"><span class="feather-icon"><i
+							data-feather="align-left"></i></span></span>Query Dates For Leave Data
+				</h4>
+			</div>
+			<!-- /Title -->
+
+			<!-- Row -->
+			<div class="row">
+				<div class="col-xl-12">
+					<section class="hk-sec-wrapper">
+						<div class="row">
+							<div class="col-sm">
+								<form class="former">
+									<div class="row">
+										<div class="col-md-5 form-group">
+											<label for="firstName">Start Date</label> <input
+												class="form-control" id="firstName" name="start"
+												placeholder="" value="" type="date">
+										</div>
+										<div class="col-md-5 form-group">
+											<label for="lastName">End Date</label> <input
+												class="form-control" id="lastName" name="end"
+												placeholder="" value="" type="date">
+										</div>
+
+										<div class="col-md-2 form-group">
+											<label></label>
+											<button type="button" class="btn btn-info mt-4"
+												onclick="query()">Query Dates</button>
+
+										</div>
+									</div>
+								</form>
+
+
+
+
+								<hr>
+								<h6 class="form-group"> Details</h6>
+
+
+								<div class="row">
+									<div class="col-sm">
+										<div class="table-wrap">
+											<table id="datable_1"
+												class="table table-hover w-100 display pb-30">
+												<thead>
+													<tr>
+														<th>#</th>
+														<th>Name</th>
+														<th>Leave</th>
+														<th>Start</th>
+														<th>End Time</th>
+														<th>Days</th>
+													</tr>
+												</thead>
+												<tbody id="tabber">
+												</tbody>
+												<tfoot>
+													<tr>
+														<th>#</th>
+														<th>Name</th>
+														<th>Leave</th>
+														<th>Start</th>
+														<th>End Time</th>
+														<th>Days</th>
+													</tr>
+												</tfoot>
+											</table>
+
+										</div>
+									</div>
+								</div>
+
+
+							</div>
+						</div>
+					</section>
+				</div>
+			</div>
+			<!-- /Row -->
+		</div>
+		<!-- /Container -->
+
+
+	</div>
+
+
+</body>
+</html>

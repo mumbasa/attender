@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org"
+  layout:decorate="~{fragments/blank}" >
+<head>
+<meta charset="UTF-8">
+<title>New Password</title>
+
+</head>
+<body>
+        
+       
+  <div layout:fragment="content">
+
+
+	<script type="text/javascript">
+	
+	function sele(){
+
+		var form = $('.former');
+		var formdata = false;
+		formdata = new FormData(form[0]);
+		
+			$.ajax({
+				url:'/attendance/admin/update/password/',
+				data:formdata,
+				type:'post',
+				processData : false,
+				contentType : false,
+				cache : false,
+				success:function(data){
+					//if(data==1){
+						$.toast({
+							heading: 'Success!',
+							text: '<p>Password changed successfully</p>',
+							position: 'top-right',
+							loaderBg:'#f68daf',
+							class: 'jq-toast-dark',
+							hideAfter: 3500, 
+							stack: 6,
+							showHideTransition: 'fade'
+						});
+				       
+						 form[0].reset();
+						
+						
+				
+				}
+				
+			}); 
+			  
+			
+	
+		
+	}
+	
+	</script>
+	
+		
+		  
+  
+   <nav class="hk-breadcrumb" aria-label="breadcrumb">
+                <ol class="breadcrumb breadcrumb-light bg-transparent">
+                    <li class="breadcrumb-item"><a href="#">Forms</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Change Password</li>
+                </ol>
+            </nav>
+            <!-- /Breadcrumb -->
+
+            <!-- Container -->
+            <div class="container">
+                <!-- Title -->
+                <div class="hk-pg-header">
+                    <h4 class="hk-pg-title"><span class="pg-title-icon"><span class="feather-icon"><i data-feather="align-left"></i></span></span>Add New Shift</h4>
+                </div>
+                <!-- /Title -->
+
+                <!-- Row -->
+                <div class="row">
+                    <div class="col-xl-12">
+                        <section class="hk-sec-wrapper">
+                            <div class="row">
+                                <div class="col-sm">
+                                    <form class="former">
+                                        <div class="row">
+                                            <div class="col-md-12 form-group">
+                                                <label for="firstName">Password</label>
+                                                <input class="form-control" id="firstName" name="password" placeholder="Password" value="" type="password">
+                                            </div>
+                                          
+                                        </div>
+
+
+
+											<div class="row">
+                                            <div class="col-md-12 mb-10">
+                                                <label for="country">Confirm Password</label>
+                                           <input class="form-control" id="zip" placeholder="" type="password" name="start">
+
+                                            </div>
+                                            
+                                            
+                                                                                     
+                                           
+                                        </div>
+                                      
+
+                                        
+                                     
+                                        <hr>
+                                        <button class="btn btn-primary col-md-12" type="button" onclick="sele()">Apply Changes</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </section>
+                     </div>
+                </div>
+                <!-- /Row -->
+            </div>
+            <!-- /Container -->
+  
+  
+  </div>
+  
+  
+</body>
+</html>

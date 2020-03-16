@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	xmlns:th="http://www.thymeleaf.org"
+	layout:decorate="~{fragments/blank}">
+<head>
+<meta charset="UTF-8">
+<title>Staff Unavailable Shift</title>
+<link th:href="@{/new/vendors/fullcalendar/packages/core/main.css}"
+	rel="stylesheet" type="text/css" />
+<link th:href="@{/new/vendors/fullcalendar/packages/daygrid/main.css}"
+	rel="stylesheet" type="text/css" />
+<link th:href="@{/new/vendors/fullcalendar/packages/list/main.css}"
+	rel="stylesheet" type="text/css" />
+<link th:href="@{/new/vendors/fullcalendar/packages/timegrid/main.css}"
+	rel="stylesheet" type="text/css" />
+</head>
+<body>
+
+	<div layout:fragment="content">
+		<script>
+		
+		 $('.fc-event').each(function() {
+
+			    // store data so the calendar knows to render an event upon drop
+			    $(this).data('event', {
+			      title: $.trim($(this).text()), // use the element's text as the event title
+			      stick: true, // maintain when user navigates (see docs on the renderEvent method)
+			      color: $(this).data('color')
+			    });
+
+			    // make the event draggable using jQuery UI
+			    $(this).draggable({
+			      zIndex: 999,
+			      revert: true,      // will cause the event to go back to its
+			      revertDuration: 0  //  original position after the drag
+			    });
+
+			  });
+		
+		
+			var calendar;
+			document.addEventListener('DOMContentLoaded', function() {
+				var Calendar = FullCalendar.Calendar;
+				var Draggable = FullCalendarInteraction.Draggable;
+
+				var containerEl = document.getElementById('external-events');
+				var calendarEl = document.getElementById('calendar');
+
+				// initialize the external events
+				// -----------------------------------------------------------------
+
+				new Draggable(containerEl, {
+					itemSelector : '.fc-event',
+					eventData : function(eventEl) {
+						return {
+							title : eventEl.innerText,
+							 color: $(eventEl).data('color'),
+							 textColor:'white',
+							 allday:false
+						};
+					}
+				});
+
+				// initialize the calendar
+				// -----------------------------------------------------------------
+
+				calendar = new Calendar(calendarEl, {
+					plugins : [ 'interaction', 'dayGrid',  'timeGridPlugin' ],
+					header : {
+						left : 'prev,next today',
+						center : 'title',
+						right : 'dayGridMonth,dayGridDay'
+					},
+				    timeZone: 'local',
+					editable : true,
+					droppable : true, // this allows things to be dropped onto the calendar
+					drop : function(info) {
+
+					},
+					eventReceive : function(info) {
+						//alert(info.event.title);
+
+					},
+					eventDrop : function(info) {
+						alert(info.event.title + " was dropped on "
+								+ info.event.start.toISOString());
+
+						if (!confirm("Are you sure about this change?")) {
+							info.revert();
+						}
+					},
+					eventClick : function(info) {
+
+						info.event.remove();
+
+					}
+
+				});
+
+				calendar.render();
+			});
+
+			function data() {
+				 $.ajax({
+			            url: '/attendance/admin/add/staff/unavailable',
+			            type: 'POST',
+			            data: {
+	                        dates: JSON.stringify(calendar.getEvents().map(function (e)
+	                        {
+	                            return {
+	                                start: e.start,
+	                                end: e.end,
+	                                title: e.title,
+	                            }
+	                        }))
+	                    },
+	                    dataType: "json",
+
+			            success: function (response) {
+			                //get the response from server and process it
+			                alert(response);
+			            }
+			        });
+			}
+			
+		
+		</script>
+		<!-- Breadcrumb -->
+		<nav class="hk-breadcrumb" aria-label="breadcrumb">
+			<ol class="breadcrumb breadcrumb-light bg-transparent">
+				<li class="breadcrumb-item"><a href="#">Tables</a></li>
+				<li class="breadcrumb-item active" aria-current="page">Set Staff Shift </li>
+			</ol>
+		</nav>
+		<!-- /Breadcrumb -->
+
+		<!-- Container -->
+		<div class="container">
+
+			<!-- Title -->
+			<div class="hk-pg-header">
+				<h4 class="hk-pg-title">
+					<span class="pg-title-icon"><span class="feather-icon"><i
+							data-feather="calendar"></i></span></span>Set Unavailable Shift
+				</h4>
+			</div>
+			<!-- /Title -->
+
+			<!-- Row -->
+			<div class="row">
+				<div id='external-events' class="col-md-2 mb-10">
+					
+						<H4 class="mb-5">Shifts</h4>
+					
+					<div class='fc-event bg-sky mb-2 p-2 text-center' data-color="dodgerblue" data-start="06:00" data-end="12:00">Morning Shift</div>
+					<div class='fc-event bg-orange mb-2  p-2 text-center' data-color="orange">Afternoon Shift</div>
+					<div class='fc-event bg-dark-20 mb-2  p-2 text-center' data-color="black">Night Shift</div>
+					<div class='fc-event bg-danger p-2 text-center' data-color="red">All Day</div>
+					<button class="btn btn-success  mt-4 col-md-12"  onclick="data()">Set Staff Shift</button>
+	 
+
+				</div>
+				<div id="calendar" class="col-md-10 p-3 card"></div>
+
+			</div>
+
+			<!-- /Row -->
+			
+		</div>
+		<!-- /Container -->
+
+<script th:src="@{/new/vendors/fullcalendar/packages/core/main.js}"></script>
+	<script th:src="@{/new/vendors/fullcalendar/packages/daygrid/main.js}"></script>
+	<script
+		th:src="@{/new/vendors/fullcalendar/packages/interaction/main.js}"></script>
+	<script th:src="@{/new/vendors/fullcalendar/packages/list/main.js}"></script>
+	<script th:src="@{/new/vendors/fullcalendar/packages/timegrid/main.js}"></script>
+
+	</div>
+
+
+
+</body>
+</html>

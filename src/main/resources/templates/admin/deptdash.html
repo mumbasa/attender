@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org"
+  layout:decorate="~{fragments/blank}" >
+<head>
+<meta charset="UTF-8">
+<title th:text="${dept.department} +' Dashboard'">Dashboard</title>
+</head>
+<body>
+
+     
+     
+                <!-- Row -->
+              
+              
+               <div layout:fragment="content">
+			<!-- Container -->
+            <script type="text/javascript">
+     var labe = [ "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+    		"Jul", "Aug", "Sep", "Oct", "Nov", "Dec" ]
+     $(document).ready(function(){
+         var late = []
+	var id= $("#tit").attr('data-id');
+    	 $.ajax({
+    		 url:'/attendance/admin/dept/'+id+'/by/gender',
+    		 method:'get',
+    		 success:function(datas){
+    			 console.log(datas)
+    			 for ( var i in datas) {
+    	
+    				
+    					late.push({value:datas[i].id,name:datas[i].value});
+    				
+    				
+    				}
+    			 
+    	    	 var eChart_2 = echarts.init(document.getElementById('e_chart_31'));
+    	 		
+    	 		var option1 = {
+    	 			tooltip: {
+    	 				show: true,
+    	 				backgroundColor: '#fff',
+    	 				borderRadius:6,
+    	 				padding:6,
+    	 				axisPointer:{
+    	 					lineStyle:{
+    	 						width:0,
+    	 					}
+    	 				},
+    	 				textStyle: {
+    	 					color: '#324148',
+    	 					fontFamily: '"Roboto", sans-serif',
+    	 					fontSize: 12
+    	 				}	
+    	 			},
+    	 			series: [
+    	 				{
+    	 					name:'',
+    	 					type:'pie',
+    	 					radius : '55%',
+    	 					color: ['#f68daf', '#00efff', '#f36493'],
+    	 					data:late,
+    	 					label: {
+    	 						normal: {
+    	 							formatter: '{b}\n{d}%'
+    	 						},
+    	 				  
+    	 					}
+    	 				}
+    	 			]
+    	 		};
+    	 		eChart_2.setOption(option1);
+    	 		eChart_2.resize();
+    			 
+    		 }
+    		 
+    		 
+    		 
+    	 });
+    	
+    	  var pos=[0,0,0,0,0,0,0,0,0,0,0,0,0];
+    	 var neg=[0,0,0,0,0,0,0,0,0,0,0,0,0];
+    	$.ajax({
+    		url:'/attendance/admin/get/dept/'+id+'/deficit',
+    		type:'get',
+    		success:function(data){
+    			console.log('data---'+data);
+    			 for ( var i in data) {
+    			    if(data[i].quantity<0){
+    			    	neg[data[i].id-1]=data[i].quantity;
+    			    	
+    			    }else{
+    			    	
+    			    	pos[data[i].id-1]=data[i].quantity;
+  	
+    			    }	
+     				 				
+ 				
+ 				}
+    			 var eChart_9 = echarts.init(document.getElementById('e_chart_1'));
+    		 		var option8 = {
+    		 			color: ['#098901', '#ff8866'],
+    		 			tooltip: {
+    		 				show: true,
+    		 				trigger: 'axis',
+    		 				backgroundColor: '#fff',
+    		 				borderRadius:6,
+    		 				padding:6,
+    		 				axisPointer:{
+    		 					lineStyle:{
+    		 						width:0,
+    		 					}
+    		 				},
+    		 				textStyle: {
+    		 					color: '#324148',
+    		 					fontFamily: '"Roboto", sans-serif',
+    		 					fontSize: 12
+    		 				}	
+    		 			},
+    		 			
+    		 			xAxis: [{
+    		 				type: 'value',
+    		 				axisLine: {
+    		 					show:false
+    		 				},
+    		 				axisTick: {
+    		 					show:false
+    		 				},
+    		 				axisLabel: {
+    		 					textStyle: {
+    		 						color: '#007d8a'
+    		 					}
+    		 				},
+    		 				splitLine: {
+    		 					lineStyle: {
+    		 						color: '#eaecec',
+    		 					}
+    		 				}
+    		 			}],
+    		 			yAxis: {
+    		 				type: 'category',
+    		 				data: labe,
+    		 				axisLine: {
+    		 					show:false
+    		 				},
+    		 				axisTick: {
+    		 					show:false
+    		 				},
+    		 				axisLabel: {
+    		 					textStyle: {
+    		 						color: '#5e7d8a'
+    		 					}
+    		 				}
+    		 			},
+    		 			grid: {
+    		 				top: '3%',
+    		 				left: '3%',
+    		 				right: '3%',
+    		 				bottom: '3%',
+    		 				containLabel: true
+    		 			},
+    		 			series: [{
+    		 					name:'overtime',
+    		 					type:'bar',
+    		 					stack: 'st1',
+    		 					barMaxWidth: 30,
+    		 					data:pos,
+    		 					itemStyle: {
+    		 						normal: {
+    		 							barBorderRadius: [0, 6, 6, 0] ,
+    		 						}
+    		 					},
+    		 				},
+    		 				{
+    		 					name:'deficit',
+    		 					type:'bar',
+    		 					stack: 'st1',
+    		 					barMaxWidth: 30,
+    		 					data:neg,
+    		 					itemStyle: {
+    		 						normal: {
+    		 							barBorderRadius: [6, 0, 0, 6] ,
+    		 						}
+    		 					},
+    		 				}]
+    		 		};
+    		 		eChart_9.setOption(option8);
+    		 		eChart_9.resize();
+    		 		
+    		 			
+    			
+    		}
+    		
+    	});
+ 		
+   	 var ddata=[0,0,0,0,0,0,0,0,0,0,0,0,0];
+
+    			var eChart_1 = echarts.init(document.getElementById('e_chart_11'));
+    			$.ajax({
+    	    		 url:'/attendance/admin/dept/lateness/'+id,
+    	    		 method:'get',
+    	    		 success:function(datas){
+    	    			 console.log(datas)
+    	    			 for ( var i in datas) {     	    				
+    	    					ddata[datas[i].id-1]=datas[i].quantity; 
+    	    				
+    	    				}
+    	    			 var option = {
+    	    	    				color: ['#ff0daf'],
+    	    	    				tooltip: {
+    	    	    					show: true,
+    	    	    					trigger: 'axis',
+    	    	    					backgroundColor: '#fff',
+    	    	    					borderRadius:6,
+    	    	    					padding:6,
+    	    	    					axisPointer:{
+    	    	    						lineStyle:{
+    	    	    							width:0,
+    	    	    						}
+    	    	    					},
+    	    	    					textStyle: {
+    	    	    						color: '#324148',
+    	    	    						fontFamily: '"Roboto", sans-serif',
+    	    	    						fontSize: 12
+    	    	    					}
+    	    	    				},
+    	    	    				
+    	    	    				xAxis: [{
+    	    	    					type: 'category',
+    	    	    					data: labe,
+    	    	    					axisLine: {
+    	    	    						show:false
+    	    	    					},
+    	    	    					axisTick: {
+    	    	    						show:false
+    	    	    					},
+    	    	    					axisLabel: {
+    	    	    						textStyle: {
+    	    	    							color: '#5e7d8a'
+    	    	    						}
+    	    	    					}
+    	    	    				}],
+    	    	    				yAxis: {
+    	    	    					type: 'value',
+    	    	    					axisLine: {
+    	    	    						show:false
+    	    	    					},
+    	    	    					axisTick: {
+    	    	    						show:false
+    	    	    					},
+    	    	    					axisLabel: {
+    	    	    						textStyle: {
+    	    	    							color: '#5e7d8a'
+    	    	    						}
+    	    	    					},
+    	    	    					splitLine: {
+    	    	    						lineStyle: {
+    	    	    							color: '#eaecec',
+    	    	    						}
+    	    	    					}
+    	    	    				},
+    	    	    				grid: {
+    	    	    					top: '3%',
+    	    	    					left: '3%',
+    	    	    					right: '3%',
+    	    	    					bottom: '3%',
+    	    	    					containLabel: true
+    	    	    				},
+    	    	    				series: [{
+    	    	    					data: ddata,
+    	    	    					type: 'bar',
+    	    	    					barMaxWidth: 30,
+    	    	    					itemStyle: {
+    	    	    						normal: {
+    	    	    							barBorderRadius: [6, 6, 0, 0] ,
+    	    	    						}
+    	    	    					},
+    	    	    				}]
+    	    	    			};
+    	    	    			eChart_1.setOption(option);
+    	    	    			eChart_1.resize();
+    	    			 
+    	    		 }
+    			});
+    			
+    			
+    		
+    	
+	var eChart_10 = echarts.init(document.getElementById('e_chart_10'));
+	var agePie=[];
+	$.ajax({
+		url:'/attendance/admin/get/by/age/by/dept/'+id,
+		type:'get',
+		success:function(data){
+			console.log('data---'+data);
+			 for ( var i in data) {
+				 
+		 agePie.push({value:data[i].id,name:data[i].value+' yrs'});
+				 
+				 
+			 }
+			 var option9 = {
+						tooltip: {
+							show: true,
+							backgroundColor: '#fff',
+							borderRadius:6,
+							padding:6,
+							axisPointer:{
+								lineStyle:{
+									width:0,
+								}
+							},
+							textStyle: {
+								color: '#324148',
+								fontFamily: '"Roboto", sans-serif',
+								fontSize: 12
+							}	
+						},
+						series: [
+							{
+								name:'Ages',
+								type:'pie',
+								radius : '60%',
+								center : ['50%', '50%'],
+								roseType : 'radius',
+								color: ['#f68daf', '#feeff4', '#f30093', '#fabacf'],
+								data: agePie,
+								label: {
+									normal: {
+										formatter: '{b}\n{d}%'
+									},
+							  
+								}
+							}
+						]
+					};
+					eChart_10.setOption(option9);
+					eChart_10.resize();
+			    	 	 
+		
+		}});
+		 
+     });
+     </script>
+            <div class="container-fluid mt-xl-50 mt-sm-30 mt-15" id="tit" th:data-id="${dept.id}">
+            <div class="hk-pg-header">
+				<h4 class="hk-pg-title" th:text=${dept.department}>
+					<span class="pg-title-icon"><span class="feather-icon"><i
+							data-feather="align-left"></i></span></span>Add New Staff
+				</h4>
+			</div>
+				<!-- Row -->
+                <div class="row">
+                    <div class="col-xl-12">
+                        <div class="hk-row">
+							<div class="col-lg-3 col-sm-6">
+								<div class="card card-sm">
+									<div class="card-body">
+										<span class="d-block font-11 font-weight-500 text-dark text-uppercase mb-10">Staff In Department</span>
+										<div class="d-flex align-items-center justify-content-between position-relative">
+											<div>
+												<span class="d-block display-5 font-weight-400 text-dark" th:text="${dept.size}">12 New</span>
+											</div>
+											<div class="position-absolute r-0 b-0 w-40">
+												<div id="spark1"></div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="col-lg-3 col-sm-6">
+								<div class="card card-sm">
+									<div class="card-body">
+										<span class="d-block font-11 font-weight-500 text-dark text-uppercase mb-10">Staff On Leave</span>
+										<div class="d-flex align-items-center justify-content-between position-relative">
+											<div>
+												<span class="d-block">
+													<span class="display-5 font-weight-400 text-dark"><span class="counter-anim" th:text="${leavesize}">140,260</span></span>
+												</span>
+											</div>
+											<div class="position-absolute r-0 b-0 w-40">
+												<div id="spark2"></div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="col-lg-3 col-sm-6">
+								<div class="card card-sm">
+									<div class="card-body">
+										<span class="d-block font-11 font-weight-500 text-dark text-uppercase mb-10">Gender:Ratio</span>
+										<div class="d-flex align-items-end justify-content-between">
+											<div>
+												<span class="d-block">
+													<span class="display-5 font-weight-400 text-dark" th:text="${genstat}">$8,725</span>
+												</span>
+											</div>
+											
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="col-lg-3 col-sm-6">
+								<div class="card card-sm">
+									<div class="card-body">
+										<span class="d-block font-11 font-weight-500 text-dark text-uppercase mb-10">Average Age</span>
+										<div class="d-flex align-items-end justify-content-between">
+											<div>
+												<span class="d-block">
+													<span class="display-5 font-weight-400 text-dark" th:text="${avgage}">18 invoices</span>
+												</span>
+											</div>
+											
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="hk-row">
+							<div class="col-lg-8">
+								<div class="card card-refresh">
+									<div class="refresh-container">
+										<div class="loader-pendulums"></div>
+									</div>
+									<div class="card-header card-header-action">
+										<div>
+											<h6 class="mb-10">Workhours Deficit</h6>
+										</div>
+										<div class="d-flex align-items-center card-action-wrap">
+											<a href="#" class="inline-block refresh mr-15">
+												<i class="ion ion-md-radio-button-off"></i>
+											</a>
+											<a href="#" class="inline-block full-screen">
+												<i class="ion ion-md-expand"></i>
+											</a>
+										</div>
+									</div>
+									<div class="card-body">
+										
+										<div id="e_chart_1" style="height: 300px;"></div>
+									</div>
+								</div>
+							</div>
+							<div class="col-lg-4">
+									<div class="card">
+									<div class="card-header card-header-action">
+										<h6>Gender Population<small class="text-muted pl-10"></small></h6>
+										
+									</div>
+									<div class="card-body">
+										
+										<div id="e_chart_31" style="height:264px;width:300px;"></div>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="hk-row">
+							<div class="col-lg-4">
+								<div class="card">
+									<div class="card-header card-header-action">
+										<div>
+											<h6>Lateness<small class="text-muted pl-10">year</small></h6>
+										</div>
+										<div class="d-flex align-items-center card-action-wrap">
+											<div class="d-flex align-items-center card-action-wrap">
+												<a href="#" class="inline-block refresh mr-15">
+													<i class="ion ion-md-arrow-down"></i>
+												</a>
+												<a class="inline-block card-close" href="#" data-effect="fadeOut">
+													<i class="ion ion-md-close"></i>
+												</a>
+											</div>
+										</div>
+									</div>
+									<div class="card-body">
+										<div id="e_chart_11" style="height:264px;width:300px;" ></div>
+									</div>
+								</div>
+							</div>
+							<div class="col-lg-4">
+									<div class="card">
+									<div class="card-header card-header-action">
+										<div>
+											<h6 class="mb-10">Age Distribution</h6>
+										</div>
+										<div class="d-flex align-items-center card-action-wrap">
+											<div class="toggle toggle-sm toggle-simple toggle-light toggle-bg-primary risk-switch"></div>
+										</div>
+									</div>
+									<div class="card-body">
+										<div id="e_chart_10" class="echart" style="height:260px;"></div>
+										
+									</div>
+								</div>
+							</div>
+							<div class="col-lg-4">
+									<div class="card">
+									<div class="card-header card-header-action">
+										<div>
+											<h6 class="mb-10">Staff On Leave</h6>
+										</div>
+										
+									</div>
+									<div class="card-body">
+										
+										
+									                                        <table id="datable_1" class="table table-hover w-100 display pb-30">
+                                            <thead>
+                                                <tr>
+                                                <th>#</th>
+                                                    <th>Name</th>
+                                                    <th>End Date</th>
+                                                   
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr th:each="a,i:${stafonleave}">
+                                                    <td th:text="${i.index+1}">Tiger Nixon</td>
+                                            <td th:text="${a.staffName}" style="text-transform: capitalize;">System Architect</td>
+                                                    
+                                                    <td th:text="${a.end}">System Architect</td>
+                                                   </tr>
+                                           
+                                            </tbody>
+                                            <tfoot>
+                                                <tr>
+                                                <th>#</th>
+                                                    <th>Name</th>
+                                                    <th>End Date</th>
+                                                   
+                                                </tr>
+                                            </tfoot>
+                                        </table>
+										
+										
+										
+										
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="card">
+							<div class="card-body pa-0">
+								<div class="table-wrap">
+									<div class="table-responsive">
+										<table class="table w-100 display pb-30 table-hover mb-0" id="datable_4">
+											<thead>
+												<tr>
+														<th >#</th>
+													<th>Pic</th>
+													<th>Name</th>
+													<th>Gender</th>
+													<th>Early</th>
+													<th>Latenes Count</th>
+													<th>Absence Count</th>
+													
+													<th>Deficit</th>
+												
+													<th >Minutes Late</th>
+													<th ></th>
+												</tr>
+											</thead>
+											<tbody>
+												<tr th:each="a,i:${deptatt}" th:classappend="${(a.deficit<0)?'bg-pink text-white':''}">
+												<td th:text=${i.index+1}>Branding</td>
+													<td><img class="img-fluid rounded" th:src="@{/new/dist/img/logo1.jpg}" alt="icon"></td>
+													<td th:text=${a.staffName}>Branding</td>
+													<td th:text="${a.gender}">Pineapple Inc</td>
+													<td th:text="${a.earlyCount}" >13 Nov 2018</td> 
+													<td th:text="${a.latenessount}" >Completed</td>
+													<td th:text="${a.absents}" ></td>
+													<td th:text="${a.deficit}">
+														
+													</td>
+													<td th:text="${a.latenessMins}">10 Nov 2018</td>
+  <td><a th:href="@{'/admin/staff/'+${a.staffid}+'/profile'}" class="btn btn-md btn-info">View Staff</a></td>
+                                               													
+												</tr>
+											</tbody>
+										</table>
+									</div>
+								</div>
+							</div>
+						</div>		
+					</div>
+                </div>
+                <!-- /Row -->
+            </div>
+              
+                         <!-- /Row -->
+            </div>
+            <!-- /Container -->
+			
+</body>
+</html>

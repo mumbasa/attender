@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org"
+  layout:decorate="~{fragments/blank}">
+				<div class="content" layout:fragment="content">
+					<div class="col-lg-9">
+					
+									<div class="card card-default">
+										<div class="card-header card-header-border-bottom">
+											<h2>All <span th:text="${#lists.size(staff)}"></span> Staff</h2>
+										</div>
+										<div class="card-body">
+											<table class="table table-striped" id="attend">
+												<thead>
+													<tr>
+														<th scope="col">#</th>
+														<th scope="col">Name</th>
+														<th scope="col">Bio-ID</th>
+														<th scope="col">Department</th>
+														<th scope="col"></th>
+													</tr>
+												</thead>
+												<tbody>
+													<tr th:each="u,iterator : ${staff}">
+														<td scope="row" class="align-middle"  th:text="${iterator.index+1}" >1</td>
+														<td th:text="${u.name}" class="align-middle">Lucia</td>
+														<td th:text="${{u.bioID}}" class="align-middle">Christ</td>
+														<td th:text="${{u.department}}"  class="align-middle">@Lucia</td>
+														<td ><button type="button" class="btn btn-danger" th:onClick="|window.location.href='/attendance/admin/delete/staff?id=${u.bioID}'|" >Delete</button> 
+														<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalForm" th:onclick="|window.location.href='/attendance/admin/profile?id=${u.bioID}'|">Update</button></td>
+														
+													</tr>
+													
+												
+												</tbody>
+											</table>
+											<div class="modal fade" id="exampleModalForm" tabindex="-1" role="dialog" aria-labelledby="exampleModalFormTitle" aria-hidden="true">
+							<div class="modal-dialog" role="document">
+								<div class="modal-content">
+									<div class="modal-header">
+										<h5 class="modal-title" id="exampleModalFormTitle">Modal Title</h5>
+										<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+											<span aria-hidden="true">&times;</span>
+										</button>
+									</div>
+									<div class="modal-body">
+										<form>
+											<div class="form-group">
+												<label for="exampleInputEmail1">Email address</label>
+												<input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email">
+												<small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
+											</div>
+											<div class="form-group">
+												<label for="exampleInputPassword1">Password</label>
+												<input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password">
+											</div>
+											<div class="form-check pl-0">
+												<label class="control control-checkbox">Check me out
+													<input type="checkbox" checked="checked" />
+													<div class="control-indicator"></div>
+												</label>
+											</div>
+											<button type="submit" class="btn btn-primary">Submit</button>
+										</form>
+									</div>
+									<div class="modal-footer">
+										<button type="button" class="btn btn-danger btn-pill" data-dismiss="modal">Close</button>
+										<button type="button" class="btn btn-primary btn-pill">Save Changes</button>
+									</div>
+								</div>
+							</div>
+						</div>
+										</div>
+									</div>
+
+					
+					</div>
+
+
+				</div>
+
+
+
+			
+</html>

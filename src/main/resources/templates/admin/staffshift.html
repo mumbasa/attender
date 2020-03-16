@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	xmlns:th="http://www.thymeleaf.org"
+	layout:decorate="~{fragments/blank}">
+<head>
+<meta charset="UTF-8">
+<title th:text="${staff.name}+' Shift Dates'">Staff Shift</title>
+<link th:href="@{/new/vendors/fullcalendar/packages/core/main.css}"
+	rel="stylesheet" type="text/css" />
+<link th:href="@{/new/vendors/fullcalendar/packages/daygrid/main.css}"
+	rel="stylesheet" type="text/css" />
+<link th:href="@{/new/vendors/fullcalendar/packages/list/main.css}"
+	rel="stylesheet" type="text/css" />
+<link th:href="@{/new/vendors/fullcalendar/packages/timegrid/main.css}"
+	rel="stylesheet" type="text/css" />
+</head>
+<body>
+
+	<div layout:fragment="content">
+		<script>
+		
+		$(document).ready(function(){  
+		var shiftEvent=[];
+		
+		var id =$('#cal').data('id');
+
+		$.ajax({
+			url:'/attendance/admin/get/staff/'+parseInt(id)+'/shifts',
+			type:'get',
+			processData : false,
+			contentType : false,
+			cache : false,
+			success:function(data){
+			for(var e in data){
+				var event={
+						id:data[e].id,
+				      title: data[e].type.shiftType,
+				      start: data[e].date+'T'+data[e].type.startString+":00",
+				      end: data[e].date+'T'+ data[e].type.closeString+":00",
+				      textColor:'white',
+				      backgroundColor:data[e].type.colour,
+				      borderColor:data[e].type.colour,
+				      extendedProps: {
+				        department: 'BioChemistry'
+				      },
+				      description: 'Lecture'
+				    }
+				shiftEvent.push(event);
+				
+				
+			}
+				
+			console.log(shiftEvent);
+
+			var calendar;
+				var Calendar = FullCalendar.Calendar;
+
+				var calendarEl = document.getElementById('calendar');
+
+				// initialize the external events
+				// -----------------------------------------------------------------
+
+			
+
+				// initialize the calendar
+				// -----------------------------------------------------------------
+
+				calendar = new Calendar(calendarEl, {
+					plugins : [ 'interaction', 'dayGrid', 'list' ],
+					header : {
+						left : 'prev,next today',
+						center : 'title',
+						right : 'dayGridMonth,dayGridDay,timeGridDay,list'
+					},
+					editable : false,
+					droppable : true, // this allows things to be dropped onto the calendar
+					  events:shiftEvent,
+					eventReceive : function(info) {
+						//alert(info.event.title);
+
+					},
+					eventDrop : function(info) {
+						alert(info.event.title + " was dropped on "
+								+ info.event.start.toISOString());
+
+						if (!confirm("Are you sure about this change?")) {
+							info.revert();
+						}
+					},
+					
+
+				});
+
+				calendar.render();
+		
+			
+			}
+			
+		}); 
+		
+		
+		} );
+		
+		</script>
+		<!-- Breadcrumb -->
+		<nav class="hk-breadcrumb" aria-label="breadcrumb">
+			<ol class="breadcrumb breadcrumb-light bg-transparent">
+				<li class="breadcrumb-item"><a href="#">Data</a></li>
+				<li class="breadcrumb-item active" aria-current="page">Shift
+					</li>
+			</ol>
+		</nav>
+		<!-- /Breadcrumb -->
+
+		<!-- Container -->
+		<div class="container">
+
+			<!-- Title -->
+			<div class="hk-pg-header">
+				<h4 class="hk-pg-title">
+					<span class="pg-title-icon"><span class="feather-icon"><i
+							data-feather="database"></i></span></span> Shifts
+				</h4>
+			</div>
+			<!-- /Title -->
+
+			<!-- Row -->
+			<div class="row" id="cal" th:data-id="${staff.id}">
+				
+				<div id="calendar"  class="col-md-12 p-5 card"></div>
+
+			</div>
+
+			<!-- /Row -->
+			
+		</div>
+		<!-- /Container -->
+
+<script th:src="@{/new/vendors/fullcalendar/packages/core/main.js}"></script>
+	<script th:src="@{/new/vendors/fullcalendar/packages/daygrid/main.js}"></script>
+	<script
+		th:src="@{/new/vendors/fullcalendar/packages/interaction/main.js}"></script>
+	<script th:src="@{/new/vendors/fullcalendar/packages/list/main.js}"></script>
+	<script th:src="@{/new/vendors/fullcalendar/packages/timegrid/main.js}"></script>
+
+	</div>
+
+
+
+</body>
+</html>

@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" xmlns:th="http://www.thymeleaf.org"  
+xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+  <head th:insert="fragments/head.html::header">
+  
+</head>
+
+  <body class="sidebar-fixed sidebar-dark header-light header-fixed" id="body">
+    <script>
+      NProgress.configure({ showSpinner: false });
+      NProgress.start();
+    </script>
+
+    <div class="mobile-sticky-body-overlay"></div>
+
+    <div class="wrapper">
+      
+    <aside th:replace="fragments/side.html::bar">
+
+      
+</aside>
+      <div class="page-wrapper">
+          <header class="main-header " id="header" th:replace="fragments/navi.html::navi"></header>
+
+
+        <div class="content-wrapper">
+          <div class="content" layout:fragment="content">             
+  
+  
+  
+  
+  
+</div>
+
+
+          
+
+
+        </div>
+
+             <footer th:insert="fragments/footer.html::footer"></footer>
+
+      </div>
+    </div>
+
+    <script th:src="@{/assets/js/iziToast.js}"></script>
+    
+<script th:src="@{/assets/plugins/bootstrap/js/bootstrap.bundle.min.js}"></script>
+<script th:src="@{/assets/plugins/toaster/toastr.min.js}"></script>
+<script th:src="@{/assets/plugins/slimscrollbar/jquery.slimscroll.min.js}"></script>
+<script th:src="@{/assets/plugins/charts/Chart.min.js}"></script>
+<script th:src="@{/assets/plugins/ladda/spin.min.js}"></script>
+<script th:src="@{/assets/plugins/ladda/ladda.min.js}"></script>
+<script th:src="@{/assets/plugins/jquery-mask-input/jquery.mask.min.js}"></script>
+<script th:src="@{/assets/plugins/select2/js/select2.min.js}"></script>
+<script th:src="@{/assets/plugins/jvectormap/jquery-jvectormap-2.0.3.min.js}"></script>
+<script th:src="@{/assets/plugins/jvectormap/jquery-jvectormap-world-mill.js}"></script>
+<script th:src="@{/assets/plugins/daterangepicker/moment.min.js}"></script>
+<script th:src="@{/assets/plugins/daterangepicker/daterangepicker.js}"></script>
+
+  </body>
+</html>

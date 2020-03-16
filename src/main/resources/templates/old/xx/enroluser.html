@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org"
+  layout:decorate="~{fragments/blank}">
+  
+  
+  
+  	<div class="content" layout:fragment="content">
+					<div class="row">
+						<div class="col-lg-6">
+							<div class="card card-default">
+								<div class="card-header card-header-border-bottom">
+									<h2>Enrol User</h2>
+								</div>
+								<div class="card-body">
+									<form action="#" th:action="@{/admin/adduser}" method="post"
+										th:object="${user}">
+										<div class="form-row">
+											<div class="col-md-9 mb-3">
+												<label for="validationServer01">Name</label> <input
+													type="text" class="form-control" id="validationServer01"
+													placeholder="First name" required th:field="*{name}">
+												<div class="valid-feedback">Looks good!</div>
+											</div>
+											<div class="col-md-3 mb-3">
+												<label for="exampleFormControlSelect12">Department
+													select</label> <select class="form-control"
+													id="exampleFormControlSelect12" th:field="*{department}">
+													<option th:each="d : ${dept}" th:value="${d.id}" th:text="${d.department}">1</option>
+												
+												</select>
+
+											</div>
+											<div class="col-md-9 mb-3">
+												<label for="validationServer02">email</label> <input
+													type="email" class="form-control is-valid"
+													id="validationServer02" placeholder="Last name"
+													th:field="*{email}" required>
+												<div class="valid-feedback">Looks good!</div>
+											</div>
+											<div class="col-md-3 mb-3">
+												<label for="exampleFormControlSelect12">Role select</label>
+												<select class="form-control" id="exampleFormControlSelect12"
+													th:field="*{role}">
+													<option value="2">Manager</option>
+													<option value="3">Head of Department</option>
+													<option value="1">SysAdmin</option>
+													<option value="4">Clerk</option>
+												</select>
+
+											</div>
+											<div class="col-md-6 mb-3">
+												<label for="validationServerUsername">Password</label> <input
+													type="password" class="form-control"
+													id="validationServerUsername" placeholder="Username"
+													aria-describedby="inputGroupPrepend3" required
+													th:field=*{password}>
+												<div class="invalid-feedback">Please choose a
+													password.</div>
+											</div>
+
+											<div class="col-md-6 mb-3">
+												<label for="validationServerUsername">Confirm
+													Password</label> <input type="password" class="form-control"
+													id="validationServerUsername" placeholder="Username"
+													aria-describedby="inputGroupPrepend3" required>
+												<div class="invalid-feedback">Please confirm the
+													password.</div>
+											</div>
+										</div>
+										<button class="btn btn-primary" type="submit">Submit
+											form</button>
+									</form>
+								</div>
+							</div>
+						</div>
+					</div>
+
+
+				</div>
+
+
+
+
+	
+</html>

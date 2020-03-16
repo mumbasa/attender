@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	xmlns:th="http://www.thymeleaf.org"
+	layout:decorate="~{fragments/blank}">
+	<script type="text/javascript"></script>
+<div class="content" layout:fragment="content">
+
+	<div class="bg-white border rounded">
+		<div class="row no-gutters">
+			<div class="col-lg-4 col-xl-3">
+				<div class="profile-content-left pt-5 pb-3 px-3 px-xl-5">
+					<div class="card text-center widget-profile px-0 border-0">
+						<div class=" mx-auto rounded-circle">
+							<img th:src="@{/assets/img/user/kk.jpeg}" alt="user image">
+						</div>
+						<div class="card-body">
+							<h4 class="py-2 text-dark" th:text="${staff.name}">Albrecht
+								Straub</h4>
+							<p th:text="${staff.department}">Department:IIR</p>
+						</div>
+					</div>
+					<hr class="w-100 pt-4">
+
+					<div class="d-flex justify-content-between ">
+						<div class="text-center pb-4" >
+							<h6 class="text-dark pb-2" th:text="${late}" >1503</h6>
+							<p>Lateness</p>
+						</div>
+						<div class="text-center pb-4">
+							<h6 class="text-dark pb-2" th:text="${abs}">2905</h6>
+							<p>Absent</p>
+						</div>
+						<div class="text-center pb-4">
+							<h6 class="text-dark pb-2" th:text="${in}">1200</h6>
+							<p>Average Time In</p>
+						</div>
+					</div>
+					<hr class="w-100">
+
+				</div>
+						<div class="col-md-6 col-lg-12 col-xl-12">
+								<div class="card widget-block p-4 rounded  border" th:classappend="${(def>0)?'bg-success':'bg-danger'}" >
+										<div class="card-block">
+											<i class="mdi mdi-cart-outline  mr-4 text-white"></i>
+											<h4 class="text-white my-2"> <span th:text="${summary}" class="text-right"></span></h4>
+											<p>Work Time Deficit</p>
+										</div>
+									</div>
+								</div>
+			</div>
+			<div class="col-lg-8 col-xl-9">
+				<div class="profile-content-right py-5">
+					<ul class="nav nav-tabs px-3 px-xl-5 nav-style-border" id="myTab"
+						role="tablist">
+						<li class="nav-item"><a class="nav-link active"
+							id="timeline-tab" data-toggle="tab" href="#timeline" role="tab"
+							aria-controls="timeline" aria-selected="true">Time Data</a></li>
+						<li class="nav-item"><a class="nav-link" id="profile-tab"
+							data-toggle="tab" href="#profile" role="tab"
+							aria-controls="profile" aria-selected="false">Monthly Data Summary</a></li>
+						<li class="nav-item"><a class="nav-link" id="settings-tab"
+							data-toggle="tab" href="#settings" role="tab"
+							aria-controls="settings" aria-selected="false">Analysis</a></li>
+					</ul>
+					<div class="tab-content px-3 px-xl-5" id="myTabContent">
+						<div class="tab-pane fade show active" id="timeline"
+							role="tabpanel" aria-labelledby="timeline-tab">
+						
+							<div class="row">
+								<div class="col-12">
+									<!-- Recent Order Table -->
+									<div class="card card-table-border-none" id="recent-orders">
+										<div class="card-header justify-content-between">
+											<h2>
+												<span th:text="${year}"></span> Attendance Data
+											</h2>
+										
+										</div>
+										<div class="card-body pt-0 pb-5">
+											<table id="attend"
+												class="table stripe card-table table-responsive table-responsive-large"
+												style="width:100%">
+												<thead>
+													<tr>
+														<th>Day count</th>
+														<th>Date</th>
+														<th class="d-none d-md-table-cell">Time In</th>
+														<th class="d-none d-md-table-cell">Time out</th>
+														<th class="d-none d-md-table-cell">Hours Worked</th>
+														<th>Status</th>
+												
+													</tr>
+												</thead>
+												<tbody>
+													<tr th:each="a,iterator:${attendance}">
+														<td th:text="${iterator.index+1}">24541</td>
+														<td th:text="${a.date}"><a class="text-dark" href="">
+																Coach Swagger</a></td>
+														<td class="d-none d-md-table-cell" th:text="${a.timeIn}">1
+															Unit</td>
+														<td class="d-none d-md-table-cell" th:text="${a.timeOut}">Oct
+															20, 2018</td>
+														<td class="d-none d-md-table-cell"
+															th:text="${a.hoursWorked}">$230</td>
+														<td th:switch="${a.label}">
+														<span class="badge badge-success" th:case="Early" th:text="'Early'" ></span>
+														<span class="badge badge-danger" th:case="Absent" th:text="'Absent'"></span>
+														<span class="badge badge-warning" th:case="*"  th:text="'Late'">Completed</span>
+														</td>
+												
+													</tr>
+											</table>
+										</div>
+									</div>
+								</div>
+							</div>
+
+
+
+						</div>
+
+
+
+						<div class="tab-pane fade" id="profile" role="tabpanel"
+							aria-labelledby="profile-tab">
+
+							<div class="col-lg-12 pt-4">
+								<div class="card-default">
+									<div class="card-header card-header-border-bottom">
+								
+
+									</div>
+									<div class="">
+										<table class="table table-hover " id="attends">
+											<thead>
+												<tr>
+													<th scope="col">Month</th>
+													<th scope="col">Avg Time In</th>
+													<th scope="col">Avg Time Out</th>
+													<th scope="col">Lateness Count</th>
+													<th scope="col">Absent Count</th>
+													<th scope="col">Lateness Summary</th>
+													<th scope="col">Deficit</th>
+												</tr>
+											</thead>
+											<tbody>
+												<tr th:each="m,iterator:${monthagg}">
+													<td scope="row" th:text="${iterator.index}+1">1</td>
+													<td th:text="${m.avgTimeIn}">Christ</td>
+													<td th:text="${m.avgTimeOut}">@Lucia</td>
+													<td th:text="${m.latenessount}">Lucia</td>
+													
+													<td th:text="${m.absents}">@Lucia</td>
+													<td th:text="${m.latenessSummary}"> @Lucia</td>
+													<td th:text="${m.deficit}">@Lucia</td>
+												</tr>
+											</tbody>
+										</table>
+									</div>
+								</div>
+							</div>
+
+
+
+
+
+						</div>
+						<div class="tab-pane fade" id="settings" role="tabpanel"
+							aria-labelledby="settings-tab">
+
+
+							<div class="row">
+								<div class="col-md-12 pt-4">
+									<!-- Chart -->
+
+									<!-- User activity statistics -->
+									<div class="card card-default" id="user-activity">
+										<div class="row no-gutters">
+											<div class="col-xl-12">
+												<div class="border-right">
+													<div class="card-header justify-content-between py-5">
+														<h2>User Activity</h2>
+														
+													</div>
+
+											<div class="col-12">
+								<div class="card card-default pb-5">
+									
+									<div class="card-body" style="height: 400px;">
+										<canvas id="barsum"></canvas>
+										<div id='customLegend' class='customLegend'></div>
+									</div>
+								</div>
+							</div>
+													
+												</div>
+											</div>
+
+										</div>
+									</div>
+
+								</div>
+							</div>
+
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+
+
+
+</html>

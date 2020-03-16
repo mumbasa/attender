@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	xmlns:th="http://www.thymeleaf.org"
+	layout:decorate="~{fragments/blank}">
+<head>
+<meta charset="UTF-8">
+<title>Leave Approvals</title>
+</head>
+<body>
+
+	<div layout:fragment="content">
+
+		<script type="text/javascript">
+	
+	function hod(dec,id){
+				$.ajax({
+				url:'/attendance/admin/hod/approve/leave',
+				data:'decide='+dec+'&id='+id,
+				type:'get',
+				processData : false,
+				contentType : false,
+				cache : false,
+				success:function(data){
+				
+						$.toast({
+							heading: 'Success!',
+							text:"Supervisor's Leave Decision filed Successfully",
+							position: 'top-right',
+							loaderBg:'#f68daf',
+							class: 'jq-toast-dark',
+							hideAfter: 3500, 
+							stack: 6,
+							showHideTransition: 'fade'
+						});
+				       
+						 $( "#datatable_1" ).load( "/admin/my/department/leave/applications #datatable_1" );						
+
+					
+						
+					}
+				
+				
+			}); 
+			  
+			
+	
+	
+		
+	}
+	
+	
+	function hr(dec,id){
+		$.ajax({
+		url:'/attendance/admin/hr/approve/leave',
+		data:'decide='+dec+'&id='+id,
+		type:'get',
+		processData : false,
+		contentType : false,
+		cache : false,
+		success:function(data){
+		
+				$.toast({
+					heading: 'Success!',
+					text:"Manager's Leave Decision filed Successfully",
+					position: 'top-right',
+					loaderBg:'#f68daf',
+					class: 'jq-toast-dark',
+					hideAfter: 3500, 
+					stack: 6,
+					showHideTransition: 'fade'
+				});
+		       
+		
+				 $( "#datatable_1" ).load( "/admin/my/department/leave/applications #datatable_1" );						
+
+				
+			}
+		
+		
+	}); 
+	  
+	
+
+
+
+}
+	
+	</script>
+
+		<!-- Breadcrumb -->
+		<nav class="hk-breadcrumb" aria-label="breadcrumb">
+			<ol class="breadcrumb breadcrumb-light bg-transparent">
+				<li class="breadcrumb-item"><a href="#">Tables</a></li>
+				<li class="breadcrumb-item active" aria-current="page">Leaves
+					Table</li>
+			</ol>
+		</nav>
+		<!-- /Breadcrumb -->
+
+		<!-- Container -->
+		<div>
+
+			<!-- Title -->
+			<div class="hk-pg-header">
+				<h4 class="hk-pg-title">
+					<span class="pg-title-icon"><span class="feather-icon"><i
+							data-feather="database"></i></span></span>Leaves Data
+				</h4>
+			</div>
+			<!-- /Title -->
+
+			<!-- Row -->
+			<div class="row">
+				<div class="col-xl-12">
+					<section class="hk-sec-wrapper">
+						<div class="row">
+							<div class="col-sm">
+								<div class="table-wrap">
+									<table id="datable_1"
+										class="table table-hover w-100 display pb-30">
+										<thead>
+											<tr>
+												<th>#</th>
+												<th>Name</th>
+													<th>Department</th>
+												<th>Leave</th>
+												<th>Start Date</th>
+												<th>End Date</th>
+												<th>Days</th>
+												<th>Days Remaining</th>
+												<th>Decision</th>
+												<th></th>
+											</tr>
+										</thead>
+										<tbody>
+											<tr th:each="a,i:${staffleave}">
+												<td th:text="${i.index+1}">Tiger Nixon</td>
+
+
+												<td th:text="${a.staff.name}"
+													style="text-transform: capitalize;">System Architect</td>
+												<td th:text="${a.staff.department}">Edinburgh</td>
+												<td th:text="${a.leave}">Edinburgh</td>
+												<td th:text="${a.start}">System Architect</td>
+												<td th:text="${a.end}">61</td>
+												<td th:text=${a.days}>2011/04/25</td>
+												<td th:text="${a.leaveDaysRemaining}">61</td>
+												<td th:text="${a.approvalDate==null?'Pending':'Approved'}">61</td>
+												<td>
+													
+													<div
+														th:if="${#authorization.expression('hasAuthority(''Manager'')')}">
+														<button class="btn btn-sm btn-success"
+															th:onclick="'hr(1,'+${a.id}+')'"
+															th:if="${a.approvalDate==null}">Approve</button>
+														<button class="btn btn-sm btn-danger"
+															th:onclick="'hr(0,'+${a.id}+')'"
+															th:if="${a.approvalDate==null}">Reject</button>
+													</div>
+												</td>
+											</tr>
+
+										</tbody>
+										<tfoot>
+											<tr>
+												<th>#</th>
+												<th>Name</th>
+																									<th>Department</th>
+												
+												<th>Leave</th>
+												<th>Start Date</th>
+												<th>End Date</th>
+												<th>Days</th>
+												<th>Days Remaining</th>
+																								<th>Decision</th>
+												
+												<th></th>
+											</tr>
+										</tfoot>
+									</table>
+								</div>
+							</div>
+						</div>
+					</section>
+				</div>
+			</div>
+			<!-- /Row -->
+
+		</div>
+		<!-- /Container -->
+
+
+	</div>
+
+
+
+</body>
+</html>

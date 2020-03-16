@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org"
+  layout:decorate="~{fragments/blank}" >
+<head>
+<meta charset="UTF-8">
+<title>New Shift</title>
+
+</head>
+<body>
+        
+       
+  <div layout:fragment="content">
+
+
+	<script type="text/javascript" th:inline="javascript">
+	
+	function sele(){
+		var form = $('.former');
+		var formdata = false;
+		formdata = new FormData(form[0]);
+		
+			$.ajax({ 
+				url:[[@{/admin/put/staff/shift}]],
+				data:formdata,
+				type:'post',
+				processData : false,
+				contentType : false,
+				cache : false,
+				success:function(data){
+				
+					//if(data==1){
+						$.toast({
+							heading: 'Success!',
+							text: '<p>New Shift added successfully</p>',
+							position: 'top-right',
+							loaderBg:'#f68daf',
+							class: 'jq-toast-dark',
+							hideAfter: 3500, 
+							stack: 6,
+							showHideTransition: 'fade'
+						});
+				       
+						 form[0].reset();
+						 location.reload();
+						
+						
+				
+				}
+				
+			}); 
+			  
+			
+	
+		
+	}
+	
+	</script>
+	
+		
+		  
+  
+   <nav class="hk-breadcrumb" aria-label="breadcrumb">
+                <ol class="breadcrumb breadcrumb-light bg-transparent">
+                    <li class="breadcrumb-item"><a href="#">Forms</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Shift for <span th:text="${date}"></span></li>
+                </ol>
+            </nav>
+            <!-- /Breadcrumb -->
+
+            <!-- Container -->
+            <div class="container">
+                <!-- Title -->
+                <div class="hk-pg-header">
+                    <h4 class="hk-pg-title"><span class="pg-title-icon"><span class="feather-icon"><i data-feather="align-left"></i></span></span><span th:text="${date} +' '"> </span> Shift</h4>
+                </div>
+                <!-- /Title -->
+
+                <!-- Row -->
+                <div class="row">
+                    <div class="col-xl-12">
+                        <section class="hk-sec-wrapper">
+                            <div class="row">
+                                <div class="col-sm">
+                                    <form class="former">
+                                       <div class="row" style="display: none;">
+                                            <div class="col-md-12 mb-10">
+                                                <label for="type">Date</label>
+                                                 <input class="form-control" id="zip" placeholder="" type="text" th:value="${date}" name="date" >
+
+                                            </div>
+                                            
+                                           
+                                        </div>
+                                        
+                                        <div class="row">
+                                            <div class="col-md-12 form-group">
+                                                <label for="firstName">Shift</label>
+                                                            <select class="form-control custom-select d-block w-100" id="shift" name="shift">
+                                    <option th:each="a:${shift.keySet()}" th:text="${a}" th:value="${shift.get(a).id}">Choose...</option>
+
+                                                </select>
+                                            </div>
+                                          
+                                        </div>
+
+
+
+										
+                                        
+                                        <div class="row">
+                                            <div class="col-md-12 mb-10">
+                                                <label for="type">Staff</label>
+                                                <select class="form-control custom-select d-block w-100" id="type" name="staff" size="10"  multiple="multiple" style="height: 100%;">
+                                    <option th:each="a:${staff}" th:value="${a.id}" th:text="${a.name}">Choose...</option>
+
+                                                </select>
+                                            </div>
+                                            
+                                           
+                                        </div>
+                                         
+                                  
+
+
+                                        
+                                     
+                                        <hr>
+                                        <button class="btn btn-primary col-md-12" type="button" onclick="sele()">Set Shift</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </section>
+                     </div>
+                </div>
+                <!-- /Row -->
+            </div>
+            <!-- /Container -->
+  
+  
+  </div>
+  
+  
+</body>
+</html>

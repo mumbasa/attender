@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org"
+  layout:decorate="~{fragments/clerkblank}">
+  
+          <div class="content" layout:fragment="content">  
+          <div class="row" >          
+					
+							<div class="col-lg-6">
+									<div class="card card-default">
+										<div class="card-header card-header-border-bottom">
+											<h2>Add Staff Leave</h2>
+										</div>
+										<div class="card-body">
+											<form th:action="@{/addleave}" th:object="${staffleave}" class="horizontal-form" method="post">
+												<div class="form-group row">
+													<div class="col-12 col-md-3 text-right align-middle">
+														<label for="">Staff Name</label>
+													</div>
+												
+															<div class="col-lg-8 md-8 mb-3">
+													<select class="form-control" id="exampleFormControlSelect12" th:field="*{staffId}">
+														<option th:each="s:${stafflist}" value="${s.bioID}" th:text="${s.name}">Public</option>
+														
+													</select>
+													</div>
+												
+												
+												</div>
+												<div class="form-group row">
+													<div class="col-lg-3 col-md-3 text-right">
+														<label for="">From</label>
+													</div>
+													<div class="col-lg-4 col-md-9">
+														<input type="date" class="form-control" placeholder="from" th:field="*{from}">
+													</div>
+												</div>
+												
+														<div class="form-group row">
+													<div class="col-lg-3 col-md-3 text-right">
+														<label for="">To</label>
+													</div>
+													<div class="col-lg-4 col-md-9">
+														<input type="date" class="form-control" placeholder="to" th:field="*{to}">
+													</div>
+												</div>
+												
+												<div class="form-group row">
+													<div class="col-12 col-md-3 text-right">
+													<label for="exampleFormControlSelect12">Type select</label>
+													</div>
+															<div class="col-md-6 mb-3">
+													<select class="form-control" id="exampleFormControl" th:field="*{leaveTypeid}" >
+													
+														<option th:each="l:${leaves}" th:value="${l.id}" th:text="${l.leave}">Public</option>
+												
+														
+													</select>
+													
+													</div>
+												</div>
+											
+												<div class="form-footer pt-5 border-top">
+													<button type="submit" class="btn btn-primary btn-default">Add Leave</button>
+												</div>
+											</form>
+										</div>
+									</div>
+					
+					
+					
+								</div>
+</div>
+					
+
+            </div>
+          
+
+
+</html>

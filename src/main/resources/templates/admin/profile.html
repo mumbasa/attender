@@ -1,0 +1,1929 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	xmlns:th="http://www.thymeleaf.org"
+	layout:decorate="~{fragments/blank}">
+<head>
+<meta charset="UTF-8">
+<title th:text="${staff.name}+' Profile'">Insert title here</title>
+</head>
+<body>
+
+	<div class="row" layout:fragment="content">
+	
+	<script type="text/javascript" th:inline="javascript">
+	
+	 var labe = [ "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+ 		"Jul", "Aug", "Sep", "Oct", "Nov", "Dec" ];
+$(document).ready(function(){
+
+	
+	var eChart_4 = echarts.init(document.getElementById('e_chart_4'));
+	var early=[0,0,0,0,0,0,0,0,0,0,0,0,];
+	var late=[0,0,0,0,0,0,0,0,0,0,0,0,];
+	var absence=[0,0,0,0,0,0,0,0,0,0,0,0,];
+	var staffid=$("#id").attr("data-id");
+
+	$.ajax({
+		url:[[@{/admin/get/staff/}]]+staffid+'/attendance/label',
+		type:'get',
+		success:function(data){
+			console.log('data---'+staffid);
+			 for ( var i in data) {
+			    var id =parseInt(data[i].value);
+			    early[id]=data[i].id;
+			    late[id]=data[i].quantity;
+			    absence[id]=data[i].quantity2;
+				}
+			 
+			 var option3 = {
+						color: ['#008d22', '#fabacf','#f36493','#feeff4'],		
+						tooltip: {
+							show: true,
+							trigger: 'axis',
+							backgroundColor: '#fff',
+							borderRadius:6,
+							padding:6,
+							axisPointer:{
+								lineStyle:{
+									width:0,
+								}
+							},
+							textStyle: {
+								color: '#324148',
+								fontFamily: '"Roboto", sans-serif',
+								fontSize: 12
+							}
+						},
+						
+						grid: {
+							top: '3%',
+							left: '3%',
+							right: '3%',
+							bottom: '3%',
+							containLabel: true
+						},
+						xAxis : [
+							{	
+								type : 'value',
+								
+								axisLine: {
+									show:false
+								},
+								axisTick: {
+									show:false
+								},
+								axisLabel: {
+									textStyle: {
+										color: '#5e7d8a'
+									}
+								},
+								splitLine: {
+									lineStyle: {
+										color: '#eaecec',
+									}
+								}
+							}
+						],
+						yAxis : [
+							{
+								type : 'category',
+								data : labe,
+								axisLine: {
+									show:false
+								},
+								axisTick: {
+									show:false
+								},
+								axisLabel: {
+									textStyle: {
+										color: '#5e7d8a'
+									}
+								}
+							}
+						],
+						series : [
+							{
+								name:'Early',
+								type:'bar',
+								stack: 'st1',
+								barMaxWidth: 30,
+								data:early,
+							},
+							{
+								name:'Late',
+								type:'bar',
+								stack: 'st1',
+								barMaxWidth: 30,
+								data:late,
+							},
+							{
+								name:'Absence',
+								type:'bar',
+								stack: 'st1',
+								barMaxWidth: 30,
+								data:absence,
+							}
+							,
+						]
+					};
+
+					eChart_4.setOption(option3);
+					eChart_4.resize();
+		}});
+	
+	
+	 var pos=[0,0,0,0,0,0,0,0,0,0,0,0,0];
+	 var neg=[0,0,0,0,0,0,0,0,0,0,0,0,0];
+	$.ajax({
+		url:[[@{/admin/get/staff/}]]+staffid+'/deficit',
+		type:'get',
+		success:function(data){
+			console.log('data---'+staffid);
+			 for ( var i in data) {
+			    if(data[i].quantity<0){
+			    	neg[data[i].id-1]=data[i].quantity;
+			    	
+			    }else{
+			    	
+			    	pos[data[i].id-1]=data[i].quantity;
+	
+			    }	
+ 				 				
+				
+				}
+			 var eChart_9 = echarts.init(document.getElementById('e_chart_9'));
+		 		var option8 = {
+		 			color: ['#098901', '#ff8866'],
+		 			tooltip: {
+		 				show: true,
+		 				trigger: 'axis',
+		 				backgroundColor: '#fff',
+		 				borderRadius:6,
+		 				padding:6,
+		 				axisPointer:{
+		 					lineStyle:{
+		 						width:0,
+		 					}
+		 				},
+		 				textStyle: {
+		 					color: '#324148',
+		 					fontFamily: '"Roboto", sans-serif',
+		 					fontSize: 12
+		 				}	
+		 			},
+		 			
+		 			xAxis: [{
+		 				type: 'value',
+		 				axisLine: {
+		 					show:false
+		 				},
+		 				axisTick: {
+		 					show:false
+		 				},
+		 				axisLabel: {
+		 					textStyle: {
+		 						color: '#007d8a'
+		 					}
+		 				},
+		 				splitLine: {
+		 					lineStyle: {
+		 						color: '#eaecec',
+		 					}
+		 				}
+		 			}],
+		 			yAxis: {
+		 				type: 'category',
+		 				data: labe,
+		 				axisLine: {
+		 					show:false
+		 				},
+		 				axisTick: {
+		 					show:false
+		 				},
+		 				axisLabel: {
+		 					textStyle: {
+		 						color: '#5e7d8a'
+		 					}
+		 				}
+		 			},
+		 			grid: {
+		 				top: '3%',
+		 				left: '3%',
+		 				right: '3%',
+		 				bottom: '3%',
+		 				containLabel: true
+		 			},
+		 			series: [{
+		 					name:'overtime',
+		 					type:'bar',
+		 					stack: 'st1',
+		 					barMaxWidth: 30,
+		 					data:pos,
+		 					itemStyle: {
+		 						normal: {
+		 							barBorderRadius: [0, 6, 6, 0] ,
+		 						}
+		 					},
+		 				},
+		 				{
+		 					name:'deficit',
+		 					type:'bar',
+		 					stack: 'st1',
+		 					barMaxWidth: 30,
+		 					data:neg,
+		 					itemStyle: {
+		 						normal: {
+		 							barBorderRadius: [6, 0, 0, 6] ,
+		 						}
+		 					},
+		 				}]
+		 		};
+		 		eChart_9.setOption(option8);
+		 		eChart_9.resize();
+		 		
+		 			
+			
+		}
+		
+	});
+	
+});
+
+
+function updcont(id){
+	var form = $('.former'+id);
+var formdata = false;
+formdata = new FormData(form[0]);
+
+	$.ajax({
+		url:[[@{/admin/staff/update/contact/}]]+id,
+		data:formdata,
+		type:'post',
+		processData : false,
+		contentType : false,
+		cache : false,
+		success:function(data){
+			//if(data==1){
+				$.toast({
+					heading: 'Success!',
+					text: '<p>Emergency contact updated successfully</p>',
+					position: 'top-right',
+					loaderBg:'#f68daf',
+					class: 'jq-toast-dark',
+					hideAfter: 3500, 
+					stack: 6,
+					showHideTransition: 'fade'
+				});
+		       
+				 form[0].reset();
+					$('#edit'+id).modal('toggle');
+			          $("#cont").load(window.location + " #cont");
+
+				
+		
+		}
+		
+	}); 
+	  
+	
+
+
+}
+
+	
+function decont(id){
+		$.ajax({
+		url:[[@{/admin/staff/delete/contact/}]]+id,
+		type:'get',
+		processData : false,
+		contentType : false,
+		cache : false,
+		success:function(data){
+			//if(data==1){
+				$.toast({
+					heading: 'Success!',
+					text: '<p>Contact Deleted successfully</p>',
+					position: 'top-right',
+					loaderBg:'#f68daf',
+					class: 'jq-toast-dark',
+					hideAfter: 3500, 
+					stack: 6,
+					showHideTransition: 'fade'
+				});
+		       
+				 form[0].reset();
+		          $("#cont").load(window.location + " #cont");
+
+				
+		
+		}
+		
+	}); 
+	  
+	
+
+
+}
+
+
+function addem(){
+	var ids=[[${id}]];
+
+	var form = $('.former');
+	var formdata = false;
+	formdata = new FormData(form[0]);
+	formdata.append("id",ids);
+		$.ajax({
+			url:[[@{/admin/staff/add/emergency/}]],
+			data:formdata,
+			type:'post',
+			processData : false,
+			contentType : false,
+			cache : false,
+			success:function(data){
+			
+					$.toast({
+						heading: 'Success!',
+						text: '<p>New Emergency contact added successfully</p>',
+						position: 'top-right',
+						loaderBg:'#f68daf',
+						class: 'jq-toast-dark',
+						hideAfter: 3500, 
+						stack: 6,
+						showHideTransition: 'fade'
+					});
+			       
+					 form[0].reset();
+
+						$('#emm').modal('toggle');
+				          $("#cont").load(window.location + " #cont");
+
+			
+			}
+			
+		}); 
+		  
+		
+
+	
+}
+	
+		
+function upKin(id){
+		var form = $('.former'+id);
+	var formdata = false;
+	formdata = new FormData(form[0]);
+	
+		$.ajax({ 
+			url:[[@{/admin/staff/update/kin/}]]+id,
+			data:formdata,
+			type:'post',
+			processData : false,
+			contentType : false,
+			cache : false,
+			success:function(data){
+				//if(data==1){
+					$.toast({
+						heading: 'Success!',
+						text: '<p>Kin updated successfully</p>',
+						position: 'top-right',
+						loaderBg:'#f68daf',
+						class: 'jq-toast-dark',
+						hideAfter: 3500, 
+						stack: 6,
+						showHideTransition: 'fade'
+					});
+			       
+					 form[0].reset();
+					
+						$('#kinedit'+id).modal('toggle');
+				          $("#kins").load(window.location + " #kins");
+
+			}
+			
+		}); 
+		  
+		
+
+	
+}
+		
+		
+function delKin(id){
+			$.ajax({
+				
+			url:[[@{/admin/staff/delete/kin/}]]+id,
+			type:'get',
+			processData : false,
+			contentType : false,
+			cache : false,
+			success:function(data){
+				//if(data==1){
+					$.toast({
+						heading: 'Success!',
+						text: '<p>Kin Deleted successfully</p>',
+						position: 'top-right',
+						loaderBg:'#f68daf',
+						class: 'jq-toast-dark',
+						hideAfter: 3500, 
+						stack: 6,
+						showHideTransition: 'fade'
+					});
+			       
+					 form[0].reset();
+			          $("#kins").load(window.location + " #kins");
+
+					
+			
+			}
+			
+		}); 
+		  
+		
+
+	
+}
+		
+
+function addkin(id){
+	var form = $('.kin');
+	var formdata = false;
+	formdata = new FormData(form[0]);
+	formdata.append("id",id);
+		$.ajax({
+			url:[[@{/admin/staff/add/kin}]],
+			data:formdata,
+			type:'post',
+			processData : false,
+			contentType : false,
+			cache : false,
+			success:function(data){
+			
+					$.toast({
+						heading: 'Success!',
+						text: '<p>New Kin added successfully</p>',
+						position: 'top-right',
+						loaderBg:'#f68daf',
+						class: 'jq-toast-dark',
+						hideAfter: 3500, 
+						stack: 6,
+						showHideTransition: 'fade'
+					});
+			       
+					 form[0].reset();
+					 $('#addkin').modal('toggle');
+					   $("#kins").load(window.location + " #kins");
+
+					
+			
+			}
+			
+		}); 
+		  
+		
+
+	
+}
+	
+function addEdu(id){
+	
+
+	var form = $('.edu');
+	var formdata = false;
+	formdata = new FormData(form[0]);
+	formdata.append("id",id);
+		$.ajax({
+			url:[[@{/admin/staff/add/education}]],
+			data:formdata,
+			type:'post',
+			processData : false,
+			contentType : false,
+			cache : false,
+			success:function(data){
+			
+					$.toast({
+						heading: 'Success!',
+						text: '<p>New education information added successfully</p>',
+						position: 'top-right',
+						loaderBg:'#f68daf',
+						class: 'jq-toast-dark',
+						hideAfter: 3500, 
+						stack: 6,
+						showHideTransition: 'fade'
+					});
+			       
+					 form[0].reset();
+					 $('#addedu').modal('toggle');
+			          $("#edus").load(window.location + " #edus");
+			
+			}
+			
+		}); 
+		  
+		
+
+	
+}
+	
+function deledu(id){
+	$.ajax({
+		url:[[@{/admin/staff/delete/education/}]]+id,
+		type:'get',
+		processData : false,
+		contentType : false,
+		cache : false,
+		success:function(data){
+			//if(data==1){
+				$.toast({
+					heading: 'Success!',
+					text: '<p>Education information Deleted successfully</p>',
+					position: 'top-right',
+					loaderBg:'#f68daf',
+					class: 'jq-toast-dark',
+					hideAfter: 3500, 
+					stack: 6,
+					showHideTransition: 'fade'
+				});
+		       
+				 form[0].reset();
+		          $("#edus").load(window.location + " #edus");
+
+				
+		
+		}
+		
+	}); 
+	  
+	
+
+
+}
+	
+	
+function upedu(id){
+	var form = $('.former'+id);
+var formdata = false;
+formdata = new FormData(form[0]);
+
+	$.ajax({ 
+		url:[[@{/admin/staff/update/education/}]]+id,
+		data:formdata,
+		type:'post',
+		processData : false,
+		contentType : false,
+		cache : false,
+		success:function(data){
+			//if(data==1){
+				$.toast({
+					heading: 'Success!',
+					text: '<p>Education information updated successfully</p>',
+					position: 'top-right',
+					loaderBg:'#f68daf',
+					class: 'jq-toast-dark',
+					hideAfter: 3500, 
+					stack: 6,
+					showHideTransition: 'fade'
+				});
+		       
+				 form[0].reset();
+				 $('#eduedit'+id).modal('toggle');
+				   $("#edus").load(window.location + " #edus");
+
+				
+		
+		}
+		
+	}); 
+	  
+	
+
+
+}
+		
+</script>
+		<div class="col-xl-12 pa-0">
+			<div class="profile-cover-wrap overlay-wrap">
+				<div class="profile-cover-img bg-brown"></div>
+				<div class="bg-overlay bg-trans-dark-60"></div>
+				<div class="container profile-cover-content py-50">
+					<div class="hk-row">
+						<div class="col-lg-6">
+							<div class="media align-items-center">
+								<div class="media-img-wrap  d-flex">
+									<div class="avatar">
+										<img th:src="'http://localhost/pics/'+${staff.picture}"
+											alt="user" class="avatar-img rounded-circle">
+									</div>
+								</div>
+								<div class="media-body">
+									<div
+										class="text-white text-capitalize display-6 mb-5 font-weight-400"
+										th:text="${staff.name}">Cecilia Rios</div>
+									<div class="font-14 text-white">
+										<span class="mr-5"><span class="font-weight-500 pr-5">Email</span><span
+											class="mr-5" th:text="${staff.email}">Followers</span></span><span><span
+											class="font-weight-500 pr-5">Contact :</span><span
+											th:text="${staff.mobile}">Following</span></span>
+									</div>
+								</div>
+							</div>
+						</div>
+						
+						                                   
+						
+						<div class="col-lg-6" id="id" th:data-id="${staff.bioID}">
+							<div class="button-list" th:if="${#authorization.expression('hasAuthority(''Manager'')')}">
+								<button   data-toggle="modal" data-target="#sendEmail"
+									class="btn btn-dark btn-wth-icon icon-wthot-bg btn-rounded"><span
+									class="btn-text">Message</span><span class="icon-label"><i
+										class="icon ion-md-mail"></i> </span></button> 
+										<button   data-toggle="modal" data-target="#exampleModalLarge01"
+									class="btn btn-info btn-wth-icon icon-wthot-bg btn-rounded"><span
+									class="btn-icon-wrap">Telegram <i class="fa fa-bullhorn"></i></span></button>
+											
+									
+								<button   data-toggle="modal" data-target="#sendSms"
+									class="btn btn-yellow btn-wth-icon icon-wthot-bg btn-rounded"><span
+									class="btn-icon-wrap">SMS <i class="icon ion-md-mail"></i></span></button>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="bg-white shadow-bottom">
+				<div class="container">
+					<ul class="nav nav-light nav-tabs" role="tablist">
+						<li class="nav-item active"><a href="#attendance" data-toggle="tab"
+							class="d-flex h-60p align-items-center nav-link active">Raw Attendance Data</a>
+						</li>
+						<li class="nav-item"><a href="#aggre" data-toggle="tab"
+							class="d-flex h-60p align-items-center nav-link">Monthly Aggregate</a></li>
+						<li class="nav-item"><a href="#graph" data-toggle="tab"
+							class="d-flex h-60p align-items-center nav-link">Data Visualize</a></li>
+						<li class="nav-item"><a href="#leaves" data-toggle="tab"
+							class="d-flex h-60p align-items-center nav-link">Leaves</a>
+							</li>
+							<li class="nav-item"><a href="#education" data-toggle="tab"
+							class="d-flex h-60p align-items-center nav-link">Education</a></li>
+								<li class="nav-item"><a href="#kins" data-toggle="tab"
+							class="d-flex h-60p align-items-center nav-link">Kins</a></li>
+								<li class="nav-item"><a href="#contacts" data-toggle="tab"
+							class="d-flex h-60p align-items-center nav-link">Emergency Contacts</a></li>
+					</ul>
+				</div>
+			</div>
+			<div class="tab-content mt-sm-60 mt-30">
+				<div >
+					<div>
+						<div class="hk-row">
+							<div class="col-lg-9 tab-content">
+								<div class="card tab-pane show active fade" id="attendance" >
+									<div class="card-header">
+										<div class="media align-items-center">
+											
+											<div class="table table-responsive">
+
+												<table id="datable_1"class="table table-hover">
+													<thead class="w-100">
+														<tr>
+															<th>#</th>
+															<th>Date</th>
+															<th>Time In</th>
+															<th>Time Out</th>
+															<th>Hours worked</th>
+															<th>Deficit</th>
+															<th>Lateness</th>
+														</tr>
+													</thead>
+													<tbody class="w-100">
+
+														<tr th:each="a,i:${attendance}">
+															<td th:text="${i.index+1}">System Architect</td>
+
+															<td th:text="${a.date}"
+																style="text-transform: capitalize;">System
+																Architect</td>
+
+															<td th:text="${a.timeIn}">System Architect</td>
+															<td th:text="${a.timeOut}">Edinburgh</td>
+															<td th:text="${a.hoursWorked}">61</td>
+															<td th:text="${a.deficit}">2011/04/25</td>
+
+															<td th:switch="${a.label}"><span
+																class="badge badge-success" th:case="Early"
+																th:text="${a.lateness}"></span> <span
+																class="badge badge-danger" th:case="Absent"
+																th:text="${a.lateness}"></span> <span
+																class="badge badge-warning" th:case="*"
+																th:text="${a.lateness}">Completed</span></td>
+
+														</tr>
+													</tbody>
+													<tfoot>
+														<tr>
+															<th>#</th>
+															<th>Date</th>
+															<th>Time In</th>
+															<th>Time Out</th>
+															<th>Hours worked</th>
+															<th>Deficit</th>
+															<th>Lateness</th>
+
+														</tr>
+													</tfoot>
+												</table>
+
+
+											</div>
+										</div>
+									</div>
+								</div>
+								
+								
+											<div class="card tab-pane fade" id="aggre">
+									<div class="card-header">
+										<div class="media align-items-center">
+											
+											<div class="table table-responsive">
+
+												<table id="datable_2"
+													class="table table-hover w-100 display pb-30">
+													<thead>
+														<tr>
+															<th>#</th>
+															<th>Year</th>
+															<th>Month</th>
+															<th>Avg Time In</th>
+															<th>lateness</th>
+															<th>Absents</th>
+															<th>Deficit</th>
+															<th>Lateness</th>
+														</tr>
+													</thead>
+													<tbody>
+
+														<tr th:each="a,i:${monthagg}">
+															<td th:text="${i.index+1}">System Architect</td>
+
+															<td th:text="${a.year}"
+																style="text-transform: capitalize;">System
+																Architect</td>
+																		<td th:text="${a.month}"
+																style="text-transform: capitalize;">System
+																Architect</td>
+															<td th:text="${a.avgTimeIn}">Completed</td>
+															<td th:text="${a.latenessount}">Edinburgh</td>
+															<td th:text="${a.absents}">61</td>
+															<td th:text="${a.deficit}">2011/04/25</td>
+
+															<td th:text="${a.latenessMins}">System Architect</td>
+
+															
+
+														</tr>
+													</tbody>
+													<tfoot>
+														<tr>
+																<th>#</th>
+															<th>Year</th>
+															<th>Month</th>
+															<th>Avg Time In</th>
+															<th>lateness</th>
+															<th>Absents</th>
+															<th>Deficit</th>
+															<th>Lateness</th>
+														</tr>
+													</tfoot>
+												</table>
+
+
+											</div>
+										</div>
+									</div>
+								</div>
+							
+							
+							
+							
+					<div class="card tab-pane fade" id="kins">
+					<button type="button" class="btn btn-primary m-2" data-toggle="modal"
+					data-target="#addkin">Add Kin</button>
+					
+					
+						<div class="modal fade" id="addkin" tabindex="-1"
+			role="dialog" aria-labelledby="addkin"
+			aria-hidden="true">
+			<div class="modal-dialog modal-lg" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title">Add New Kin</h5>
+						<button type="button" class="close" data-dismiss="modal"
+							aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+					<div class="modal-body">
+						<div class="row">
+							<div class="col-xl-12">
+								<section class="hk-sec-wrapper">
+									<div class="row">
+										<div class="col-sm">
+											<form class="kin">
+												<div class="row">
+													<div class="col-md-12 form-group">
+														<label for="firstName">Name</label> <input
+															class="form-control" id="firstName" name="name"
+															placeholder="" value="" type="text">
+													</div>
+
+												</div>
+
+
+
+												<div class="row">
+													<div class="col-md-6 mb-10">
+														<label for="country">Gender</label> <select
+															class="form-control custom-select d-block w-100"
+															id="type" name="gender">
+															<option value="Male">Male</option>
+															<option value="Female">Female</option>
+
+														</select>
+													</div>
+													<div class="col-md-6 mb-10">
+														<label for="zip">Relationship</label> <select
+															class="form-control custom-select d-block w-100"
+															id="type" name="relation">
+															<option >Child</option>
+															<option >Spouse</option>
+															<option >Parent</option>
+															<option >Grand Parent</option>
+															<option >Cousin</option>
+															<option >In-Law</option>
+															<option >Friend</option>
+															<option >Uncle</option>
+															<option >Aunt</option>
+															<option >Partner</option>
+															<option >Niece</option>
+															<option >Nephew</option>
+														</select>
+													</div>
+
+
+
+
+												</div>
+												<div class="row">
+													<div class="col-md-12 mb-10">
+														<label for="type">contact</label> <input
+															class="form-control" id="zip" placeholder=""
+															type="text" name="contact">
+
+													</div>
+
+
+												</div>
+
+											</form>
+										</div>
+									</div>
+								</section>
+							</div>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-secondary"
+							data-dismiss="modal">Close</button>
+						<button type="button" class="btn btn-primary" th:onclick="'addkin('+${id}+')'">Save Kin</button>
+					</div>
+				</div>
+			</div>
+		</div>
+					
+					
+					
+									<div class="card-header">
+										<div class="media align-items-center">
+											
+											<div class="table table-responsive">
+
+													<table id="kins"
+										class="table table-hover w-100 display pb-30">
+										<thead>
+											<tr>
+												<th>#</th>
+												<th>Name</th>
+												<th>Gender</th>
+												<th>Relationship</th>
+												<th>Contact</th>
+												<th>Date Added</th>
+												<th></th>
+
+											</tr>
+										</thead>
+										<tbody>
+											<tr th:each="a,i:${kins}">
+												<td th:text="${i.index+1}">Tiger Nixon</td>
+												<td th:text="${a.name}">System Architect</td>
+												<td th:text="${a.gender}">Edinburgh</td>
+												<td th:text="${a.relationship}">61</td>
+												<td th:text="${a.contact}">2011/04/25</td>
+												<td th:text="${a.dateAdded}">$320,800</td>
+												<td><button class="btn btn-sm  btn-primary" data-toggle="modal" th:data-target="'#kinedit'+${a.id}">Update</button> 
+												
+													<div class="modal fade" th:id="kinedit+${a.id}" tabindex="-1"
+			role="dialog" aria-labelledby="exampleModalLarge01"
+			aria-hidden="true">
+			<div class="modal-dialog modal-lg" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title">Update Kin Information</h5>
+						<button type="button" class="close" data-dismiss="modal"
+							aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+					<div class="modal-body">
+						<div class="row">
+							<div class="col-xl-12">
+								<section class="hk-sec-wrapper">
+									<div class="row">
+										<div class="col-sm">
+											<form th:class="'former'+${a.id}">
+												<div class="row">
+													<div class="col-md-12 form-group">
+														<label for="firstName">Name</label> <input
+															class="form-control" id="firstName" name="name"
+															placeholder="" th:value="${a.name}" type="text">
+													</div>
+
+												</div>
+
+
+
+												<div class="row">
+													<div class="col-md-6 mb-10">
+														<label for="country">Gender</label> <select
+															class="form-control custom-select d-block w-100"
+															id="type" name="gender" th:value="${a.gender}">
+															<option value="Male">Male</option>
+															<option value="Female">Female</option>
+
+														</select>
+													</div>
+													<div class="col-md-6 mb-10">
+														<label for="zip">Relationship</label> <select
+															class="form-control custom-select d-block w-100"
+															id="type" name="relation" >
+															<option >Child</option>
+															<option >Spouse</option>
+															<option >Parent</option>
+															<option >Grand Parent</option>
+															<option >Cousin</option>
+															<option >In-Law</option>
+															<option >Friend</option>
+															<option >Uncle</option>
+															<option >Aunt</option>
+															<option >Partner</option>
+															<option >Niece</option>
+															<option >Nephew</option>
+														</select>
+													</div>
+
+
+
+
+												</div>
+												<div class="row">
+													<div class="col-md-12 mb-10">
+														<label for="type">contact</label> <input
+															class="form-control" id="zip" placeholder=""
+															type="text" name="contact" th:value="${a.contact}">
+
+													</div>
+
+
+												</div>
+
+											</form>
+										</div>
+									</div>
+								</section>
+							</div>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-secondary"
+							data-dismiss="modal">Close</button>
+						<button type="button" class="btn btn-primary" th:onclick="'upKin('+${a.id}+')'">Update Kin</button>
+					</div>
+				</div>
+			</div>
+		</div>
+												
+												
+												<button class="btn btn-sm btn-danger" data-toggle="modal"
+					th:data-target="'#kinconfirm'+${a.id}">Delete</button>
+												
+													<div class="modal fade" th:id="'kinconfirm'+${a.id}" tabindex="-1"
+			role="dialog" aria-labelledby="exampleModalLarge01"
+			aria-hidden="true">
+			<div class="modal-dialog modal-sm" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title">Confirm Delete</h5>
+						<button type="button" class="close" data-dismiss="modal"
+							aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+					<div class="modal-body bg-red">
+					<p class="text-white" >Are you sure you want to delete?</p>
+						</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-secondary"
+							data-dismiss="modal">Cancel</button>
+						<button type="button" class="btn btn-danger" th:onclick="'delKin('+${a.id}+')'" data-dismiss="modal">Delete Kin</button>
+					</div>
+				</div>
+			</div>
+		</div>
+												
+												
+												
+													
+												
+										
+													
+												
+												
+												</td>
+											</tr>
+
+										</tbody>
+										<tfoot>
+											<tr>
+												<th>#</th>
+												<th>Name</th>
+												<th>Gender</th>
+												<th>Relationship</th>
+												<th>Contact</th>
+												<th>Date Added</th>
+												<th></th>
+
+											</tr>
+										</tfoot>
+									</table>
+							
+											</div>
+										</div>
+									</div>
+								</div>
+							
+					<div class="card tab-pane fade" id="education">
+						<button type="button" class="btn btn-primary m-2" data-toggle="modal"
+					data-target="#addedu">Add Education  Information </button>
+									<div class="card-header">
+										<div class="media align-items-center">
+											
+											<div class="table table-responsive">
+
+
+
+
+
+<table id="edus"
+										class="table table-hover w-100 display pb-30">
+										<thead>
+											<tr>
+												<th>#</th>
+												<th>Institution</th>
+												<th>Award</th>
+												<th>From</th>
+												<th>To</th>
+												<th>Date Added</th>
+												<th></th>
+
+											</tr>
+										</thead>
+										<tbody>
+											<tr th:each="a,i:${edu}">
+												<td th:text="${i.index+1}">Tiger Nixon</td>
+												<td th:text="${a.institution}">System Architect</td>
+												<td th:text="${a.cetification}">Edinburgh</td>
+												<td th:text="${a.start}">61</td>
+												<td th:text="${a.end}">2011/04/25</td>
+												<td th:text="${a.dateAdded}">$320,800</td>
+												<td><button class="btn btn-sm  btn-primary"
+														data-toggle="modal" th:data-target="'#eduedit'+${a.id}">Update</button>
+
+													<div class="modal fade" th:id="eduedit+${a.id}" tabindex="-1"
+														role="dialog" aria-labelledby="exampleModalLarge01"
+														aria-hidden="true">
+														<div class="modal-dialog modal-lg" role="document">
+															<div class="modal-content">
+																<div class="modal-header">
+																	<h5 class="modal-title">Update Education Information</h5>
+																	<button type="button" class="close"
+																		data-dismiss="modal" aria-label="Close">
+																		<span aria-hidden="true">&times;</span>
+																	</button>
+																</div>
+																<div class="modal-body">
+																	<div class="row">
+																		<div class="col-xl-12">
+																			<section class="hk-sec-wrapper">
+																				<div class="row">
+																					<div class="col-sm">
+																						<form th:class="'former'+${a.id}">
+																						<div class="row">
+													<div class="col-md-12 form-group">
+														<label for="firstName">Institution</label>  															<select
+															class="form-control custom-select d-block w-100"
+															id="type" name="name">
+														
+																	<option  th:each="k:${schools}" th:text="${k.value}" th:value="${k.value}" th:selected="${k.value}==${a.institution}">--
+																select one --</option>
+														</select>
+													</div>
+
+												</div>
+
+
+
+												<div class="row">
+													<div class="col-md-6 mb-10">
+														<label for="country">Start</label> <input
+															class="form-control" id="zip" placeholder="" type="date" th:value="${a.start}"
+															name="start">
+													</div>
+													<div class="col-md-6 mb-10">
+														<label for="zip">End</label> <input
+															class="form-control" id="zip" placeholder="" type="date" th:value="${a.end}"
+															name="end">
+													</div>
+
+
+
+
+												</div>
+												<div class="row">
+													<div class="col-md-12 mb-10">
+														<label for="type">Certification</label> <select
+															class="form-control custom-select d-block w-100"
+															id="type" name="cert">
+															<option value="" selected="selected" disabled="disabled">--
+																select one --</option>
+															<option value="No formal education">No formal
+																education</option>
+															<option value="Primary education">Primary
+																education</option>
+															<option value="Secondary education">Secondary
+																education or high school</option>
+															<option value="GED">GED</option>
+															<option value="Vocational qualification">Vocational
+																qualification</option>
+															<option value="Bachelor's degree">Bachelor's
+																degree</option>
+															<option value="Master's degree">Master's degree</option>
+															<option value="Doctorate or higher">Doctorate or
+																higher</option>
+														</select>
+
+
+													</div>
+</div>
+																					
+																						</form>
+																					</div>
+																				</div>
+																			</section>
+																		</div>
+																	</div>
+																</div>
+																<div class="modal-footer">
+																	<button type="button" class="btn btn-secondary"
+																		data-dismiss="modal">Close</button>
+																	<button type="button" class="btn btn-primary"
+																		th:onclick="'upedu('+${a.id}+')'">Update Education Info</button>
+																</div>
+															</div>
+														</div>
+													</div>
+
+
+													<button class="btn btn-sm btn-danger" data-toggle="modal"
+														th:data-target="'#confirm'+${a.id}">Delete</button>
+
+													<div class="modal fade" th:id="'confirm'+${a.id}"
+														tabindex="-1" role="dialog"
+														aria-labelledby="exampleModalLarge01" aria-hidden="true">
+														<div class="modal-dialog modal-sm" role="document">
+															<div class="modal-content">
+																<div class="modal-header">
+																	<h5 class="modal-title">Confirm Delete</h5>
+																	<button type="button" class="close"
+																		data-dismiss="modal" aria-label="Close">
+																		<span aria-hidden="true">&times;</span>
+																	</button>
+																</div>
+																<div class="modal-body bg-red">
+																	<p class="text-white">Are you sure you want to
+																		delete?</p>
+																</div>
+																<div class="modal-footer">
+																	<button type="button" class="btn btn-secondary"
+																		data-dismiss="modal">Cancel</button>
+																	<button type="button" class="btn btn-danger"
+																		th:onclick="'deledu('+${a.id}+')'"
+																		data-dismiss="modal">Delete Education Info</button>
+																</div>
+															</div>
+														</div>
+													</div></td>	</tr>
+
+										</tbody>
+										<tfoot>
+											<tr>
+												<th>#</th>
+												<th>Institution</th>
+												<th>Award</th>
+												<th>From</th>
+												<th>To</th>
+												<th>Date Added</th>
+												<th></th>
+
+											</tr>
+										</tfoot>
+									</table>
+								
+<div class="modal fade" id="addedu" tabindex="-1"
+			role="dialog" aria-labelledby="exampleModalLarge01"
+			aria-hidden="true">
+			<div class="modal-dialog modal-lg" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title">Add New Education Certificate</h5>
+						<button type="button" class="close" data-dismiss="modal"
+							aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+					<div class="modal-body">
+						<div class="row">
+							<div class="col-xl-12">
+								<section class="hk-sec-wrapper">
+									<div class="row">
+										<div class="col-sm">
+											<form class="edu">
+												<div class="row">
+													<div class="col-md-12 form-group">
+														<label for="firstName">Institution</label> 
+														<select
+															class="form-control custom-select d-block w-100"
+															id="type" name="name">
+															<option value="" selected="selected" disabled="disabled">--
+																select one --</option>
+																	<option  th:each="a:${schools}" th:text="${a.value}" th:value="${a.value}">--
+																select one --</option>
+														</select>
+													</div>
+
+												</div>
+
+
+
+												<div class="row">
+													<div class="col-md-6 mb-10">
+														<label for="country">Start</label> <input
+															class="form-control" id="zip" placeholder="" type="date"
+															name="start">
+													</div>
+													<div class="col-md-6 mb-10">
+														<label for="zip">End</label> <input
+															class="form-control" id="zip" placeholder="" type="date"
+															name="end">
+													</div>
+
+
+
+
+												</div>
+												<div class="row">
+													<div class="col-md-12 mb-10">
+														<label for="type">Certificate</label> <select
+															class="form-control custom-select d-block w-100"
+															id="type" name="cert">
+															<option value="" selected="selected" disabled="disabled">--
+																select one --</option>
+															<option value="No formal education">No formal
+																education</option>
+															<option value="Primary education">Primary
+																education</option>
+															<option value="Secondary education">Secondary
+																education or high school</option>
+															<option value="GED">GED</option>
+															<option value="Vocational qualification">Vocational
+																qualification</option>
+															<option value="Bachelor's degree">Bachelor's
+																degree</option>
+															<option value="Master's degree">Master's degree</option>
+															<option value="Doctorate or higher">Doctorate or
+																higher</option>
+														</select>
+
+
+													</div>
+
+
+												</div>
+
+											</form>
+										</div>
+									</div>
+								</section>
+							</div>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-secondary"
+							data-dismiss="modal">Close</button>
+						<button type="button" class="btn btn-primary" th:onclick="'addEdu('+${id}+')'">Save
+							Education Info</button>
+					</div>
+				</div>
+			</div>
+		</div>
+
+
+
+
+
+
+
+
+						
+												
+													</div>
+										</div>
+									</div>
+								</div>
+							
+									
+					
+					
+						<div class="card tab-pane fade" id="contacts">
+				
+				
+					<button type="button" class="btn btn-primary m-2 text-right" data-toggle="modal"
+					data-target="#emm">Add Emergency Contact</button>
+				
+					<div class="modal fade" id="emm" tabindex="-1"
+			role="dialog" aria-labelledby="emm"
+			aria-hidden="true">
+			<div class="modal-dialog modal-lg" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title">Add New Contact</h5>
+						<button type="button" class="close" data-dismiss="modal"
+							aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+					<div class="modal-body">
+						<div class="row">
+							<div class="col-xl-12">
+								<section class="hk-sec-wrapper">
+									<div class="row">
+										<div class="col-sm">
+											<form class="former">
+												<div class="row">
+													<div class="col-md-12 form-group">
+														<label for="firstName">Name</label> <input
+															class="form-control" id="firstName" name="name"
+															placeholder="" value="" type="text">
+													</div>
+
+												</div>
+
+
+		<div class="row">
+													<div class="col-md-12 mb-10">
+														<label for="type">contact</label> <input
+															class="form-control" id="zip" placeholder=""
+															type="text" name="contact">
+
+													</div>
+
+
+												</div>
+
+											</form>
+										</div>
+									</div>
+								</section>
+							</div>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-secondary"
+							data-dismiss="modal">Close</button>
+						<button type="button" class="btn btn-primary" onclick="addem()">Save Contact</button>
+					</div>
+				</div>
+			</div>
+		</div>
+				
+									<div >
+										<div >
+											
+											<div class="table table-responsive">
+	<table 	id="conts" class="table table-hover w-100">
+										<thead class="w-100">
+											<tr>
+												<th>#</th>
+												<th>Name</th>
+											
+												<th>Contact</th>
+												<th>Date Added</th>
+												<th></th>
+
+											</tr>
+										</thead>
+										<tbody class="w-100">
+											<tr th:each="a,i:${contacts}" >
+												<td th:text="${i.index+1}">Tiger Nixon</td>
+												<td th:text="${a.name}">System Architect</td>
+												<td th:text="${a.contact}">Edinburgh</td>
+												
+												<td th:text="${a.dateAdded}">$320,800</td>
+												<td>
+												
+												<button class="btn btn-sm  btn-primary" data-toggle="modal" th:data-target="'#edit'+${a.id}">Update</button> 
+												
+													<div class="modal fade" th:id="edit+${a.id}" tabindex="-1"
+			role="dialog" aria-labelledby="exampleModalLarge01"
+			aria-hidden="true">
+			<div class="modal-dialog modal-lg" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title">Update Emergency Contact Information</h5>
+						<button type="button" class="close" data-dismiss="modal"
+							aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+					<div class="modal-body">
+						<div class="row">
+							<div class="col-xl-12">
+								<section class="hk-sec-wrapper">
+									<div class="row">
+										<div class="col-sm">
+											<form th:class="'former'+${a.id}">
+												<div class="row">
+													<div class="col-md-12 form-group">
+														<label for="firstName">Name</label> <input
+															class="form-control" id="firstName" name="name"
+															placeholder="" th:value="${a.name}" type="text">
+													</div>
+
+												</div>
+
+			<div class="row">
+													<div class="col-md-12 mb-10">
+														<label for="type">contact</label> <input
+															class="form-control" id="zip" placeholder=""
+															type="text" name="contact" th:value="${a.contact}">
+
+													</div>
+
+
+												</div>
+
+											</form>
+										</div>
+									</div>
+								</section>
+							</div>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-secondary"
+							data-dismiss="modal">Close</button>
+						<button type="button" class="btn btn-primary" th:onclick="'updcont('+${a.id}+')'">Update Contact</button>
+					</div>
+				</div>
+			</div>
+		</div>
+												
+											
+													<button class="btn btn-sm btn-danger" data-toggle="modal"
+					th:data-target="'#confirm'+${a.id}">Delete</button>
+												
+													<div class="modal fade" th:id="'confirm'+${a.id}" tabindex="-1"
+			role="dialog" aria-labelledby="exampleModalLarge01"
+			aria-hidden="true">
+			<div class="modal-dialog modal-sm" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title">Confirm Delete</h5>
+						<button type="button" class="close" data-dismiss="modal"
+							aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+					<div class="modal-body bg-red">
+					<p class="text-white" >Are you sure you want to delete?</p>
+						</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-secondary"
+							data-dismiss="modal">Cancel</button>
+						<button type="button" class="btn btn-danger" th:onclick="'delcont('+${a.id}+')'" data-dismiss="modal">Delete Contact</button>
+					</div>
+				</div>
+			</div>
+		</div>
+												
+											
+													
+												</td>
+											</tr>
+
+										</tbody>
+										<tfoot>
+											<tr>
+												<th>#</th>
+												<th>Name</th>
+												
+												<th>Contact</th>
+												<th>Date Added</th>
+												<th></th>
+
+											</tr>
+										</tfoot>
+									</table>
+								
+												
+												
+												
+													</div>
+										</div>
+									</div>
+								</div>
+							
+					
+					
+							
+							
+							<div class="card tab-pane fade" id="graph">
+									<div class="card-header card-header-action">
+										<div class="media align-items-center">
+											
+											  <section class="hk-sec-wrapper">
+                            <h6 class="hk-sec-title">Horizontal Stacked Bar Chart</h6>
+                            <div class="row">
+                                <div class="col-sm">
+                                    <div id="e_chart_4" class="echart" style="height:400px; width:800px;"></div>
+                                </div>
+                            </div>
+                            
+                            <hr class="hr-primary hr-3">
+                            <div class="row">
+                                <div class="col-sm">
+                                    <div id="e_chart_9" class="echart" style="height:400px; width:650px;"></div>
+                                </div>
+                            </div>
+                        </section>
+                        
+                        
+										</div>
+										
+										
+									</div>
+								</div>
+							
+							
+							
+			
+											<div class="card tab-pane fade" id="leaves">
+									<div class="card-header">
+										<div class="media align-items-center">
+											
+																					<div class="table table-responsive">
+
+
+												<table id="datable"
+													class="table table-hover w-100 display pb-30">
+													<thead>
+														<tr>
+															<th>#</th>
+															<th>Leave Type</th>
+															<th>From</th>
+															<th>To</th>
+															<th>Days</th>
+															<th>Date Approved</th>
+														</tr>
+													</thead>
+													<tbody>
+
+														<tr th:each="a,i:${leaves}">
+															<td th:text="${i.index+1}">System Architect</td>
+
+															<td th:text="${a.leave}"
+																style="text-transform: capitalize;">System
+																Architect</td>
+																	
+															<td th:text="${a.start}">Completed</td>
+															<td th:text="${a.end}">Edinburgh</td>
+															<td ></td>
+															<td ></td>
+
+															
+
+														</tr>
+													</tbody>
+													<tfoot>
+														<tr>
+																<th>#</th>
+															<th>Leave Type</th>
+															<th>From</th>
+															<th>To</th>
+															<th>Days</th>
+															<th>Date Approved</th>
+														</tr>
+													</tfoot>
+												</table>
+
+
+											</div>
+										</div>
+									</div>
+								</div>
+							
+							
+											
+							
+							
+							
+							
+								
+							</div>
+							<div class="col-lg-3">
+								<div class="card card-profile-feed">
+									<div class="card-header card-header-action">
+										<div class="media align-items-center">
+											<div class="media-img-wrap d-flex mr-10">
+												<div class="avatar avatar-sm">
+													<img th:src="'http://localhost/pics/'+${staff.picture}"
+														alt="user" class="avatar-img rounded-circle">
+												</div>
+											</div>
+											<div class="media-body">
+												<div class="text-capitalize font-weight-500 text-dark"
+													th:text="${staff.name}">Angelic Lauver</div>
+												<div class="font-13" th:text="${staff.staffType}">Business
+													Manager</div>
+											</div>
+										</div>
+										
+									</div>
+									<div class="row text-center">
+										<div class="col-4 border-right pr-0">
+											<div class="pa-15">
+												<span class="d-block display-6 text-dark mb-5" th:text="${age}">154</span> <span
+													class="d-block text-capitalize font-14">Age</span>
+											</div>
+										</div>
+										<div class="col-4 border-right px-0">
+											<div class="pa-15">
+												<span class="d-block display-6 text-dark mb-5"
+													th:text="${staff.gender}">65</span> <span
+													class="d-block text-capitalize font-14">Gender</span>
+											</div>
+										</div>
+										<div class="col-4 pl-0">
+											<div class="pa-15">
+												<span class="d-block display-6 text-dark mb-5" th:text="${year}">433</span> <span
+													class="d-block text-capitalize font-14">Years Spent</span>
+											</div>
+										</div>
+									</div>
+									<ul class="list-group list-group-flush">
+										<li class="list-group-item"><span><i
+												class="ion ion-md-calendar font-18 text-light-20 mr-10"></i><span>Department:</span></span><span
+											class="ml-5 text-dark" th:text="${staff.department}">Oh,
+												Canada</span></li>
+										<li class="list-group-item"><span><i
+												class="ion ion-md-briefcase font-18 text-light-20 mr-10"></i><span>Joined
+													on:</span></span><span class="ml-5 text-dark"
+											th:text="${staff.dateJoined}">Companey</span></li>
+											
+											<li class="list-group-item"><span><i
+												class="ion ion-md-briefcase font-18 text-light-20 mr-10"></i><span>Relationship Status:
+													</span></span><span class="ml-5 text-dark"
+											th:text="${staff.relationshipStatus}">Companey</span></li>
+											
+										<li class="list-group-item"><span><i
+												class="ion ion-md-home font-18 text-light-20 mr-10"></i><span>Religion
+													in:</span></span><span class="ml-5 text-dark" th:text="${staff.religion}">San Francisco, CA</span></li>
+										<li class="list-group-item"><span><i
+												class="ion ion-md-pin font-18 text-light-20 mr-10"></i><span>From:</span></span><span
+											class="ml-5 text-dark" th:text="${staff.nationality}">Settle,
+												WA</span></li>
+									<li class="list-group-item"><span><i
+												class="ion ion-md-pin font-18 text-light-20 mr-10"></i><span>Qualification:</span></span><span
+											class="ml-5 text-dark" th:text="${staff.highestQualification}">Settle,
+												WA</span></li>
+									<li class="list-group-item"><span><i
+												class="ion ion-md-pin font-18 text-light-20 mr-10"></i><span>Category:</span></span><span
+											class="ml-5 text-dark" th:text="${staff.category}">Settle,
+												WA</span></li>
+<li class="list-group-item"><span><i
+												class="ion ion-md-pin font-18 text-light-20 mr-10"></i><span>Supervisor:</span></span><span
+											class="ml-5 text-dark" ></span></li>
+
+									</ul>
+								</div>
+
+
+
+
+								<div class="card card-profile-feed">
+									<div class="row text-center">
+										<div class="col-4 border-right pr-0">
+											<div class="pa-15" th:classappend="${(def>0)?'bg-success':'bg-danger'}" >
+												<span class="d-block display-6 text-white mb-5"
+													th:text="${def}">154</span> <span
+													class="d-block text-capitalize font-14">Deficit</span>
+											</div>
+										</div>
+										<div class="col-4 border-right px-0">
+											<div class="pa-15">
+												<span class="d-block display-6 text-dark mb-5"
+													th:text="${late}">65</span> <span
+													class="d-block text-capitalize font-14">Lateness</span>
+											</div>
+										</div>
+										<div class="col-4 pl-0">
+											<div class="pa-15">
+												<span class="d-block display-6 text-dark mb-5"
+													th:text="${abs}">433</span> <span
+													class="d-block text-capitalize font-14">Absent</span>
+											</div>
+										</div>
+									</div>
+									<ul class="list-group list-group-flush">
+										<li class="list-group-item"><span><i
+												class="ion ion-md-calendar font-18 text-light-20 mr-10"></i><span>Average
+													Arrival Time:</span></span><span class="ml-5 text-dark" th:text="${in}">Oh,
+												Canada</span></li>
+										<li class="list-group-item"><span><i
+												class="ion ion-md-briefcase font-18 text-light-20 mr-10"></i><span>Usual
+													Departure:</span></span><span class="ml-5 text-dark"
+											></span></li>
+										<li class="list-group-item"><span><i
+												class="ion ion-md-home font-18 text-light-20 mr-10"></i><span>Avg
+													hours:</span></span><span class="ml-5 text-dark"></span></li>
+
+									</ul>
+								</div>
+
+								<div class="card card-profile-feed">
+									<div class="card-header card-header-action">
+										<h6>Other Staff In Department</h6>
+										<div class="d-flex align-items-center card-action-wrap">
+											<div class="inline-block dropdown">
+												<a class="dropdown-toggle no-caret" data-toggle="dropdown"
+													href="#" aria-expanded="false" role="button"><i
+													class="ion ion-ios-more"></i></a>
+												<div class="dropdown-menu dropdown-menu-right">
+													<a class="dropdown-item" href="#">Action</a> <a
+														class="dropdown-item" href="#">Another action</a> <a
+														class="dropdown-item" href="#">Something else here</a>
+													<div class="dropdown-divider"></div>
+													<a class="dropdown-item" href="#">Separated link</a>
+												</div>
+											</div>
+										</div>
+									</div>
+									<ul class="list-group list-group-flush">
+										<li class="list-group-item border-0" th:each="a:${staffs}">
+											<div class="media align-items-center">
+												<div class="d-flex media-img-wrap mr-15">
+													<div class="avatar avatar-sm">
+														<img th:src="'http://localhost/pics/'+${a.picture}" alt="user"
+															class="avatar-img rounded-circle">
+													</div>
+												</div>
+												<div class="media-body">
+													<span class="d-block text-dark text-capitalize" th:text="${a.name}">Evie
+														Ono</span> <span class="d-block font-13" th:text="${a.staffType}">Apple Inc</span>
+												</div>
+												<a th:href="@{'/admin/staff/'+${a.bioID}+'/profile'}" class="btn btn-xs btn-info"> View Data<i
+													class="ion ion-md-hand"></i></a>
+											</div>
+										</li>
+										</ul>
+								</div>
+								
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		
+		
+		
+		
+		</div>
+		
+		<div class="modal fade" id="exampleModalLarge01" tabindex="-1" role="dialog" aria-labelledby="exampleModalLarge01" aria-hidden="true">
+                                        <div class="modal-dialog modal-lg" role="document">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title">Send Telegram Message</h5>
+                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                        <span aria-hidden="true">&times;</span>
+                                                    </button>
+                                                </div>
+                                                <div class="modal-body">
+<div class="row">
+                                <div class="col-sm">
+                                    <div class="tinymce-wrap">
+                                        <textarea class="tinymce"></textarea>
+                                    </div>
+                                </div>
+                            </div>                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                                    <button type="button" class="btn btn-primary">Send Telegram</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    
+                                    
+         <div class="modal fade" id="sendSms" tabindex="-1" role="dialog" aria-labelledby="sendSms" aria-hidden="true">
+                                        <div class="modal-dialog modal-lg" role="document">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title">Send SMS</h5>
+                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                        <span aria-hidden="true">&times;</span>
+                                                    </button>
+                                                </div>
+                                                <div class="modal-body">
+                                                 <div class="row">
+                                <div class="col-sm">
+                                    <div class="tinymce-wrap">
+                                        <textarea ></textarea>
+                                    </div>
+                                </div>
+                            </div>          </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                                    <button type="button" class="btn btn-primary">Send SMS</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    
+                                    <div class="modal fade" id="sendEmail" tabindex="-1" role="dialog" aria-labelledby="sendemail" aria-hidden="true">
+                                        <div class="modal-dialog modal-lg" role="document">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title">Send Email</h5>
+                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                        <span aria-hidden="true">&times;</span>
+                                                    </button>
+                                                </div>
+                                                <div class="modal-body">
+<div class="row">
+                                <div class="col-sm">
+                                    <div class="tinymce-wrap">
+ <div class="row">
+                                            <div class="col-md-12 mb-10">
+                                                <label for="type">Subject</label>
+                                                 <input class="form-control" id="zip" placeholder="" type="text" name="subject">
+
+                                            </div>                                        <textarea class="tinymce"></textarea>
+                                    </div>
+                                </div>
+                            </div>                                                     </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                                    <button type="button" class="btn btn-primary">Send Email</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+	</div>
+</div>
+ <script type="text/javascript">
+ 
+ 
+ </script>
+</body>
+</html>

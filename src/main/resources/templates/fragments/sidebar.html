@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" xmlns:th="http://www.thymeleaf.org"><head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+
+ <nav class="hk-nav hk-nav-light"  th:fragment="bar">
+            <a href="javascript:void(0);" id="hk_nav_close" class="hk-nav-close"><span class="feather-icon"><i data-feather="x"></i></span></a>
+            <div class="nicescroll-bar">
+                <div class="navbar-nav-wrap">
+                    <ul class="navbar-nav flex-column">
+                        <li class="nav-item active" th:if="${#authorization.expression('hasAuthority(''Manager'')')}" >
+                            <a class="nav-link" th:href="@{/admin/dashboard}">
+                                <i class="ion ion-ios-keypad"></i>
+                                <span class="nav-link-text">Dashboard</span>
+                            </a>
+                      </li>
+                      
+                       <li class="nav-item active" th:if="${#authorization.expression('hasAuthority(''HeadOfDepartment'')')}" >
+                            <a class="nav-link" th:href="@{/admin/my/department/dashboard}">
+                                <i class="ion ion-ios-keypad"></i>
+                                <span class="nav-link-text">Dashboard</span>
+                            </a>
+                      </li>
+<!--                       th:if="${#authorization.expression('hasAuthority(''Manager'')')}"
+ -->                        <li class="nav-item" th:if="${#authorization.expression('hasAuthority(''Clerk'')')}">
+                            <a class="nav-link" href="javascript:void(0);" data-toggle="collapse" data-target="#app_drp">
+                                <i class="ion ion-ios-apps"></i>
+                                <span class="nav-link-text">Staff</span>
+                   </a>
+                            <ul id="app_drp" class="nav flex-column collapse collapse-level-1">
+                                <li class="nav-item">
+                                    <ul class="nav flex-column">
+                                        <li class="nav-item">
+                                            <a class="nav-link" th:href="@{/admin/enrolstaff}">Add Staff</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link" th:href="@{/admin/all/staff}">Staff Data</a>
+                                        </li>
+                                      
+                                        <li class="nav-item">
+                                            <a class="nav-link" th:href="@{/admin/new/leave}">Add Leave</a>
+                                        </li>
+                                        
+                                      
+                                        <li class="nav-item">
+                                            <a class="nav-link" th:href="@{/admin/apply/overtime}">Overtime Application</a>
+                                        </li>
+                                      
+                                        
+                                         <li class="nav-item">
+                                            <a class="nav-link" th:href="@{/admin/staff/leaves}">Leaves Applications</a>
+                                        </li>
+									
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>
+                       
+                          <li class="nav-item" >
+                            <a class="nav-link" href="javascript:void(0);" data-toggle="collapse" data-target="#app_prof">
+                                <i class="ion ion-ios-apps"></i>
+                                <span class="nav-link-text">My Profile</span>
+                   </a>
+                            <ul id="app_prof" class="nav flex-column collapse collapse-level-1">
+                                <li class="nav-item">
+                                    <ul class="nav flex-column">
+                                       <!--  <li class="nav-item">
+                                            <a class="nav-link" th:href="@{/admin/my/biodata}">My Info</a>
+                                        </li> -->
+                                        <!--  <li class="nav-item">
+                                            <a class="nav-link" th:href="@{/admin/my/emergency/contact}">My Emergency Contacts</a>
+                                        </li>
+                                         <li class="nav-item">
+                                            <a class="nav-link" th:href="@{/admin/my/kins}">My Next of Kins</a>
+                                        </li>
+                                     
+                                      
+                                         -->
+                                        <li class="nav-item">
+                                            <a class="nav-link" th:href="@{/admin/my/attendance}">Attendance Data</a>
+                                        </li>
+                                          <li class="nav-item">
+                                            <a class="nav-link" th:href="@{/admin/staff/unavailable/shifts}">Set Unavailable Shifts</a>
+                                        </li>
+                                        
+                                    
+                                          <li class="nav-item">
+                                            <a class="nav-link" th:href="@{/admin/my/unavailable/shifts}">My Unavailable Shifts</a>
+                                        </li>
+                                        
+                                           <li class="nav-item">
+                                            <a class="nav-link" th:href="@{/admin/my/shifts}">My Shifts</a>
+                                        </li>
+                                          <li class="nav-item">
+                                            <a class="nav-link" th:href="@{/admin/staff/apply/leave}">Apply For Leave</a>
+                                        </li>
+                                        
+                                           <li class="nav-item">
+                                            <a class="nav-link" th:href="@{/admin/my/staff/pending/leave/applications}">My Staff Leave Applications</a>
+                                        </li>
+                                               
+                                                                               
+                                        <li class="nav-item">
+                                            <a class="nav-link" th:href="@{/admin/my/leaves}">Leave Applications</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link" th:href="@{/admin/staff/apply/overtime}">Apply For Overtime</a>
+                                        </li>
+                                        
+                                        
+                                         <li class="nav-item">
+                                            <a class="nav-link" th:href="@{/admin/my/overtime}">Overtime Applications Status</a>
+                                        </li>
+									
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>
+                      
+                      
+                       <li class="nav-item" >
+                            <a class="nav-link" href="javascript:void(0);" data-toggle="collapse" data-target="#app_sup">
+                                <i class="ion ion-ios-apps"></i>
+                                <span class="nav-link-text">Supervisor Operations</span>
+                   </a>
+                            <ul id="app_sup" class="nav flex-column collapse collapse-level-1">
+                                <li class="nav-item">
+                                    <ul class="nav flex-column">
+                                                                 <li class="nav-item">
+                                            <a class="nav-link" th:href="@{/admin/my/staff/pending/leave/applications}">Leave Pending Approval</a>
+                                        </li>
+                                               
+                                             <li class="nav-item">
+                                            <a class="nav-link" th:href="@{/admin/my/staff/}">My Staff</a>
+                                        </li>      
+                                         <li class="nav-item">
+                                            <a class="nav-link" th:href="@{/admin/my/staff/on/leave}">My Staff on Leave</a>
+                                        </li>                                      
+                                      
+                                      
+                                       <li class="nav-item">
+                                            <a class="nav-link" th:href="@{/admin/my/staff/overtime/applications}">Approve Overtime</a>
+                                        </li>
+                                                                                
+                                         <li class="nav-item">
+                                            <a class="nav-link" th:href="@{/admin/my/staff/overtime/applications}">Overtime Applications</a>
+                                        </li>
+									   <li class="nav-item">
+                                            <a class="nav-link" th:href="@{/admin/my/staff/set/shifts}">Set Roster</a>
+                                        </li>
+                                      
+                                         <li class="nav-item">
+                                            <a class="nav-link" th:href="@{/admin/department/roster}">Roster</a>
+                                        </li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>
+        
+             
+                       <li class="nav-item"  th:if="${#authorization.expression('hasAuthority(''HeadOfDepartment'')')}">
+                            <a class="nav-link" href="javascript:void(0);" data-toggle="collapse" data-target="#app_manage">
+                                <i class="ion ion-ios-apps"></i>
+                                <span class="nav-link-text">Department Operations</span>
+                   </a>
+                            <ul id="app_manage" class="nav flex-column collapse collapse-level-1">
+                                <li class="nav-item">
+                                    <ul class="nav flex-column">
+                                                                              
+                                          <li class="nav-item">
+                                            <a class="nav-link" th:href="@{/admin/my/department/staff}">Staff Data</a>
+                                        </li>
+                                        
+                                           
+                                         <li class="nav-item">
+                                            <a class="nav-link" th:href="@{/admin/department/staff/roster}">Staff Duty Roster</a>
+                                        </li>
+                                        
+                                           <li class="nav-item">
+                                            <a class="nav-link" th:href="@{/admin/department/roster}">Department Roster</a>
+                                        </li>
+                                        
+                                        <li class="nav-item">
+                                            <a class="nav-link" th:href="@{/admin/my/department/leave/applications}">Leave Applications</a>
+                                        </li>
+                                        
+                                       <!--     <li class="nav-item">
+                                            <a class="nav-link" th:href="@{/admin/staff/sum/leaves}">Leave Days Summary</a>
+                                        </li> -->
+                                        
+                                        
+                                    
+									
+									  <li class="nav-item">
+                                            <a class="nav-link" th:href="@{/admin/my/department/overtime/query}">Overtime Data</a>
+                                        </li>
+									
+									
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>
+                 
+                     <li class="nav-item" th:if="${#authorization.expression('hasAuthority(''Manager'')')}">
+                            <a class="nav-link" href="javascript:void(0);" data-toggle="collapse" data-target="#auth_drp">
+                                <i class="ion ion-ios-person-add"></i>
+                                <span class="nav-link-text">Leave</span>
+                            </a>
+                            <ul id="auth_drp" class="nav flex-column collapse collapse-level-1">
+                                <li class="nav-item">
+                                    <ul class="nav flex-column">
+                                        <li class="nav-item">
+                                            <a class="nav-link" th:href="@{/admin/staff/leaves}">
+												Leave Pending Approval
+												</a>
+                                           
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link" th:href="@{/admin/staff/on/leave}">
+													Staff On Leave
+												</a>
+                                         
+                                        </li>
+                                        
+                                        
+                                        <li class="nav-item">
+                                            <a class="nav-link" th:href="@{/admin/staff/pending/leave}">
+												Leave Pending
+												</a>
+                                         
+                                        </li>
+                                        
+                                           
+                                        <li class="nav-item">
+                                            <a class="nav-link" th:href="@{/admin/leave/data}">
+												Leave Data
+												</a>
+                                         
+                                        </li>
+                                        
+                                       
+
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>
+                
+                       
+                               <li class="nav-item" th:if="${#authorization.expression('hasAuthority(''Manager'')')}">
+                            <a class="nav-link" href="javascript:void(0);" data-toggle="collapse" data-target="#overt">
+                                <i class="ion ion-ios-person-add"></i>
+                                <span class="nav-link-text">Overtime</span>
+                            </a>
+                            <ul id="overt" class="nav flex-column collapse collapse-level-1">
+                                <li class="nav-item">
+                                    <ul class="nav flex-column">
+                                        <li class="nav-item">
+                                            <a class="nav-link" th:href="@{/admin/overtime/applications}">
+												Approved Overtime
+												</a>
+                                           
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link" th:href="@{/admin/overtime/agg/data}">
+													Overtime Aggregation
+												</a>
+                                         
+                                        </li>
+                                        
+                                        
+                                        <li class="nav-item">
+                                            <a class="nav-link" th:href="@{/admin/overtime/agg/month}">
+													Overtime Summary
+												</a>
+                                         
+                                        </li>
+                                        
+                                        
+                                       
+
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>
+                
+                        <li class="nav-item" th:if="${#authorization.expression('hasAuthority(''SystemAdministrator'')')}">
+                            <a class="nav-link" href="javascript:void(0);" data-toggle="collapse" data-target="#atte">
+                                <i class="ion ion-ios-person-add"></i>
+                                <span class="nav-link-text">Attendance</span>
+                            </a>
+                            <ul id="atte" class="nav flex-column collapse collapse-level-1">
+                                <li class="nav-item">
+                                    <ul class="nav flex-column">
+                                        <li class="nav-item">
+                                            <a class="nav-link" th:href="@{/admin/upload/attendance}">
+												Add Attendance Data
+												</a>
+                                           
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link" th:href="@{/admin/view/data}">
+													Data Operation
+												</a>
+                                         
+                                        </li>
+                                        
+                                        
+                                       
+                                        
+                                       
+
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="nav-item" th:if="${#authorization.expression('hasAuthority(''Manager'')')}">
+                            <a class="nav-link" href="javascript:void(0);" data-toggle="collapse" data-target="#pages_drp">
+                                <i class="ion ion-ios-copy"></i>
+								<span class="nav-link-text">Departments</span>
+                            </a>
+                            <ul id="pages_drp" class="nav flex-column collapse collapse-level-1">
+                                <li class="nav-item">
+                                    <ul class="nav flex-column">
+                                        <li class="nav-item">
+                                            <a class="nav-link" th:href="@{/admin/all/departments}">Departments Data</a>
+                                        </li>
+                                        
+                                        <li class="nav-item">
+                                            <a class="nav-link" href="gallery.html">Assign Departments</a>
+                                        </li>
+                                       
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>
+                        
+                         <li class="nav-item" th:if="${#authorization.expression('hasAuthority(''Manager'')')}">
+                            <a class="nav-link" href="javascript:void(0);" data-toggle="collapse" data-target="#mas">
+                                <i class="ion ion-ios-copy"></i>
+								<span class="nav-link-text">Staff</span>
+                            </a>
+                            <ul id="mas" class="nav flex-column collapse collapse-level-1">
+                                <li class="nav-item">
+                                    <ul class="nav flex-column">
+                                        <li class="nav-item">
+                                            <a class="nav-link" th:href="@{/admin/all/staff}">Staff Data</a>
+                                        </li>
+                                        
+                                        <li class="nav-item">
+                                            <a class="nav-link" href="gallery.html">Assign Departments</a>
+                                        </li>
+                                       
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                    <hr class="nav-separator">
+                    <div class="nav-header" th:if="${#authorization.expression('hasAuthority(''SystemAdministrator'')')}">
+                        <span>Settings</span>
+                        <span>UI</span>
+                    </div>
+                    <ul class="navbar-nav flex-column">
+                        <li class="nav-item" th:if="${#authorization.expression('hasAuthority(''SystemAdministrator'')')}">
+                            <a class="nav-link" href="javascript:void(0);" data-toggle="collapse" data-target="#Components_drp">
+                                <i class="ion ion-ios-wallet"></i>
+                                <span class="nav-link-text">Users</span>
+                            </a>
+                            <ul id="Components_drp" class="nav flex-column collapse collapse-level-1">
+                                <li class="nav-item">
+                                    <ul class="nav flex-column">
+                                        <li class="nav-item">
+                                            <a class="nav-link" th:href="@{/admin/enrol/user}">Add User</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link" th:href="@{/admin/all/users}">User Data</a>
+                                        </li>
+                                       
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="nav-item" th:if="${#authorization.expression('hasAuthority(''SystemAdministrator'')')}">
+                            <a class="nav-link" href="javascript:void(0);" data-toggle="collapse" data-target="#content_drp">
+                                <i class="ion ion-ios-filing"></i>
+                                <span class="nav-link-text">Shifts</span>
+                            </a>
+                            <ul id="content_drp" class="nav flex-column collapse collapse-level-1">
+                                <li class="nav-item">
+                                    <ul class="nav flex-column">
+                                       
+                                        
+                                         <li class="nav-item">
+                                            <a class="nav-link" th:href="@{/admin/new/shift}">Assign Shifts</a>
+                                        </li>
+                                          <li class="nav-item">
+                                            <a class="nav-link" th:href="@{/admin/set/staff/shift}">Assign Staff Shifts</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link" th:href="@{/admin/new/shift}">Roster</a>
+                                        </li>
+                                        
+                                        <li class="nav-item">
+                                            <a class="nav-link" th:href="@{/admin/get/shifts}">Shift Info</a>
+                                        </li>
+                                        
+                                      
+                                        
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="nav-item" th:if="${#authorization.expression('hasAuthority(''SystemAdministrator'')')}">
+                            <a class="nav-link" href="javascript:void(0);" data-toggle="collapse" data-target="#utilities_drp">
+                                <i class="ion ion-ios-construct"></i>
+                                <span class="nav-link-text">Settings</span>
+                            </a>
+                            <ul id="utilities_drp" class="nav flex-column collapse collapse-level-1">
+                                <li class="nav-item">
+                                    <ul class="nav flex-column">
+                                        <li class="nav-item">
+                                            <a class="nav-link" th:href="@{/admin/new/staff/category}">Staff Category</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link" th:href="@{/admin/new/department}">Add Departments</a>
+                                        </li>
+                                        
+                                         <li class="nav-item">
+                                            <a class="nav-link" th:href="@{/admin/new/branch}">Add Branch</a>
+                                        </li>
+                                         <li class="nav-item">
+                                            <a class="nav-link" th:href="@{/admin/new/shift}">Add Shifts</a>
+                                        </li>
+                                         <li class="nav-item">
+                                            <a class="nav-link" th:href="@{/admin/staff/leave/arrears}">Staff Leave Arrears</a>
+                                        </li>
+                                        
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>
+                       </ul>
+                    <hr class="nav-separator">
+                    <div class="nav-header">
+                        <span>Getting Started</span>
+                        <span>GS</span>
+                    </div>
+                    <ul class="navbar-nav flex-column">
+                        <li class="nav-item">
+                            <a class="nav-link" href="documentation.html">
+                                <i class="ion ion-ios-book"></i>
+                                <span class="nav-link-text">Documentation</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+     
+</body>
+</html>
