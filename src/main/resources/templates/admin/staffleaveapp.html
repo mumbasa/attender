@@ -44,6 +44,7 @@
                                                     <th>Start Date</th>
                                                     <th>End Date</th>
                                                     <th>Days</th>
+                                                     <th>Document</th>
                                                     <th> Status </th>
                                                 </tr>
                                             </thead>
@@ -56,6 +57,7 @@
                                                     <td th:text="${a.start}">System Architect</td>
                                                     <td th:text="${a.end}">61</td>
                                                     <td th:text="${a.days}">2011/04/25</td>
+                                                      <td><a th:href="@{'/download/'+${a.file}}"> Reason</a></td>
                                                     <td th:text="${a.approvalDate==null?'Pending':'Approved'}">
                                                     </td>
                                                 </tr>
@@ -68,6 +70,8 @@
                                                     <th>Start Date</th>
                                                     <th>End Date</th>
                                                     <th>Days</th>
+                                                                                                         <th>Document</th>
+                                                    
                                                     <th> Status </th>
                                                 </tr>
                                             </tfoot>

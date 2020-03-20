@@ -17,6 +17,7 @@ import com.attendance.data.Shift;
 import com.attendance.data.Staff;
 import com.attendance.repos.ShiftRepository;
 import com.attendance.repos.StaffRepository;
+import com.attendance.services.Utilities;
 
 import kong.unirest.json.JSONArray;
 
@@ -89,10 +90,12 @@ public class ShiftController {
 	}
 	
 	@RequestMapping("/admin/put/shift")
-	public String putShift(Model model,@RequestParam("date") String date) {
-		model.addAttribute("staff", staffRepository.getStaffShiftReady(date));
+	public String putShift(Model model,@RequestParam("date") String date,Principal principal) {
+		Staff staff = staffRepository.getStaffByEmail(principal.getName());
+
+		model.addAttribute("staff", staffRepository.getStaffShiftReady(staff.getId(),date));
 		model.addAttribute("shift",shiftRepository.getShiftTypes());
-		model.addAttribute("date", date);
+		model.addAttribute("date", Utilities.dateConvert(date) +" -");
 		return "/admin/putstaffshit";
 	}
 

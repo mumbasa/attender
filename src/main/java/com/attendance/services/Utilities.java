@@ -1,7 +1,11 @@
 package com.attendance.services;
 
 import java.time.Period;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.util.Date;
 import java.util.HashSet;
 
 public class Utilities
@@ -45,5 +49,21 @@ public class Utilities
         final String[] times = time.split(":");
         final String hour = String.format("%2s", times[0]).replace(" ", "0");
         return String.valueOf(hour) + ":" + times[1] + ":" + "00";
+    }
+    
+    public static String dateConvert(String date) {
+    	
+    	String pattern = "dd MMMM yyyy";
+    	Date oldDate = null;
+    	SimpleDateFormat simpleDateFormat =new SimpleDateFormat(pattern);
+    	 DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+    	 try {
+			 oldDate= df.parse(date);
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    	String dates = simpleDateFormat.format(oldDate);
+    	return dates;
     }
 }

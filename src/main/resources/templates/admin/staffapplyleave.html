@@ -43,6 +43,27 @@
 		
 		$( "#number" ).change(function() {
 			  var leaveRem= parseInt($("#remaining").attr("data-leave"))-parseInt($("#number").val());
+			  var counter=0;
+				var days = parseInt($('#number').val());
+				var dateStart = new Date($('#start').val()+'T00:00:00'); 
+				var a;
+				for(a=0;a<=days;a++){
+					var leaveDay = new Date($('#start').val()+'T00:00:00');
+					leaveDay.setDate(leaveDay.getDate()+a);
+					if(leaveDay.getDay()==0 |leaveDay.getDay()==6){
+						if(leaveDay.getDay())
+						counter=counter+1;
+					
+					}
+					
+				}
+				
+				
+				dateStart.setDate(dateStart.getDate()+(days+counter));
+				while(dateStart.getDay()==0| dateStart.getDate()==6){
+					dateStart.setDate(dateStart.getDate()+1);
+				}
+				$("#days").val(dateStart.toDateString());
 			  $("#remaining").val(leaveRem);
 			  if(leaveRem<0){
 				 var activate= $('#but').attr('always');
@@ -54,7 +75,6 @@
 				  
 			  }
 			});
-		
 		
 		
 		
@@ -152,7 +172,7 @@
 		<div class="row">
                                         <div class="col-md-12 mb-10">
                                             <label for="address">Start Date</label>
-                                            <input class="form-control" id="address" name="start" placeholder="1234 Main St" type="date">
+                                            <input id="start" class="form-control"  name="start" placeholder="1234 Main St" type="date">
                                         </div>
 </div>	
 	 									                                        <div class="row">
@@ -170,6 +190,28 @@
                                                 <label for="number">Days Remaining</label>
                                                <!--  th:data-leave="${days.leaveDaysSum-days.daysTakenSum}"  -->
                                                <input class="form-control" id="remaining"   name="days" type="number" disabled="disabled">
+
+                                            </div>
+                                         
+                                            
+                                        </div>
+                                        
+                                         <div class="row">
+                                            <div class="col-md-12 mb-10">
+                                                <label for="number">Date to Return</label>
+                                               <!--  th:data-leave="${days.leaveDaysSum-days.daysTakenSum}"  -->
+                                               <input class="form-control"  id="days" type="text" >
+
+                                            </div>
+                                         
+                                            
+                                        </div>
+                                        
+                                           <div class="row">
+                                            <div class="col-md-12 mb-10">
+                                                <label for="number">Document</label>
+                                               <!--  th:data-leave="${days.leaveDaysSum-days.daysTakenSum}"  -->
+                                               <input class="form-control"  name="doc" type="file">
 
                                             </div>
                                          

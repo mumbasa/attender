@@ -4,7 +4,7 @@
 	layout:decorate="~{fragments/blank}">
 <head>
 <meta charset="UTF-8">
-<title>My Staff Leave Approvals</title>
+<title>Approve Leave Arrears</title>
 </head>
 <body>
 
@@ -104,7 +104,7 @@
 			<div class="hk-pg-header">
 				<h4 class="hk-pg-title">
 					<span class="pg-title-icon"><span class="feather-icon"><i
-							data-feather="database"></i></span></span>Leaves Pending Supervisor Approval
+							data-feather="database"></i></span></span>Leaves Data
 				</h4>
 			</div>
 			<!-- /Title -->
@@ -123,13 +123,9 @@
 												<th>#</th>
 												<th>Name</th>
 												<th>Department</th>
-												<th>Leave</th>
-												<th>Start Date</th>
-												<th>End Date</th>
-												<th>Days Taken</th>
-												<th>Document</th>
-												<th>Days Remaining</th>
-
+												<th>Days</th>
+												<th>Year</th>
+												
 												<th></th>
 											</tr>
 										</thead>
@@ -143,20 +139,18 @@
 												<td th:text="${a.staff.department}">Edinburgh</td>
 												<td th:text="${a.leave}">Edinburgh</td>
 												<td th:text="${a.start}">System Architect</td>
-												<td th:text="${a.end}">61</td>
-												<td th:text="${a.days}">61</td>
-                                 <td><a th:href="@{'/downloadFile/'+${a.file}}" th:if="${a.file !=null}"> Reason</a></td>                     
-												
-<td th:text="${a.leaveDaysRemaining}">61</td>
+											
 												<td>
-												
+													
+													<div
+														th:if="${#authorization.expression('hasAuthority(''Manager'')')}">
 														<button class="btn btn-sm btn-success"
-															th:onclick="'hod(1,'+${a.id}+')'"
+															th:onclick="'hr(1,'+${a.id}+')'"
 															th:if="${a.approvalDate==null}">Approve</button>
 														<button class="btn btn-sm btn-danger"
-															th:onclick="'hod(0,'+${a.id}+')'"
+															th:onclick="'hr(0,'+${a.id}+')'"
 															th:if="${a.approvalDate==null}">Reject</button>
-													
+													</div>
 												</td>
 											</tr>
 
@@ -165,13 +159,16 @@
 											<tr>
 												<th>#</th>
 												<th>Name</th>
-												<th>Department</th>
+																									<th>Department</th>
+												
 												<th>Leave</th>
 												<th>Start Date</th>
 												<th>End Date</th>
-												<th>Days Taken</th>
-												<th>Document</th>
+												<th>Days</th>
 												<th>Days Remaining</th>
+																								<th>Decision</th>
+												
+												<th></th>
 											</tr>
 										</tfoot>
 									</table>

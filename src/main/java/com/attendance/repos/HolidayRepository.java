@@ -14,6 +14,7 @@ import java.sql.SQLException;
 import java.util.HashSet;
 import com.attendance.services.HolidayExtractor;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.time.temporal.ChronoUnit;
@@ -22,8 +23,11 @@ import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import com.attendance.rowmappers.HolidayMapper;
 import com.attendance.data.Holiday;
 import java.util.List;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Repository;
 import com.attendance.dao.HolidayDAO;
 
@@ -36,6 +40,22 @@ public class HolidayRepository implements HolidayDAO
     public List<Holiday> getHolidays(final int year) {
         final String sql = "SELECT *  FROM holidays where year=?";
         return template.query(sql, new HolidayMapper(), new Object[] { year });
+    }
+    
+    
+    public Map<String,Holiday> getHolidaysMao(final int year) {
+        final String sql = "SELECT *  FROM holidays where year=?";
+        Map<String, Holiday> holidays= new HashMap<String, Holiday>();
+        SqlRowSet set= template.queryForRowSet(sql,year);
+        while (set.next()) {
+        	Holiday holiday = new Holiday();
+        	holiday.setHoliday(set.getString(2));
+        	holiday.setRealDay(set.getString(4));
+        	holiday.setType(set.getString(7));
+        	holidays.put(set.getString(4), holiday);
+        }
+        
+        return holidays;
     }
     
     public List<Holiday> getHolidaysInMonth(final int month, final int year) {

@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	xmlns:th="http://www.thymeleaf.org"
+	layout:decorate="~{fragments/blank}">
+<head>
+<meta charset="UTF-8">
+<title>Holidays</title>
+</head>
+<body>
+
+	<div layout:fragment="content">
+		<script type="text/javascript" th:inline="javascript">
+		var url=[[@{/admin/staff/delete/contact/}]];
+      function delKin(id){
+			$.ajax({
+			url:url+id,
+			type:'get',
+			processData : false,
+			contentType : false,
+			cache : false,
+			success:function(data){
+				//if(data==1){
+					$.toast({
+						heading: 'Success!',
+						text: '<p>Staff Deleted successfully</p>',
+						position: 'top-right',
+						loaderBg:'#f68daf',
+						class: 'jq-toast-dark',
+						hideAfter: 3500, 
+						stack: 6,
+						showHideTransition: 'fade'
+					});
+			       
+					 form[0].reset();
+					
+					
+			
+			}
+			
+		}); 
+		  
+		
+
+	
+}
+		
+  	function upKin(id){
+  			var form = $('.former'+id);
+  		var formdata = false;
+  		formdata = new FormData(form[0]);
+		var url=[[@{/admin/update/staff/}]];
+
+  			$.ajax({
+  				url:url+id,
+  				data:formdata,
+  				type:'post',
+  				processData : false,
+  				contentType : false,
+  				cache : false,
+  				success:function(data){
+  					//if(data==1){
+  						$.toast({
+  							heading: 'Success!',
+  							text: '<p>Staff contact updated successfully</p>',
+  							position: 'top-right',
+  							loaderBg:'#f68daf',
+  							class: 'jq-toast-dark',
+  							hideAfter: 3500, 
+  							stack: 6,
+  							showHideTransition: 'fade'
+  						});
+  				       
+  						 form[0].reset();
+  						
+  						
+  				
+  				}
+  				
+  			}); 
+  			  
+  			
+  	
+  		
+  	}
+  			
+      </script>
+		<!-- Breadcrumb -->
+		<nav class="hk-breadcrumb" aria-label="breadcrumb">
+			<ol class="breadcrumb breadcrumb-light bg-transparent">
+				<li class="breadcrumb-item"><a href="#">Tables</a></li>
+				<li class="breadcrumb-item active" aria-current="page">Staff
+					Table</li>
+			</ol>
+		</nav>
+		<!-- /Breadcrumb -->
+
+		<!-- Container -->
+		<div>
+
+			<!-- Title -->
+			<div class="hk-pg-header">
+				<h4 class="hk-pg-title">
+					<span class="pg-title-icon"><span class="feather-icon"><i
+							data-feather="database"></i></span></span>Staff Data
+				</h4>
+			</div>
+			<!-- /Title -->
+
+			<!-- Row -->
+			<div class="row">
+				<div class="col-xl-12">
+					<section class="hk-sec-wrapper">
+						<div class="row">
+							<div class="col-sm">
+								<div class="table-wrap">
+									<table id="datable_1"
+										class="table table-hover w-100 display pb-30">
+										<thead>
+											<tr>
+												<th>#</th>
+												<th>Holiday</th>
+												<th>Day</th>
+												<th>Type</th>
+												
+											</tr>
+										</thead>
+										<tbody>
+											<tr th:each="a,i:${holidays}">
+												<td th:text="${i.index+1}">Tiger Nixon</td>
+												<td th:text="${a.holiday}" style="text-transform: capitalize;">System
+													Architect</td>
+
+												<td th:text="${a.realHoliday}">System Architect</td>
+												<td th:text="${a.type}">Edinburgh</td>
+											
+														</tr>
+
+										</tbody>
+										<tfoot>
+											<tr>
+												<th>#</th>
+												<th>Holiday</th>
+												<th>Day</th>
+												<th>Type</th>
+												
+											</tr>
+										</tfoot>
+									</table>
+								</div>
+							</div>
+						</div>
+					</section>
+				</div>
+			</div>
+			<!-- /Row -->
+
+		</div>
+		<!-- /Container -->
+
+
+	</div>
+
+
+
+</body>
+</html>

@@ -7,6 +7,7 @@ import com.attendance.data.Staff;
 
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -21,7 +22,11 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import com.attendance.data.StaffLeave;
 import com.attendance.repos.StaffRepository;
+import com.attendance.services.HolidayExtractor;
+
 import org.springframework.beans.factory.annotation.Autowired;
+
+import com.attendance.repos.HolidayRepository;
 import com.attendance.repos.LeaveRepository;
 import org.springframework.stereotype.Controller;
 
@@ -30,9 +35,12 @@ public class LeaveController
 {
     @Autowired
     LeaveRepository leaveRepository;
+    
     @Autowired
     StaffRepository staffRepo;
     
+    @Autowired
+    HolidayExtractor holidayExtractor;
     
     
     @RequestMapping("/get/server/ip")
@@ -52,9 +60,9 @@ public class LeaveController
 	}
     @ResponseBody
     @PostMapping( "/add/leave" )
-    public String addLeave(@RequestParam("staff") String id,@RequestParam("start") String from,@RequestParam("days") int days,@RequestParam("type") int type,@RequestParam("weekend") boolean wk) {
+    public String addLeave(@RequestParam("staff") String id,@RequestParam("start") String from,@RequestParam("days") int days,@RequestParam("type") int type) {
          List<StaffLeave> staffLeaves = new ArrayList<StaffLeave>();
-        LocalDate endDate = LeaveRepository.getLeaveEndDate(from, days, wk);
+        LocalDate endDate = leaveRepository.getLeaveEndDate(from, days);
          Map<String, List<String>> data = leaveRepository.getLeaveIntervals(from, endDate.toString());
         for ( List<String> a : data.values()) {
              StaffLeave staff = new StaffLeave();
@@ -71,10 +79,10 @@ public class LeaveController
     
     @ResponseBody
     @PostMapping( "/add/staff/leave" )
-    public String staffApplyLeave(Principal principal,@RequestParam("start") String from,@RequestParam("days") int days,@RequestParam("type") int type,@RequestParam("weekend") boolean wk) {
+    public String staffApplyLeave(Principal principal,@RequestParam("start") String from,@RequestParam("days") int days,@RequestParam("type") int type) {
          List<StaffLeave> staffLeaves = new ArrayList<StaffLeave>();
          Staff staff  = staffRepo.getStaffByEmail(principal.getName());
-        LocalDate endDate = LeaveRepository.getLeaveEndDate(from, days, wk);
+        LocalDate endDate = leaveRepository.getLeaveEndDate(from, days);
          Map<String, List<String>> data = leaveRepository.getLeaveIntervals(from, endDate.toString());
         for ( List<String> a : data.values()) {
              StaffLeave staffLeave = new StaffLeave();
@@ -91,12 +99,12 @@ public class LeaveController
     
     @ResponseBody
     @PostMapping( "/admin/add/staff/leave" )
-    public int staffApplyLeave(Principal principal,@RequestParam("start") String from,@RequestParam("days") int days,@RequestParam("type") int type) {
+    public int staffApplyLeaveClerk(Principal principal,@RequestParam("start") String from,@RequestParam("days") int days,@RequestParam("type") int type,@RequestParam("doc") MultipartFile file) {
         Staff staff  = staffRepo.getStaffByEmail(principal.getName());
-        LocalDate endDate = LeaveRepository.getLeaveEndDate(from,days,staff.isWeekendWorker());
+        LocalDate endDate = leaveRepository.getLeaveEndDate(from,days);
 
         
-        return leaveRepository.saveStaffLeave(String.valueOf(staff.getId()), from,endDate.toString(), days,type);
+        return leaveRepository.saveStaffLeave(String.valueOf(staff.getId()), from,endDate.toString(), days,type,file);
     }
     
     
@@ -269,6 +277,15 @@ public class LeaveController
     	leaveRepository.mountLeaves();
     return 1;	
     }
+    
+    
+    @RequestMapping("/admin/mount/holidays")
+    @ResponseBody
+    public void mountHoliday() {
+    	holidayExtractor.Extact(""+LocalDate.now().getYear());
+   
+    }
+    
     
     
     @RequestMapping("/admin/staff/leave/type/days")

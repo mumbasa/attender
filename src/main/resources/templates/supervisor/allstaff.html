@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	xmlns:th="http://www.thymeleaf.org"
+	layout:decorate="~{fragments/blank}">
+<head>
+<meta charset="UTF-8">
+<title>All Staff</title>
+</head>
+<body>
+
+	<div layout:fragment="content">
+		<script type="text/javascript" th:inline="javascript">
+		var url=[[@{/admin/staff/delete/contact/}]];
+      function delKin(id){
+			$.ajax({
+			url:url+id,
+			type:'get',
+			processData : false,
+			contentType : false,
+			cache : false,
+			success:function(data){
+				//if(data==1){
+					$.toast({
+						heading: 'Success!',
+						text: '<p>Staff Deleted successfully</p>',
+						position: 'top-right',
+						loaderBg:'#f68daf',
+						class: 'jq-toast-dark',
+						hideAfter: 3500, 
+						stack: 6,
+						showHideTransition: 'fade'
+					});
+			       
+					 form[0].reset();
+					
+					
+			
+			}
+			
+		}); 
+		  
+		
+
+	
+}
+		
+  	function upKin(id){
+  			var form = $('.former'+id);
+  		var formdata = false;
+  		formdata = new FormData(form[0]);
+		var url=[[@{/admin/update/staff/}]];
+
+  			$.ajax({
+  				url:url+id,
+  				data:formdata,
+  				type:'post',
+  				processData : false,
+  				contentType : false,
+  				cache : false,
+  				success:function(data){
+  					//if(data==1){
+  						$.toast({
+  							heading: 'Success!',
+  							text: '<p>Staff contact updated successfully</p>',
+  							position: 'top-right',
+  							loaderBg:'#f68daf',
+  							class: 'jq-toast-dark',
+  							hideAfter: 3500, 
+  							stack: 6,
+  							showHideTransition: 'fade'
+  						});
+  				       
+  						 form[0].reset();
+  						
+  						
+  				
+  				}
+  				
+  			}); 
+  			  
+  			
+  	
+  		
+  	}
+  			
+      </script>
+		<!-- Breadcrumb -->
+		<nav class="hk-breadcrumb" aria-label="breadcrumb">
+			<ol class="breadcrumb breadcrumb-light bg-transparent">
+				<li class="breadcrumb-item"><a href="#">Tables</a></li>
+				<li class="breadcrumb-item active" aria-current="page">Staff
+					Table</li>
+			</ol>
+		</nav>
+		<!-- /Breadcrumb -->
+
+		<!-- Container -->
+		<div>
+
+			<!-- Title -->
+			<div class="hk-pg-header">
+				<h4 class="hk-pg-title">
+					<span class="pg-title-icon"><span class="feather-icon"><i
+							data-feather="database"></i></span></span>Staff Data
+				</h4>
+			</div>
+			<!-- /Title -->
+
+			<!-- Row -->
+			<div class="row">
+				<div class="col-xl-12">
+					<section class="hk-sec-wrapper">
+						<div class="row">
+							<div class="col-sm">
+								<div class="table-wrap">
+									<table id="datable_1"
+										class="table table-hover w-100 display pb-30">
+										<thead>
+											<tr>
+												<th>#</th>
+												<th>Name</th>
+												<th>Date of Birth</th>
+												<th>Department</th>
+												<th>Date Joined</th>
+												<th>Contact</th>
+												<th></th>
+											</tr>
+										</thead>
+										<tbody>
+											<tr th:each="a,i:${staff}">
+												<td th:text="${i.index+1}">Tiger Nixon</td>
+												<td th:text="${a.name}" style="text-transform: capitalize;">System
+													Architect</td>
+
+												<td th:text="${a.dob}">System Architect</td>
+												<td th:text="${a.department}">Edinburgh</td>
+												<td th:text="${a.dateJoined}">61</td>
+												<td th:text=${a.mobile}>2011/04/25</td>
+												<td><a th:href="@{'/admin/my/staff/'+${a.id}+'/profile'}"
+													class="btn btn-sm btn-success">View Staff</a>
+													<button class="btn btn-sm btn-primary" data-toggle="modal"
+														th:if="${#authorization.expression('hasAuthority(''Manager'')')}"
+														th:data-target="'#edit'+${a.id}">Update</button>
+													<button class="btn btn-sm btn-danger" data-toggle="modal"
+														th:data-target="'#confirm'+${a.id}"
+														th:if="${#authorization.expression('hasAuthority(''Manager'')')}">Delete</button>
+
+													<div class="modal fade" th:id="edit+${a.id}" tabindex="-1"
+														role="dialog" aria-labelledby="exampleModalLarge01"
+														aria-hidden="true">
+														<div class="modal-dialog modal-lg" role="document">
+															<div class="modal-content">
+																<div class="modal-header">
+																	<h5 class="modal-title">Update Staff Information</h5>
+																	<button type="button" class="close"
+																		data-dismiss="modal" aria-label="Close">
+																		<span aria-hidden="true">&times;</span>
+																	</button>
+																</div>
+																<div class="modal-body">
+
+																	<div class="row">
+																		<div class="col-xl-12">
+																			<section class="hk-sec-wrapper">
+																				<div class="row">
+																					<div class="col-sm">
+																						<form th:class="'former'+${a.id}">
+																							<div class="row">
+																								<div class="col-md-6 form-group">
+																									<label for="firstName">First name</label> <input
+																										class="form-control" id="firstName"
+																										name="fname" th:value="${a.otherNames}"
+																										placeholder="" value="" type="text">
+																								</div>
+																								<div class="col-md-6 form-group">
+																									<label for="lastName">Last name</label> <input
+																										class="form-control" id="lastName"
+																										name="lname" th:value="${a.name}"
+																										placeholder="" value="" type="text">
+																								</div>
+																							</div>
+
+
+
+																							<div class="row">
+																								<div class="col-md-5 mb-10">
+																									<label for="country">Nationality</label> <select
+																										class="form-control custom-select d-block w-100"
+																										id="country" name="country">
+																										<option th:each="c:${countries}"
+																											th:value="${c}" th:text="${c}"
+																											th:selected="${c==a.nationality}">Zimbabwe</option>
+																									</select>
+																								</div>
+																								<div class="col-md-3 mb-10">
+																									<label for="zip">Date of Birth</label> <input
+																										th:value="${a.dob}" class="form-control"
+																										id="zip" placeholder="" type="date" name="dob">
+																								</div>
+
+
+																								<div class="col-md-4 mb-10">
+																									<label for="mobile">Gender</label> <select
+																										class="form-control custom-select d-block w-100"
+																										id="ws" name="sex">
+																										<option th:each="g:${gender}" th:id="${g}"
+																											th:text="${g}" th:selected="${g==a.gender}">Male</option>
+
+																									</select>
+																								</div>
+
+																							</div>
+																							<hr>
+																							<h6 class="form-group">Contact Details</h6>
+
+
+																							<div class="form-group">
+																								<label for="address">Address</label> <input
+																									th:value="${a.address}" class="form-control"
+																									id="address" name="address"
+																									placeholder="1234 Main St" type="text">
+																							</div>
+
+
+																							<div class="form-group" style="display: none;">
+																								<input class="form-control" id="pict" name="pic"
+																									type="text">
+																							</div>
+
+																							<div class="row">
+																								<div class="col-md-6 mb-10">
+																									<label for="email">Email</label> <input
+																										class="form-control" id="email"
+																										placeholder="your email" name="email"
+																										th:value="${a.email}" type="email">
+
+																								</div>
+																								<div class="col-md-6 mb-10">
+																									<label for="mob">Mobile Number</label> <input
+																										class="form-control" id="mob"
+																										th:value="${a.mobile}"
+																										placeholder="your mobile number" name="mobile"
+																										type="tel">
+
+																								</div>
+
+																							</div>
+
+																							<hr>
+																							<h6 class="form-group">Work Details</h6>
+
+																							<div class="row">
+
+																								<div class="col-md-4 mb-10">
+																									<label for="emp">Staff Number</label> <input
+																										class="form-control" id="stfid"
+																										th:value="${a.staffId}"
+																										placeholder="your staff number" name="staffid"
+																										type="text">
+
+																								</div>
+																								<div class="col-md-4 mb-10">
+																									<label for="address2">Department</label> <select
+																										class="form-control custom-select d-block w-100"
+																										id="state" name="dept">
+																										<option th:each="b:${depts}"
+																											th:value="${b.id}"
+																											th:selected="${b==a.departmentId}"
+																											th:text="${a.department}">Choose...</option>
+																									</select>
+																								</div>
+
+																								<div class="col-md-4 mb-10">
+																									<label for="emp">Date Employed</label> <input
+																										class="form-control" id="emp"
+																										th:value="${a.dateJoined}"
+																										placeholder="date of appointment" name="emp"
+																										type="date">
+
+																								</div>
+																							</div>
+																							<div class="row">
+																								<div class="col-md-4 mb-10">
+																									<label for="type">Staff Type</label> <select
+																										class="form-control custom-select d-block w-100"
+																										id="type" name="type">
+																										<option th:each="b:${types}"
+																											th:value="${b.id}"
+																											th:selected="${b==a.staffType}"
+																											th:text="${b .value}">Choose...</option>
+
+																									</select>
+																								</div>
+
+																								<div class="col-md-4 mb-10">
+																									<label for="ssn">Social Security Number</label>
+																									<input class="form-control" id="ssn"
+																										th:value="${a.socialSecurityNumber}"
+																										placeholder="your social security number"
+																										name="ssn" type="text">
+
+																								</div>
+
+																								<div
+																									class="col-md-4 mb-10 custom-control custom-checkbox">
+																									<label for="ws">Can work on Saturdays</label> <select
+																										class="form-control custom-select d-block w-100"
+																										id="ws" name="weekend">
+																										<option
+																											th:each="i : ${#numbers.sequence(0, 1)}"
+																											th:value="${i}" th:text="${i==1?'Yes':'No'}"
+																											th:selected="${i==(a.weekendWorker==true?1:0)}">
+																									</select>
+
+																								</div>
+																							</div>
+																							<div class="row">
+
+
+																								<div class="col-md-12 mt-10">
+																									<label for="address2">Staff Category</label> <select
+																										class="form-control custom-select d-block w-100"
+																										id="state" name="cat">
+																										<option value="" selected="selected"
+																											disabled="disabled">--select one --</option>
+																										<option th:each="b:${cat}" th:value="${b.id}"
+																											th:selected="${b.id==a.categoryId}"
+																											th:text="${b.value}">Choose...</option>
+																									</select>
+																								</div>
+
+
+																							</div>
+
+																							<hr>
+																							<h6 class="form-group">Personal Details</h6>
+
+																							<div class="row">
+
+																								<div class="col-md-4 mb-10">
+																									<label for="rel">Relationship Status</label> <select
+																										class="form-control custom-select d-block w-100"
+																										id="rel" name="relation">
+																										<option th:each="c:${marry}" th:value="${c}"
+																											th:selected="${c==a.relationshipStatus}"
+																											th:text="${c}"></option>
+
+																									</select>
+																								</div>
+																								<div class="col-md-4 mb-10">
+																									<label for="address2">Religion</label> <select
+																										class="form-control custom-select d-block w-100"
+																										id="state" name="religion">
+																										<option th:each="b:${rel}" th:value="${b}"
+																											th:selected="${b==a.religion}" th:text="${b}">Choose...</option>
+																									</select>
+																								</div>
+
+																								<div class="col-md-4 mb-10">
+																									<label for="emp">Place of Birth</label> <input
+																										class="form-control" id="emp"
+																										th:value="${a.birthPlace}"
+																										placeholder="place of birth" name="birth"
+																										type="text">
+
+																								</div>
+																							</div>
+
+
+																							<hr>
+																							<h6 class="form-group">Education Information</h6>
+
+																							<div class="row">
+
+																								<div class="col-md-12 mb-10">
+																									<label for="emp">Highest Education
+																										Level</label> <select
+																										class="form-control custom-select d-block w-100"
+																										id="type" name="cert">
+																										<option value="" selected="selected"
+																											disabled="disabled">-- select one --</option>
+																										<option th:each="b:${cert}" th:value="${b}"
+																											th:selected="${b==a.highestQualification}"
+																											th:text="${b}">Choose...</option>
+																									</select>
+																								</div>
+
+																							</div>
+
+
+																							<hr>
+																							<h6 class="form-group">Biometric Staff
+																								Information</h6>
+
+																							<div class="row">
+
+																								<div class="col-md-12 mb-10">
+																									<label for="bio">Staff Biometric ID</label> <input
+																										class="form-control" id="bio"
+																										th:value="${a.bioID}"
+																										placeholder="biometric id" name="bioid"
+																										type="text">
+																								</div>
+
+																							</div>
+
+
+
+
+																							<hr>
+																						</form>
+																					</div>
+																				</div>
+																			</section>
+																		</div>
+																	</div>
+
+
+																</div>
+																<div class="modal-footer">
+																	<button type="button" class="btn btn-secondary"
+																		data-dismiss="modal">Close</button>
+																	<button type="button" class="btn btn-primary"
+																		th:onclick="'upKin('+${a.id}+')'">Update</button>
+																</div>
+															</div>
+														</div>
+													</div>
+
+													<div class="modal fade" th:id="'confirm'+${a.id}"
+														tabindex="-1" role="dialog"
+														aria-labelledby="exampleModalLarge01" aria-hidden="true">
+														<div class="modal-dialog modal-sm" role="document">
+															<div class="modal-content">
+																<div class="modal-header">
+																	<h5 class="modal-title">Confirm Delete</h5>
+																	<button type="button" class="close"
+																		data-dismiss="modal" aria-label="Close">
+																		<span aria-hidden="true">&times;</span>
+																	</button>
+																</div>
+																<div class="modal-body bg-red">
+																	<p class="text-white">Are you sure you want to
+																		delete?</p>
+																</div>
+																<div class="modal-footer">
+																	<button type="button" class="btn btn-secondary"
+																		data-dismiss="modal">Cancel</button>
+																	<button type="button" class="btn btn-danger"
+																		th:onclick="'delKin('+${a.id}+')'"
+																		data-dismiss="modal">Delete</button>
+																</div>
+															</div>
+														</div>
+													</div></td>
+											</tr>
+
+										</tbody>
+										<tfoot>
+											<tr>
+												<th>#</th>
+												<th>Name</th>
+												<th>Date of Birth</th>
+												<th>Department</th>
+												<th>Date Joined</th>
+												<th>Contact</th>
+												<th></th>
+											</tr>
+										</tfoot>
+									</table>
+								</div>
+							</div>
+						</div>
+					</section>
+				</div>
+			</div>
+			<!-- /Row -->
+
+		</div>
+		<!-- /Container -->
+
+
+	</div>
+
+
+
+</body>
+</html>

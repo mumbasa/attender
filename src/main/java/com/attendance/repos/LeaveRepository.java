@@ -16,6 +16,8 @@ import java.util.Map;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import com.attendance.data.StaffLeave;
 
+import java.io.File;
+import java.io.IOException;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.time.DayOfWeek;
@@ -23,15 +25,19 @@ import java.time.LocalDate;
 import com.attendance.rowmappers.LeaveTypeMapper;
 import com.attendance.rowmappers.StaffLeaveMapping;
 import com.attendance.rowmappers.LeaveMapping;
+import com.attendance.data.Holiday;
 import com.attendance.data.KeyValue;
 import com.attendance.data.Leave;
 import com.attendance.data.LeaveSummary;
 import com.attendance.data.Staff;
 
 import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
+import org.springframework.web.multipart.MultipartFile;
 
 @Repository
 public class LeaveRepository {
@@ -41,6 +47,15 @@ public class LeaveRepository {
 	StaffRepository staffRepository;
 	@Autowired
 	MessageService messagerService;
+
+	@Autowired
+	HolidayRepository holidayRepository;
+	
+	@Value("${app.upload.file.location}")
+	String UPLOAD_FOLDER;
+
+	@Value("${spring.application.name}")
+	String appName;
 
 	public List<Leave> getLeaves() {
 		final String sql = "SELECT *,(SELECT name from staff where id=l.staffid),(SELECT leavetype from leavetypes as t where t.id=l.type) FROM leaves as l";
@@ -58,23 +73,21 @@ public class LeaveRepository {
 		for (Leave leave : leaves) {
 			LeaveSummary leaveSum = getStaffLeaveDataSummary(leave.getStaffid());
 			leave.setLeaveDaysRemaining((leaveSum.getLeaveDaysSum() - leaveSum.getDaysTakenSum()));
-			//System.out.println(leaveSum.getLeaveDaysSum());
+			// System.out.println(leaveSum.getLeaveDaysSum());
 			leave.setStaff(staffRepository.getStaffByID(leave.getStaffid()));
-
 
 		}
 		return leaves;
 	}
-	
+
 	public List<Leave> getStaffLeavesOfSupervisor(long id) {
 		final String sql = "SELECT *,(SELECT name from staff where id=l.staffid),(SELECT leavetype from leavetypes as t where t.id=l.type) ,datediff(end_date,curdate()) FROM staff_leave as l  where staffid IN(SELECT staff_id from supervisors where supervisor_id=?)";
 		List<Leave> leaves = template.query(sql, new StaffLeaveMapping(), id);
 		for (Leave leave : leaves) {
 			LeaveSummary leaveSum = getStaffLeaveDataSummary(leave.getStaffid());
 			leave.setLeaveDaysRemaining((leaveSum.getLeaveDaysSum() - leaveSum.getDaysTakenSum()));
-			//System.out.println(leaveSum.getLeaveDaysSum());
+			// System.out.println(leaveSum.getLeaveDaysSum());
 			leave.setStaff(staffRepository.getStaffByID(leave.getStaffid()));
-
 
 		}
 		return leaves;
@@ -85,7 +98,7 @@ public class LeaveRepository {
 		List<Leave> leaves = template.query(sql, new StaffLeaveMapping(), id);
 		for (Leave leave : leaves) {
 			leave.setStaff(staffRepository.getStaffByID(id));
-			
+
 			LeaveSummary leaveSum = getStaffLeaveDataSummary(leave.getStaffid());
 			leave.setLeaveDaysRemaining((leaveSum.getLeaveDaysSum() - leaveSum.getDaysTakenSum()));
 		}
@@ -102,8 +115,7 @@ public class LeaveRepository {
 		}
 		return leaves;
 	}
-	
-	
+
 	public List<Leave> getStaffLeavesofSupertvisorPending(long id) {
 		final String sql = "SELECT *,(SELECT name from staff where id=l.staffid),(SELECT leavetype from leavetypes as t where t.id=l.type) ,datediff(end_date,curdate()) FROM staff_leave as l  where staffid IN(SELECT staff_id FROM supervisors where supervisor_id=?) and hod_approved is null";
 		List<Leave> leaves = template.query(sql, new StaffLeaveMapping(), id);
@@ -138,7 +150,6 @@ public class LeaveRepository {
 		return leaves;
 	}
 
-	
 	public List<Leave> getStaffHODApprovedLeavesApplications() {
 		final String sql = "SELECT *,(SELECT name from staff where id=l.staffid),(SELECT leavetype from leavetypes as t where t.id=l.type) ,datediff(end_date,curdate()) FROM staff_leave as l  where hod_approved=1 and hr_approve is null";
 		List<Leave> leaves = template.query(sql, new StaffLeaveMapping());
@@ -150,8 +161,6 @@ public class LeaveRepository {
 		return leaves;
 	}
 
-	
-	
 	public List<Leave> getStaffOnLeave() {
 		final String sql = "SELECT *,(SELECT name from staff where id=l.staffid),(SELECT leavetype from leavetypes as t where t.id=l.type),datediff(end_date,curdate()) FROM staff_leave as l  where hod_approved=1 and hr_approve =1 and end_date>=curdate() ";
 		List<Leave> leaves = template.query(sql, new StaffLeaveMapping());
@@ -160,27 +169,24 @@ public class LeaveRepository {
 
 			LeaveSummary leaveSum = getStaffLeaveDataSummary(leave.getStaffid());
 			leave.setLeaveDaysRemaining((leaveSum.getLeaveDaysSum() - leaveSum.getDaysTakenSum()));
-			
+
 		}
 		return leaves;
 	}
 
 	public List<Leave> getMyStaffOnLeave(long id) {
 		final String sql = "SELECT *,(SELECT name from staff where id=l.staffid),(SELECT leavetype from leavetypes as t where t.id=l.type),datediff(end_date,curdate()) FROM staff_leave as l  where hod_approved=1 and hr_approve =1 and end_date>=curdate() and l.staffid IN (SELECT staff_id FROM supervisors where supervisor_id=?)";
-		List<Leave> leaves = template.query(sql, new StaffLeaveMapping(),id);
+		List<Leave> leaves = template.query(sql, new StaffLeaveMapping(), id);
 		for (Leave leave : leaves) {
 			leave.setStaff(staffRepository.getStaffByID(leave.getStaffid()));
 
 			LeaveSummary leaveSum = getStaffLeaveDataSummary(leave.getStaffid());
 			leave.setLeaveDaysRemaining((leaveSum.getLeaveDaysSum() - leaveSum.getDaysTakenSum()));
-			
+
 		}
 		return leaves;
 	}
-	
-	
 
-	
 	public List<Leave> getStaffPendingLeave() {
 		final String sql = "SELECT *,(SELECT name from staff where id=l.staffid),(SELECT leavetype from leavetypes as t where t.id=l.type),datediff(end_date,curdate()) FROM staff_leave as l  where hod_approved=1 and hr_approve =1 and start_date>=curdate() ";
 		List<Leave> leaves = template.query(sql, new StaffLeaveMapping());
@@ -189,28 +195,24 @@ public class LeaveRepository {
 
 			LeaveSummary leaveSum = getStaffLeaveDataSummary(leave.getStaffid());
 			leave.setLeaveDaysRemaining((leaveSum.getLeaveDaysSum() - leaveSum.getDaysTakenSum()));
-			
+
 		}
 		return leaves;
 	}
 
-	
-
-	public List<Leave> getStaffLeaveQuery(String start,String to) {
+	public List<Leave> getStaffLeaveQuery(String start, String to) {
 		final String sql = "SELECT *,(SELECT name from staff where id=l.staffid),(SELECT leavetype from leavetypes as t where t.id=l.type),datediff(end_date,curdate()) FROM staff_leave as l  where hod_approved=1 and hr_approve =1 and start_date>=? and start_date <=? ";
-		List<Leave> leaves = template.query(sql, new StaffLeaveMapping(),start,to);
+		List<Leave> leaves = template.query(sql, new StaffLeaveMapping(), start, to);
 		for (Leave leave : leaves) {
 			leave.setStaff(staffRepository.getStaffByID(leave.getStaffid()));
 
 			LeaveSummary leaveSum = getStaffLeaveDataSummary(leave.getStaffid());
 			leave.setLeaveDaysRemaining((leaveSum.getLeaveDaysSum() - leaveSum.getDaysTakenSum()));
-			
+
 		}
 		return leaves;
 	}
 
-	
-	
 	public List<Leave> getStaffHORejectedLeavesApplications(long id) {
 		final String sql = "SELECT *,(SELECT name from staff where id=l.staffid),(SELECT leavetype from leavetypes as t where t.id=l.type) ,datediff(end_date,curdate()) FROM staff_leave as l  where hod_approved=0";
 		List<Leave> leaves = template.query(sql, new StaffLeaveMapping(), id);
@@ -266,7 +268,7 @@ public class LeaveRepository {
 	public LeaveSummary getStaffLeaveDataSummary(long id) {
 		LeaveSummary sum = null;
 		final String sql = "SELECT m.staffid, sum(days),(SELECT (a.days) from leave_arrears as a where a.staffid=? LIMIT 1),(SELECT sum((l.days)) from staff_leave as l where l.staffid=? and l.type<11 and hr_approve=1), (SELECT sum(l.days) from staff_leave as l where l.staffid=? and l.type<11 and year(date_approved)=year(curdate())) FROM leave_mount as m where m.staffid=?";
-		SqlRowSet set = template.queryForRowSet(sql, id,id,id,id);
+		SqlRowSet set = template.queryForRowSet(sql, id, id, id, id);
 		if (set.next()) {
 			System.err.println(set.getDouble(2));
 			sum = new LeaveSummary();
@@ -274,7 +276,6 @@ public class LeaveRepository {
 			sum.setStaff(staffRepository.getStaffByID(id));
 			sum.setDaysTakenSum((long) set.getDouble(4));
 			sum.setCurrentTaken((int) set.getDouble(5));
-
 
 		}
 		return sum;
@@ -381,47 +382,60 @@ public class LeaveRepository {
 		return template.query(sql, new LeaveTypeMapper());
 	}
 
-	
 	public List<KeyValue> getStaffLeaveYears(long id) {
 		List<KeyValue> value = new ArrayList<KeyValue>();
 		final String sql = "SELECT year(start_date) as year,sum(days) as days FROM staff_leave where type <11 and staffid =? and hr_approve=1 group by year;";
-		SqlRowSet set = template.queryForRowSet(sql,id);
-		while(set.next()) {
+		SqlRowSet set = template.queryForRowSet(sql, id);
+		while (set.next()) {
 			KeyValue key = new KeyValue();
 			key.setId(set.getLong(1));
 			key.setValue(set.getString(2));
 			value.add(key);
-			}
+		}
 		return value;
 	}
 
-	public KeyValue getLeaveTypeDays(long id,long staffid) {
-	KeyValue value = new KeyValue();
-	String sql=null;
-	SqlRowSet set = null;
-	if(id!=7) {
-		 sql = "SELECT IFNULL((SELECT maximum_days from leavetypes as l where l.id=?),0),IFNULL(sum(days),0),IFNULL((SELECT isdeducted from leavetypes as d where d.id=?),0) FROM staff_leave as s where s.type=? and year(date_approved)=year(curdate()) and hr_approve=1 and staffid=?";
-		 set = template.queryForRowSet(sql,id,id,id,staffid);
-	}else{
-		 sql = "SELECT (SELECT days from leave_mount where staffid=? and year=year(curdate())), ifnull(sum(days),0),IFNULL((SELECT isdeducted from leavetypes as d where d.id=?),0) FROM staff_leave where type IN (SELECT id from leavetypes where isdeducted=1) and staffid =? and year(date_approved)=year(curdate());";
-		 set = template.queryForRowSet(sql,staffid,id,staffid);
-		
-		
-	}
-		
-		
-		if(set.next()) {
+	public KeyValue getLeaveTypeDays(long id, long staffid) {
+		KeyValue value = new KeyValue();
+		String sql = null;
+		SqlRowSet set = null;
+		if (id != 7) {
+			sql = "SELECT IFNULL((SELECT maximum_days from leavetypes as l where l.id=?),0),IFNULL(sum(days),0),IFNULL((SELECT isdeducted from leavetypes as d where d.id=?),0) FROM staff_leave as s where s.type=? and year(date_approved)=year(curdate()) and hr_approve=1 and staffid=?";
+			set = template.queryForRowSet(sql, id, id, id, staffid);
+		} else {
+			sql = "SELECT (SELECT days from leave_mount where staffid=? and year=year(curdate())), ifnull(sum(days),0),IFNULL((SELECT isdeducted from leavetypes as d where d.id=?),0) FROM staff_leave where type IN (SELECT id from leavetypes where isdeducted=1) and staffid =? and year(date_approved)=year(curdate());";
+			set = template.queryForRowSet(sql, staffid, id, staffid);
+
+		}
+
+		if (set.next()) {
 			value = new KeyValue();
 			value.setId(set.getLong(1));
-			value.setQuantity((long)set.getDouble(2));
-			value.setQuantity2((long)set.getDouble(3));
-		
-			}
+			value.setQuantity((long) set.getDouble(2));
+			value.setQuantity2((long) set.getDouble(3));
+
+		}
 		return value;
+	}
+
+	public int saveStaffLeave(String staffid, String startDate, String endDate, int days, int type,MultipartFile file) {
+		try {
+//			copyFileUsingStream(uploadfile, new File(filename));
+
+			file.transferTo(new File(UPLOAD_FOLDER  + file.getOriginalFilename()));
+
+		} catch (IllegalStateException | IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+
+		final String sql = "INSERT INTO `staff_leave` (`staffid`, `start_date`, `end_date`,`days`,type,file) VALUES (?,?,?,?,?,?)";
+		return template.update(sql, staffid, startDate, endDate, days, type,file.getOriginalFilename());
 	}
 	
 	public int saveStaffLeave(String staffid, String startDate, String endDate, int days, int type) {
-		
+	
+
 		final String sql = "INSERT INTO `staff_leave` (`staffid`, `start_date`, `end_date`,`days`,type) VALUES (?,?,?,?,?)";
 		return template.update(sql, staffid, startDate, endDate, days, type);
 	}
@@ -434,10 +448,11 @@ public class LeaveRepository {
 	public int saveHRpproveLeave(long id, String decision) {
 		final String sql = "UPDATE staff_leave set hr_approve=?,date_approved=curdate() where id=?";
 		Leave leave = getLeaveById(id);
-		String message ="Hello "+leave.getStaffName()+" your leave from "+leave.getStart() +" to "+leave.getEnd() +" has been ";
+		String message = "Hello " + leave.getStaffName() + " your leave from " + leave.getStart() + " to "
+				+ leave.getEnd() + " has been ";
 		Staff staff = staffRepository.getStaffByID(leave.getStaffid());
-		String decide= (decision.equalsIgnoreCase("1"))?"approved ":"rejected";
-		messagerService.sendSms(message+decide, staff.getMobile());
+		String decide = (decision.equalsIgnoreCase("1")) ? "approved " : "rejected";
+		messagerService.sendSms(message + decide, staff.getMobile());
 		return template.update(sql, decision, id);
 	}
 
@@ -453,6 +468,8 @@ public class LeaveRepository {
 	}
 
 	public void insertStaffLeave(final List<StaffLeave> leaves) {
+		
+		
 		final String sql = "INSERT INTO leaves(staffid,startDate,endDate,type) VALUES(?,?,?,?)";
 		this.template.batchUpdate(sql, new BatchPreparedStatementSetter() {
 
@@ -511,6 +528,33 @@ public class LeaveRepository {
 		} else {
 			return date.plusDays(days);
 		}
+
+	}
+
+	public LocalDate getLeaveEndDate(String start, int days) {
+
+		LocalDate date = LocalDate.parse(start);
+		Map<String, Holiday> holidays = holidayRepository.getHolidaysMao(LocalDate.now().getYear());
+		int weekendCounts = 0;
+		for (int a = 0; a <= days; a++) {
+			LocalDate d = date.plusDays(a);
+			if (d.getDayOfWeek() == DayOfWeek.SATURDAY | d.getDayOfWeek() == DayOfWeek.SUNDAY) {
+				System.err.println(true + "\t" + d.toString());
+				weekendCounts++;
+			}
+			// checking whether the day is holiday to rollover
+			if (holidays.containsKey(d.toString())) {
+				weekendCounts++;
+			}
+
+		}
+		date = date.plusDays(days + weekendCounts);
+		while (date.getDayOfWeek() == DayOfWeek.SATURDAY | date.getDayOfWeek() == DayOfWeek.SUNDAY) {
+			date = date.plusDays(1);
+
+		}
+
+		return date;
 
 	}
 

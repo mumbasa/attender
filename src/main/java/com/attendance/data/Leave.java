@@ -4,6 +4,8 @@
 
 package com.attendance.data;
 
+import com.attendance.services.Utilities;
+
 public class Leave
 {
     private String leave;
@@ -21,7 +23,7 @@ public class Leave
     private String start;
     private String end;
     private int leaveTypeId;
-    
+    private String file;
     public String getLeave() {
         return this.leave;
     }
@@ -51,7 +53,7 @@ public class Leave
     }
     
     public void setStart(final String start) {
-        this.start = start;
+        this.start = Utilities.dateConvert(start);
     }
     
     public String getEnd() {
@@ -59,7 +61,7 @@ public class Leave
     }
     
     public void setEnd(final String end) {
-        this.end = end;
+        this.end = Utilities.dateConvert(end);
     }
 
 	public int getDaysMore() {
@@ -140,5 +142,13 @@ public class Leave
 
 	public void setStaff(Staff staff) {
 		this.staff = staff;
+	}
+
+	public String getFile() {
+		return file;
+	}
+
+	public void setFile(String file) {
+		this.file = file;
 	}
 }

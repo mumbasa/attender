@@ -1,5 +1,7 @@
 package com.attendance.data;
 
+import com.attendance.services.Utilities;
+
 public class Overtime {
 private  long id;
 private String name;
@@ -28,7 +30,7 @@ public void setName(String name) {
 	this.name = name;
 }
 public String getDate() {
-	return date;
+	return Utilities.dateConvert(date);
 }
 public void setDate(String date) {
 	this.date = date;

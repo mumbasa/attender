@@ -100,7 +100,7 @@ public class StaffController {
 		Staff staff = staffRepo.getStaffByEmail(principal.getName());
 		List<Staff> staffs = staffRepo.getStaffOfSupervisor(staff.getId());
 		model.addAttribute("staff", staffs);
-		return "/admin/allstaff";
+		return "/supervisor/allstaff";
 	}
 
 	
@@ -219,7 +219,7 @@ public class StaffController {
 		model.addAttribute("summary", summary);
 		model.addAttribute("def", deficit);
 		model.addAttribute("in", sum.get(2));
-		return "/admin/profile";
+		return "/profile/profile";
 	}
 
 	@RequestMapping("/admin/my/profile")
@@ -251,7 +251,7 @@ public class StaffController {
 		model.addAttribute("summary", summary);
 		model.addAttribute("def", deficit);
 		model.addAttribute("in", sum.get(2));
-		return "/admin/profile";
+		return "/profile/profile";
 	}
 
 	@RequestMapping("/admin/my/attendance")
@@ -375,6 +375,49 @@ public class StaffController {
 		model.addAttribute("schools", staffRepo.getSchools());
 
 		return "/admin/profile";
+	}
+	
+	@RequestMapping("/admin/my/staff/{id}/profile")
+	public String getStaffDataProfile(@PathVariable("id") long id, Model model) {
+		int[] dates = attendanceRepo.getMaxDate();
+		model.addAttribute("staffid", id);
+		Staff staff = null;
+		try {
+			staff = staffRepo.getStaffByID(id);
+		} catch (Exception e) {
+			staff = staffRepo.getStaffByBoid(id);
+
+		}
+
+		String summary = "";
+		List<Attendance> att = attendanceRepo.getStaffAttendanceInYear(dates[1],
+				new StringBuilder(String.valueOf(staff.getBioID())).toString());
+		List<MonthAggregate> agg = attendanceRepo.getStaffYearAggregate(dates[1], staff.getBioID());
+		List<String> sum = attendanceRepo.getStaffYearlyAggregateSummary(dates[1], staff.getBioID());
+		long deficit = 0;
+		try {
+			summary = Utilities.stringToTime(Long.parseLong(sum.get(3).split("\\.")[0]));
+			deficit = Long.parseLong(sum.get(3).split("\\.")[0]);
+
+			model.addAttribute("late", Integer.parseInt(sum.get(0).split("\\.")[0]));
+			model.addAttribute("abs", Integer.parseInt(sum.get(1).split("\\.")[0]));
+
+		} catch (Exception e) {
+			summary = "";
+		}
+		model.addAttribute("staff", staff);
+		model.addAttribute("monthagg", agg);
+		model.addAttribute("attendance", att);
+		model.addAttribute("year", dates[1]);
+		model.addAttribute("month", dates[0]);
+		model.addAttribute("summary", summary);
+		model.addAttribute("def", (deficit));
+		model.addAttribute("in", sum.get(2));
+		model.addAttribute("leaves", leaveeRepo.getStaffLeaves(staff.getId()));
+		model.addAttribute("countries", staffRepo.getCountries());
+		model.addAttribute("contacts", staffRepo.getContacts(staff.getId()));
+
+		return "/admin/staffdataprofile";
 	}
 
 	@RequestMapping("/admin/get/staff/shifts")
@@ -618,10 +661,10 @@ public class StaffController {
 
 	@ResponseBody
 	@PostMapping("/admin/staff/add/emergency/")
-	public int addContact(@RequestParam("name") String name, @RequestParam("contact") String contact,
+	public int addContact(@RequestParam("name") String name, @RequestParam("contact") String contact,@RequestParam("relation") String relationship,
 			@RequestParam("id") String id) {
 	
-		return staffRepo.addContact(name, contact, id);
+		return staffRepo.addContact(name, contact, id,relationship);
 
 	}
 

@@ -32,7 +32,9 @@ public class Tester {
 		 * d.toString()); weekendCounts++; } } System.out.println(date.plusDays(days +
 		 * weekendCounts).toString());
 		 */
-		getBank();
+		String data = "110000000000000000";
+		System.out.println(data.toCharArray()[1]=='1');
+		//getBank();
 	}
 
 	public static List<String> getUni() {

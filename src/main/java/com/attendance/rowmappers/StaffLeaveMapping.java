@@ -14,10 +14,11 @@ public class StaffLeaveMapping implements RowMapper<Leave>
     public Leave mapRow(final ResultSet rs, final int rowNum) throws SQLException {
         final Leave leave = new Leave();
         leave.setId(rs.getLong(1));
-        leave.setLeave(rs.getString(11));
-        leave.setDaysMore(rs.getInt(12));
+        leave.setLeave(rs.getString(12));
+        leave.setFile(rs.getString(10));
+        leave.setDaysMore(rs.getInt(13));
         leave.setLeaveTypeId(rs.getInt(6));
-        leave.setStaffName(rs.getString(10));
+        leave.setStaffName(rs.getString(11));
         leave.setStaffid(rs.getLong(2));
         leave.setStart(rs.getString(3));
         leave.setEnd(rs.getString(5));

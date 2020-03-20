@@ -23,10 +23,11 @@ public class Holiday
         return this.day;
     }
     
-    public Holiday(final String date, final String day, final String holiday) {
+    public Holiday(final String date, final String day, final String holiday,String type) {
         this.hDate = date;
         this.day = day;
         this.holiday = holiday;
+        this.type=type;
         this.setRealHoliday();
     }
     

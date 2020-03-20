@@ -170,6 +170,12 @@ public class StaffRepository implements StaffDAO {
 		return staffs;
 	}
 	
+	public List<Staff> getStaffShiftReady(long staffID,String date) {
+		String sql = "SELECT * FROM attendance.staff  as s left join departments as d on s.department=d.id left join stafftype as st on s.status=st.id left join category as c on s.category=c.id where s.staff_id NOT IN (SELECT l.staffid from staff_leave as l where start_date<=? and end_date>=? and hr_approve=1) and s.status=2 and s.id  IN (SELECT staff_id FROM supervisors where supervisor_id=?);";
+		List<Staff> staffs = template.query(sql, new StaffMapper(),date,date,staffID);
+	
+		return staffs;
+	}
 	
 
 	public Map<Long,Staff> getStaffMap() {
@@ -278,9 +284,9 @@ public class StaffRepository implements StaffDAO {
 	}
 	
 	
-	public int addContact(String name,String contact,String staff) {
-		String sql = "INSERT INTO `attendance`.`contact` (`name`, `contact`,staff_id, `date_added`) VALUES (?,?,?,curdate())";
-		return template.update(sql, name,contact,staff);
+	public int addContact(String name,String contact,String staff,String relationship) {
+		String sql = "INSERT INTO `attendance`.`contact` (`name`, `contact`,staff_id, `date_added`,relation) VALUES (?,?,?,curdate(),?)";
+		return template.update(sql, name,contact,staff,relationship);
 	}
 	
 
