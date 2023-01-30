@@ -74,7 +74,7 @@
             <div class="container">
                 <!-- Title -->
                 <div class="hk-pg-header">
-                    <h4 class="hk-pg-title"><span class="pg-title-icon"><span class="feather-icon"><i data-feather="align-left"></i></span></span>Add New Department</h4>
+                    <h4 class="hk-pg-title"><span class="pg-title-icon"><span class="feather-icon"><i data-feather="align-left"></i></span></span>Assign Supervisor</h4>
                 </div>
                 <!-- /Title -->
 
@@ -93,7 +93,7 @@
                                             <div class="col-md-12 mb-10">
                                                 <label for="number">Supervisor</label>
                                               	<select class="form-control custom-select d-block w-100" id="stafflist" name="superid">
-                                                    <option th:each="a:${staff}" th:value="${a.id}" th:text="${a.name + ' (' + a.department+')'}">Choose...</option>
+                                                    <option th:each="a:${staff}" th:value="${a.id}" th:text="${a.name + ' ' +a.otherNames+' (' + a.department.department+')'}">Choose...</option>
                                                   
                                                 </select>
                                             </div>
@@ -106,7 +106,7 @@
                                             <div class="col-md-12 form-group">
                                                 <label for="stafflist">Staff</label>
 									<select class="form-control custom-select d-block w-100" id="stafflist" name="staffid" multiple="multiple" size="10">
-                                                    <option th:each="a:${staff}" th:value="${a.id}" th:text="${a.name + ' (' + a.department+')'}">Choose...</option>
+                                                    <option th:each="a:${staff}" th:text="${a.name + ' ' +a.otherNames+' (' + a.department.department+')'}" th:value="${a.id}">Choose...</option>
                                                   
                                                 </select>
                                             </div>

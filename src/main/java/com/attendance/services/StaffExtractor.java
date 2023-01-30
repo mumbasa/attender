@@ -41,7 +41,7 @@ public class StaffExtractor
         }
         for (final String a : att.keySet()) {
             final Staff staff = new Staff();
-            staff.setBioID(Long.parseLong(a));
+            staff.setBioid(Long.parseLong(a));
             staff.setName((String)att.get(a));
             this.staffs.add(staff);
         }

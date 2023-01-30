@@ -4,41 +4,33 @@
 
 package com.attendance.data;
 
-public class Departments
-{
-    private String id;
+import java.io.Serializable;
+
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.persistence.Transient;
+
+import lombok.Getter;
+import lombok.Setter;
+
+@Setter
+@Table
+@Entity
+@Getter
+public class Departments implements Serializable{	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	@Id
+	@GeneratedValue
+    private long id;
     private String department;
+    @Transient
     private long size;
-    private String supervisor;
-    public String getId() {
-        return this.id;
-    }
-    
-    public void setId(final String id) {
-        this.id = id;
-    }
-    
-    public String getDepartment() {
-        return this.department;
-    }
-    
-    public void setDepartment(final String department) {
-        this.department = department;
-    }
-
-	public long getSize() {
-		return size;
-	}
-
-	public void setSize(long size) {
-		this.size = size;
-	}
-
-	public String getSupervisor() {
-		return supervisor;
-	}
-
-	public void setSupervisor(String supervisor) {
-		this.supervisor = supervisor;
-	}
+    @Transient
+    private int supervisor;
+   
 }

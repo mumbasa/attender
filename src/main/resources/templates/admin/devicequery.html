@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	xmlns:th="http://www.thymeleaf.org"
+	layout:decorate="~{fragments/blank}">
+<head>
+<meta charset="UTF-8">
+<title>Attendance Data  Query</title>
+
+</head>
+<body>
+
+	<div layout:fragment="content">
+
+
+		<script type="text/javascript"  th:inline="javascript">
+	
+	function query(){
+		url = [[@{/admin/realtime/report}]]
+	    var from = $("#from").val();
+		var to= $("#to").val();
+		var deptid=$("#staff").val();
+		window.open( url+'/'+from+"/"+to+'/'+deptid);
+	
+	
+		
+	}
+	
+	</script>
+
+
+
+
+		<nav class="hk-breadcrumb" aria-label="breadcrumb">
+			<ol class="breadcrumb breadcrumb-light bg-transparent">
+				<li class="breadcrumb-item"><a href="#">Query</a></li>
+				<li class="breadcrumb-item active" aria-current="page">Shift</li>
+			</ol>
+		</nav>
+		<!-- /Breadcrumb -->
+
+		<!-- Container -->
+		<div class="container">
+			<!-- Title -->
+			<div class="hk-pg-header">
+				<h4 class="hk-pg-title">
+					<span class="pg-title-icon"><span class="feather-icon"><i
+							data-feather="align-left"></i></span></span>Query Staff Attendance Data
+				</h4>
+			</div>
+			<!-- /Title -->
+
+			<!-- Row -->
+			<div class="row">
+				<div class="col-xl-12">
+					<section class="hk-sec-wrapper">
+						<div class="row">
+							<div class="col-sm">
+								<form class="former">
+									<div class="row">
+										<div class="col-md-4 form-group">
+											<label for="firstName">Staff Name</label> 
+											
+											<select class="form-control custom-select d-block w-100" id="staff" name="deptid">
+                                                    <option th:each="a:${department}" th:value="${a.id}" th:text="${a.department}">Choose...</option>
+                                                </select>
+											
+										</div>
+										<div class="col-md-3 form-group">
+											<label for="lastName">Start Date</label> <input
+												class="form-control" id="from" name="from"
+												placeholder="" value="" type="date">
+										</div>
+										
+											<div class="col-md-3 form-group">
+											<label for="lastName">End Date</label> <input
+												class="form-control" id="to" name="to"
+												placeholder="" value="" type="date">
+										</div>
+
+										<div class="col-md-2 form-group">
+											<label></label>
+											<button type="button" class="btn btn-info mt-4"
+												onclick="query()">Query Dates</button>
+
+										</div>
+									</div>
+								</form>
+
+
+
+
+							</div>
+						</div>
+					</section>
+				</div>
+			</div>
+			<!-- /Row -->
+		</div>
+		<!-- /Container -->
+
+
+	</div>
+
+
+</body>
+</html>

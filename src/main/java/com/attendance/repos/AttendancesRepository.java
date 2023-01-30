@@ -3,23 +3,21 @@ package com.attendance.repos;
 import com.attendance.data.Holiday;
 import java.util.HashSet;
 import com.attendance.services.AttendanceExtractor;
-import com.attendance.rowmappers.YearMonthDataMapper;
 import com.attendance.data.YearMonthData;
-import com.attendance.rowmappers.StaffDisplayAggMapper;
+import com.attendance.repositories.StaffRepositoies;
 import com.attendance.data.StaffDisplay;
-import com.attendance.rowmappers.YearAggMapper;
-import com.attendance.rowmappers.MontlyAggMapper;
 import com.attendance.data.MonthAggregate;
 import com.attendance.data.Staff;
-import com.attendance.rowmappers.AttendanceMapper;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import com.attendance.services.Utilities;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
+
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
-import com.attendance.data.Attendance;
+import com.attendance.data.Attendances;
 import java.util.List;
 import java.util.Map;
 
@@ -29,17 +27,20 @@ import org.springframework.stereotype.Repository;
 import com.attendance.dao.AttendanceDAO;
 
 @Repository
-public class AttendanceRepository implements AttendanceDAO {
+public class AttendancesRepository implements AttendanceDAO {
 	@Autowired
 	JdbcTemplate template;
 	@Autowired
 	HolidayRepository holiRepo;
 	@Autowired
-	StaffRepository staffRepo;
+	StaffRepositoies staffRepo;
 	@Autowired
 	LeaveRepository leaveRepo;
+	@Autowired
+	ShiftRepository shiftRepository;
+	
 
-	public void saveAttendance(List<Attendance> a) {
+	public void saveAttendance(List<Attendances> a) {
 		final String sql = "INSERT INTO attendance(`staffid`,`timein`,`timeout`,`islate`,`minuteslate`,`timeworked`,`date`,`closed early`,timeinmins,timeoutmins,deficit,workhours) VALUES(?,?,?,?,?,?,?,?,?,?,?,?)";
 		this.template.batchUpdate(sql, new BatchPreparedStatementSetter() {
 
@@ -85,7 +86,7 @@ public class AttendanceRepository implements AttendanceDAO {
 		return data;
 	}
 
-	public void saveAbsentees(final List<Attendance> a) {
+	public void saveAbsentees(final List<Attendances> a) {
 		final String sql = "INSERT INTO attendance(`staffid`,`timeworked`,`date`,deficit) VALUES(?,?,?,?)";
 		this.template.batchUpdate(sql, new BatchPreparedStatementSetter() {
 
@@ -110,29 +111,101 @@ public class AttendanceRepository implements AttendanceDAO {
 		return 0;
 	}
 
-	public List<Attendance> getAttendanceInMonth(final int year, final int month) {
-		return null;
+	public List<Attendances> getAttendanceInMonth(final int year, final int month) {
+		final String sql = "SELECT * FROM attendance.attendance where and month(date)=? and year(date)=?";
+		SqlRowSet rs = template.queryForRowSet(sql,month,year);
+		List<Attendances> attendances = new ArrayList<Attendances>();
+		while(rs.next()) {
+			Attendances attendance = new Attendances();
+	        attendance.setDate(rs.getString(8));
+	        attendance.setClosedEarly((rs.getString(9) == null) ? "Absent" : rs.getString(9));
+	        attendance.setId(rs.getString(2));
+	        attendance.setTimeOut((rs.getString(4) == null) ? "Absent" : rs.getString(4));
+	        attendance.setTimeIn((rs.getString(3) == null) ? "Absent" : rs.getString(3));
+	        attendance.setLabel((rs.getString(5) == null) ? "Absent" : rs.getString(5));
+	        attendance.setHoursWorked(rs.getLong(7));
+	        attendance.setDeficit(rs.getLong(12));
+	        attendance.setLateness(rs.getLong(6));
+	        attendances.add(attendance);
+			
+		}
+		return attendances;
 	}
 
-	public List<Attendance> getStaffAttendanceInMonth(final int year, final int month, final String staff) {
+	public List<Attendances> getStaffAttendanceInMonth(final int year, final int month, final String staff) {
 		final String sql = "SELECT * FROM attendance.attendance where staffid=? and month(date)=? and year(date)=?";
-		return (List<Attendance>) this.template.query(sql, new AttendanceMapper(), new Object[] { staff, month, year });
+		SqlRowSet rs = template.queryForRowSet(sql,staff,month,year);
+		List<Attendances> attendances = new ArrayList<Attendances>();
+		while(rs.next()) {
+			Attendances attendance = new Attendances();
+	        attendance.setDate(rs.getString(8));
+	        attendance.setClosedEarly((rs.getString(9) == null) ? "Absent" : rs.getString(9));
+	        attendance.setId(rs.getString(2));
+	        attendance.setTimeOut((rs.getString(4) == null) ? "Absent" : rs.getString(4));
+	        attendance.setTimeIn((rs.getString(3) == null) ? "Absent" : rs.getString(3));
+	        attendance.setLabel((rs.getString(5) == null) ? "Absent" : rs.getString(5));
+	        attendance.setHoursWorked(rs.getLong(7));
+	        attendance.setDeficit(rs.getLong(12));
+	        attendance.setLateness(rs.getLong(6));
+	        attendances.add(attendance);
+			
+		}
+		return attendances;
 	}
 
 	public List<String> getStaffAttendanceInMonthDays(final int year, final int month, final String staff) {
 		final String sql = "SELECT date FROM attendance.attendance where staffid=? and month(date)=? and year(date)=?";
-		return (List<String>) this.template.queryForList(sql, String.class, new Object[] { staff, month, year });
+		List<String> days = new ArrayList<String>();
+		SqlRowSet set = template.queryForRowSet(sql,staff, month, year);
+		while(set.next()) {
+			days.add(set.getString(1));
+		}
+		
+		return  days;
 	}
 
-	public List<Attendance> getStaffAttendanceInYear(final int year, final String staff) {
+	public List<Attendances> getStaffAttendanceInYear( int year,  String staff) {
 		final String sql = "SELECT * FROM attendance.attendance where staffid=? and year(date)=?";
-		return (List<Attendance>) this.template.query(sql, new AttendanceMapper(), new Object[] { staff, year });
+		SqlRowSet rs = template.queryForRowSet(sql,staff,year);
+		List<Attendances> attendances = new ArrayList<Attendances>();
+		while(rs.next()) {
+			Attendances attendance = new Attendances();
+	        attendance.setDate(rs.getString(8));
+	        attendance.setClosedEarly((rs.getString(9) == null) ? "Absent" : rs.getString(9));
+	        attendance.setId(rs.getString(2));
+	        attendance.setTimeOut((rs.getString(4) == null) ? "Absent" : rs.getString(4));
+	        attendance.setTimeIn((rs.getString(3) == null) ? "Absent" : rs.getString(3));
+	        attendance.setLabel((rs.getString(5) == null) ? "Absent" : rs.getString(5));
+	        attendance.setHoursWorked(rs.getLong(7));
+	        attendance.setDeficit(rs.getLong(12));
+	        attendance.setLateness(rs.getLong(6));
+	        attendances.add(attendance);
+			
+		}
+		return attendances;
+			
 	}
 
 	public List<MonthAggregate> getStaffYearAggregate(final int year, final long staff) {
+		List<MonthAggregate>  data = new ArrayList<MonthAggregate>();
 		final String sql = "SELECT * FROM attendance.monthlyagg where staffid=? and year=?";
-		return (List<MonthAggregate>) this.template.query(sql, new MontlyAggMapper(), new Object[] { staff, year });
+		SqlRowSet rs =template.queryForRowSet(sql,staff,year);
+		while(rs.next()) {
+			MonthAggregate agg = new MonthAggregate();
+	        agg.setStaffid(rs.getLong(2));
+	        agg.setAvgTimeIn(Utilities.stringToTime(rs.getLong(5)));
+	        agg.setAvgTimeOut(Utilities.stringToTime(rs.getLong(6)));
+	        agg.setDeficit(rs.getLong(7));
+	        agg.setLatenessSummary(rs.getString(8));
+	        agg.setMonth(rs.getInt(9));
+	        agg.setYear(rs.getInt(10));
+	        agg.setLatenessount(rs.getInt(3));
+	        agg.setAbsents(rs.getInt(4));
+			data.add(agg);
+		}
+		return data;
 	}
+	
 	
 	
 	public List<MonthAggregate> getDepartmentAgg( long dept) {
@@ -156,29 +229,108 @@ public class AttendanceRepository implements AttendanceDAO {
 	}
 	
 
+
+	public List<MonthAggregate> getBranchAgg( long dept) {
+		List<MonthAggregate> data = new ArrayList<MonthAggregate>();
+		String sql = "SELECT name,gender,(SELECT type from stafftype where id=s.status),(SELECT count(*) from attendance as ad where ad.staffid=s.bioid and ad.islate='Early' group by ad.staffid), (SELECT count(*) from attendance as af where af.staffid=s.bioid and af.islate ='Late' group by af.staffid) , (SELECT count(*) from attendance as af where af.staffid=s.bioid and af.islate is null group by af.staffid) ,(SELECT sum(deficit) from attendance as af where af.staffid=s.bioid and af.islate is null group by af.staffid) , (SELECT sum(minuteslate) from attendance as af where af.staffid=s.bioid group by af.staffid),s.bioid FROM attendance.staff as s where department IN (SELECT id from departments where branch =?)";
+		SqlRowSet set= this.template.queryForRowSet(sql, dept);
+		while (set.next()) {
+			MonthAggregate m = new MonthAggregate();
+			m.setStaffName(set.getString(1));
+			m.setGender(set.getString(2));
+			m.setStafftype(set.getString(3));
+			m.setEarlyCount((long)set.getDouble(4));
+			m.setLatenessount(set.getInt(5));
+			m.setAbsents(set.getInt(6));
+			m.setDeficit((long)set.getDouble(7));
+			m.setLatenessMins((long)set.getDouble(8));
+			m.setStaffid(set.getLong(9));
+			data.add(m);
+		}
+		return data;
+	}
+	
+
+	
+	
 	public List<MonthAggregate> yearAggregate(final int year) {
 		final String sql = "SELECT month, sum(latecount), sum(absentcount),sum(deficit),year,concat(floor(avg(avgtimein)/60),':',round(avg(avgtimein)%60)) FROM attendance.monthlyagg where year=? group by month";
-		return (List<MonthAggregate>) this.template.query(sql, new YearAggMapper(), new Object[] { year });
+		List<MonthAggregate> data = new ArrayList<MonthAggregate>();
+		SqlRowSet set= this.template.queryForRowSet(sql, year);
+		while (set.next()) {
+			MonthAggregate m = new MonthAggregate();
+			m.setStaffName(set.getString(1));
+			m.setGender(set.getString(2));
+			m.setStafftype(set.getString(3));
+			m.setEarlyCount((long)set.getDouble(4));
+			m.setLatenessount(set.getInt(5));
+			//changed for getInt(6)
+			m.setAbsents(0);
+			//m.setDeficit((long)set.getDouble(7));
+		//	m.setLatenessMins((long)set.getDouble(8));
+			m.setStaffid(set.getLong(2));
+			data.add(m);
+		}
+		return data;
+
+		
+		
 	}
 
 	public List<StaffDisplay> getTopLateness(final int year) {
-		final String sql = "SELECT (select name from staff where bioid=m.staffid),staffid,sum(latecount) as t,(select department from staff where bioid=m.staffid)  FROM attendance.monthlyagg  as m  where year=? group by m.staffid order by t desc limit 10";
-		return (List<StaffDisplay>) this.template.query(sql, new StaffDisplayAggMapper(), new Object[] { year });
+		 String sql = "SELECT (select name from staff where bioid=m.staffid),staffid,sum(latecount) as t,(select department from staff where bioid=m.staffid)  FROM attendance.monthlyagg  as m  where year=? group by m.staffid order by t desc limit 10";
+		List<StaffDisplay> displays = new ArrayList<StaffDisplay>();
+		SqlRowSet rs = template.queryForRowSet(sql,year);
+		while (rs.next()) {
+			StaffDisplay d = new StaffDisplay();
+	        d.setStaffName((rs.getString(1) == null) ? "" : rs.getString(1).toLowerCase());
+	        d.setBioId(rs.getString(2));
+	        d.setData(rs.getInt(3));
+			displays.add(d);
+		}
+		 return displays;
 	}
 
 	public List<StaffDisplay> getTopAbsent(final int year) {
 		final String sql = "SELECT (select name from staff where bioid=m.staffid),staffid,sum(absentcount) as t,\n(select department from staff where bioid=m.staffid)  FROM attendance.monthlyagg  as m  where year=? group by m.staffid order by t desc limit 10;";
-		return (List<StaffDisplay>) this.template.query(sql, new StaffDisplayAggMapper(), new Object[] { year });
+		List<StaffDisplay> displays = new ArrayList<StaffDisplay>();
+		SqlRowSet rs = template.queryForRowSet(sql,year);
+		while (rs.next()) {
+			StaffDisplay d = new StaffDisplay();
+	        d.setStaffName((rs.getString(1) == null) ? "" : rs.getString(1).toLowerCase());
+	        d.setBioId(rs.getString(2));
+	        d.setData(rs.getInt(3));
+			displays.add(d);
+		}
+		 return displays;
 	}
 
 	public List<StaffDisplay> getTopDeficit(final int year) {
 		final String sql = "SELECT (select name from staff where bioid=m.staffid),staffid,sum(deficit) as t,\n(select department from staff where bioid=m.staffid)  FROM attendance.monthlyagg  as m  where year=? group by m.staffid order by t asc limit 10;";
-		return (List<StaffDisplay>) this.template.query(sql, new StaffDisplayAggMapper(), new Object[] { year });
+		List<StaffDisplay> displays = new ArrayList<StaffDisplay>();
+		SqlRowSet rs = template.queryForRowSet(sql,year);
+		while (rs.next()) {
+			StaffDisplay d = new StaffDisplay();
+	        d.setStaffName((rs.getString(1) == null) ? "" : rs.getString(1).toLowerCase());
+	        d.setBioId(rs.getString(2));
+	        d.setData(rs.getInt(3));
+			displays.add(d);
+		}
+		 return displays;
 	}
 
 	public List<StaffDisplay> getTopPerformance(final int year) {
 		final String sql = "SELECT (select name from staff where bioid=m.staffid),staffid,sum(latecount)+sum(absentcount) as t,\n(select department from staff where bioid=m.staffid)  FROM attendance.monthlyagg  as m  where year=? group by m.staffid order by t asc limit 10";
-		return (List<StaffDisplay>) this.template.query(sql, new StaffDisplayAggMapper(), new Object[] { year });
+		List<StaffDisplay> displays = new ArrayList<StaffDisplay>();
+		SqlRowSet rs = template.queryForRowSet(sql,year);
+		while (rs.next()) {
+			StaffDisplay d = new StaffDisplay();
+	        d.setStaffName((rs.getString(1) == null) ? "" : rs.getString(1).toLowerCase());
+	        d.setBioId(rs.getString(2));
+	        d.setData(rs.getInt(3));
+			displays.add(d);
+		}
+		 return displays;
 	}
 
 	public int[] getMaxDate() {
@@ -192,21 +344,32 @@ public class AttendanceRepository implements AttendanceDAO {
 		return date;
 	}
 
-	public List<Attendance> getDeptAttendanceInYear(final int year, final int dept) {
+	public List<Attendances> getDeptAttendanceInYear(final int year, final int dept) {
 		return null;
 	}
 
 	public List<YearMonthData> getDataCountFrommonth() {
+		List<YearMonthData> data = new ArrayList<YearMonthData>();
 		final String sql = "SELECT month(date),year(date),monthname(date), count(*) FROM attendance.attendance group by year(date),month(date),monthname(date)";
-		return (List<YearMonthData>) this.template.query(sql, new YearMonthDataMapper());
+		SqlRowSet rs = template.queryForRowSet(sql);
+		while(rs.next()) {
+			YearMonthData d = new YearMonthData();
+	        d.setMonthId(rs.getInt(1));
+	        d.setYear(rs.getInt(2));
+	        d.setMonthName(rs.getString(3));
+	        d.setValueOne(rs.getLong(4));
+			data.add(d);
+		}
+		return data;
 	}
 
-	public List<Attendance> getDeptAttendanceInMonth(final int year, final int month, final int dept) {
+	public List<Attendances> getDeptAttendanceInMonth(final int year, final int month, final int dept) {
 		return null;
 	}
 
 	public void populateAggregate(final int month, final int year, final long staff) {
-		final String sql = "INSERT INTO monthlyagg (staffid, latecount, absentcount, avgtimein, avgtimeout,  deficit, lateness, month, year) \n SELECT staffid,\n(SELECT count(islate) from attendance as t where t.staffid=a.staffid and islate='Late' and month(date)="
+		final String sql = "INSERT INTO monthlyagg (staffid, latecount, absentcount, avgtimein, avgtimeout,  deficit, lateness, month, year) "
+				+ "SELECT staffid,(SELECT count(islate) from attendance as t where t.staffid=a.staffid and islate='Late' and month(date)="
 				+ month + " and year(date)=" + year + "),"
 				+ "(SELECT count(*) from attendance as b where b.staffid=a.staffid and timein is NULL and month(date)="
 				+ month + " and year(date)=" + year + ")"
@@ -225,13 +388,29 @@ public class AttendanceRepository implements AttendanceDAO {
 				+ this.template.update(sql2, new Object[] { year, month });
 	}
 
+	public Map<Long, Staff> getStaffMap() {
+		List<Staff> staffs = staffRepo.findAll();
+		Map<Long, Staff> staffData = new HashMap<Long, Staff>();
+		for (Staff s : staffs) {
+			staffData.put(s.getBioid(), s);
+		}
+		return staffData;
+
+	}
+	
+	
+	public List<Staff> getAllStaff() {
+
+		return staffRepo.findAll();
+	}
+
 	public void addAttendanceBatch( String file) {
-		Map<Long, Staff> staffs = staffRepo.getStaffMap();
-		final AttendanceExtractor ex = new AttendanceExtractor(file, AttendanceExtractor.Institutes.IIR,
-				staffRepo.getStaffMap());
+		Map<Long, Staff> staffs = getStaffMap();
+		AttendanceExtractor ex = new AttendanceExtractor(file, AttendanceExtractor.Institutes.IIR,
+				staffs);
 		ex.extract();
 		this.saveAttendance(ex.getAttendance());
-		final List<Long> staffID = this.staffRepo.getIds();
+		List<Long> staffID = staffRepo.findAll().stream().map(Staff::getId).toList();
 
 		final List<Holiday> hdays = this.holiRepo.getHolidaysInMonth(ex.getMonth(), ex.getYear());
 		System.err.println(hdays + "----------------------");
@@ -239,7 +418,7 @@ public class AttendanceRepository implements AttendanceDAO {
 		System.err.println("______" + hdays);
 		for (long staff : staffID) {
 			Staff staffNow = staffs.get(staff) ;
-			if (staffNow.getStaffType() != null) {
+			if (staffNow.getStatus().getType() != null) {
 				final HashSet<String> stafffDays = new HashSet<String>(days);
 				final HashSet<String> leaveDays = this.leaveRepo.getLeaveDates(staff, ex.getMonth(), ex.getYear());
 				if (!leaveDays.isEmpty()) {
@@ -255,9 +434,9 @@ public class AttendanceRepository implements AttendanceDAO {
 			 }
 				
 				
-				final List<Attendance> absent = new ArrayList<Attendance>();
+				final List<Attendances> absent = new ArrayList<Attendances>();
 				for (final String sDays : stafffDays) {
-					final Attendance a = new Attendance(new StringBuilder().append(staff).toString(), sDays, 0L,staffNow);
+					final Attendances a = new Attendances(new StringBuilder().append(staff).toString(), sDays, 0L,staffNow);
 					a.setLabel("Absent");
 					absent.add(a);
 				}

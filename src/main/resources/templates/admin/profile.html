@@ -631,7 +631,7 @@ formdata = new FormData(form[0]);
 						
 						                                   
 						
-						<div class="col-lg-6" id="id" th:data-id="${staff.bioID}">
+						<div class="col-lg-6" id="id" th:data-id="${staff.bioid}">
 							<div class="button-list" th:if="${#authorization.expression('hasAuthority(''Manager'')')}">
 								<button   data-toggle="modal" data-target="#sendEmail"
 									class="btn btn-dark btn-wth-icon icon-wthot-bg btn-rounded"><span
@@ -1705,7 +1705,9 @@ formdata = new FormData(form[0]);
 											<div class="media-body">
 												<div class="text-capitalize font-weight-500 text-dark"
 													th:text="${staff.name}">Angelic Lauver</div>
-												<div class="font-13" th:text="${staff.staffType}">Business
+												<div class="font-13" >
+<!-- 												th:text="${staff.status.type}
+ -->											Business
 													Manager</div>
 											</div>
 										</div>
@@ -1735,7 +1737,7 @@ formdata = new FormData(form[0]);
 									<ul class="list-group list-group-flush">
 										<li class="list-group-item"><span><i
 												class="ion ion-md-calendar font-18 text-light-20 mr-10"></i><span>Department:</span></span><span
-											class="ml-5 text-dark" th:text="${staff.department}">Oh,
+											class="ml-5 text-dark" th:text="${staff.department.department}">Oh,
 												Canada</span></li>
 										<li class="list-group-item"><span><i
 												class="ion ion-md-briefcase font-18 text-light-20 mr-10"></i><span>Joined
@@ -1756,11 +1758,11 @@ formdata = new FormData(form[0]);
 												WA</span></li>
 									<li class="list-group-item"><span><i
 												class="ion ion-md-pin font-18 text-light-20 mr-10"></i><span>Qualification:</span></span><span
-											class="ml-5 text-dark" th:text="${staff.highestQualification}">Settle,
+											class="ml-5 text-dark" th:text="${staff.highestQualification.certs}">Settle,
 												WA</span></li>
 									<li class="list-group-item"><span><i
 												class="ion ion-md-pin font-18 text-light-20 mr-10"></i><span>Category:</span></span><span
-											class="ml-5 text-dark" th:text="${staff.category}">Settle,
+											class="ml-5 text-dark" th:text="${staff.category.category}">Settle,
 												WA</span></li>
 <li class="list-group-item"><span><i
 												class="ion ion-md-pin font-18 text-light-20 mr-10"></i><span>Supervisor:</span></span><span
@@ -1840,10 +1842,10 @@ formdata = new FormData(form[0]);
 													</div>
 												</div>
 												<div class="media-body">
-													<span class="d-block text-dark text-capitalize" th:text="${a.name}">Evie
-														Ono</span> <span class="d-block font-13" th:text="${a.staffType}">Apple Inc</span>
+													<span class="d-block text-dark text-capitalize" th:text="${a.name +' '+a.otherNames}">Evie
+														Ono</span> <span class="d-block font-13" th:text="${a.status.type}">Apple Inc</span>
 												</div>
-												<a th:href="@{'/admin/staff/'+${a.bioID}+'/profile'}" class="btn btn-xs btn-info"> View Data<i
+												<a th:href="@{'/admin/staff/'+${a.id}+'/profile'}" class="btn btn-xs btn-info"> View Data<i
 													class="ion ion-md-hand"></i></a>
 											</div>
 										</li>

@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.attendance.data.Staff;
 import com.attendance.data.User;
 import org.springframework.ui.Model;
-import com.attendance.repos.StaffRepository;
+import com.attendance.repos.StaffService;
 import org.springframework.beans.factory.annotation.Autowired;
 import com.attendance.repos.UserRepo;
 import org.springframework.stereotype.Controller;
@@ -27,7 +27,7 @@ public class UserController
     @Autowired
     UserRepo repo;
     @Autowired
-    StaffRepository staffRepo;
+    StaffService staffRepo;
     
     @RequestMapping( "/admin/enrol/user" )
     public String getDashwe( Model model) {

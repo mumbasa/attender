@@ -15,21 +15,20 @@ import com.attendance.data.KeyValue;
 import com.attendance.data.Overtime;
 import com.attendance.data.Staff;
 import com.attendance.repos.OvertimeRepository;
-import com.attendance.repos.StaffRepository;
+import com.attendance.repos.StaffService;
 
 @Controller
 public class OvertimeController {
 
 	@Autowired
 	OvertimeRepository overtimeRepo;
-	@Autowired
-	StaffRepository staffRepo;
+	
 	
 	@PostMapping("/admin/add/staff/overtime")
 	@ResponseBody
 	public int addStaffOvertime(@RequestParam("staff") long staffId,@RequestParam("reason") String reason,@RequestParam("date") String date,@RequestParam("starttime") String starttime,@RequestParam("endtime") String endtime) {
 		
-		return overtimeRepo.saveOvertime(staffId, staffRepo.getStaffByID(staffId).getDepartment(), reason,date,starttime.replace("T", " "),endtime.replace("T", " "));
+		return overtimeRepo.saveOvertime(staffId, staffId, reason,date,starttime.replace("T", " "),endtime.replace("T", " "));
 		
 	}
 	
@@ -37,8 +36,8 @@ public class OvertimeController {
 	@ResponseBody
 	public int addStaffOvertimeapply(Principal principal , @RequestParam("reason") String reason,@RequestParam("date") String date,@RequestParam("starttime") String starttime,@RequestParam("endtime") String endtime) {
 	
-		Staff staff = staffRepo.getStaffByEmail(principal.getName());
-		return overtimeRepo.saveOvertime(staff.getId(), staff.getDepartment(), reason,date,starttime.replace("T", " "),endtime.replace("T", " "));
+		Staff staff = overtimeRepo.getStaffByEmail(principal.getName());
+		return overtimeRepo.saveOvertime(staff.getId(), staff.getDepartment().getId(), reason,date,starttime.replace("T", " "),endtime.replace("T", " "));
 		
 	}
 	
@@ -53,7 +52,7 @@ public class OvertimeController {
 	
 	@RequestMapping("/admin/my/staff/overtime/applications")
 	public String myStaffOvertime(Model model,Principal principal) {
-		Staff staff = staffRepo.getStaffByEmail(principal.getName());
+		Staff staff = overtimeRepo.getStaffByEmail(principal.getName());
 		model.addAttribute("overtimes",overtimeRepo.getOvertimesStaffPending(staff.getId()) );
 		return "/admin/overtimeapps";
 	}
@@ -96,9 +95,9 @@ public class OvertimeController {
 	@ResponseBody
 	@RequestMapping("/admin/query/overtime")
 	public List<Overtime> go(@RequestParam("from") String from,@RequestParam("to") String to,Principal principal){
-		Staff staff = staffRepo.getStaffByEmail(principal.getName());
+		Staff staff = overtimeRepo.getStaffByEmail(principal.getName());
 
-		return overtimeRepo.getOvertimesDeptApproved(staff.getDepartmentId(), from,to);
+		return overtimeRepo.getOvertimesDeptApproved(staff.getDepartment().getId(), from,to);
 	}
 	
 	

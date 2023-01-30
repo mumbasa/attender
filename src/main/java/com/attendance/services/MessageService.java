@@ -1,14 +1,9 @@
 package com.attendance.services;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.jms.core.JmsTemplate;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
-
 
 import kong.unirest.Unirest;
 
@@ -18,8 +13,7 @@ public class MessageService {
 	@Autowired
 	JavaMailSender emailSender;
 	
-	@Autowired
-	JmsTemplate jmsTemplate;
+
 	
 	@Value("${mnotify.key}")
 	private String smsApiKey;

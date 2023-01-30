@@ -11,8 +11,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,49 +23,65 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.attendance.data.Attendance;
+import com.attendance.data.Attendances;
+import com.attendance.data.Bank;
+import com.attendance.data.Departments;
 import com.attendance.data.KeyValue;
 import com.attendance.data.MonthAggregate;
 import com.attendance.data.Shift;
 import com.attendance.data.Staff;
-import com.attendance.repos.AttendanceRepository;
+import com.attendance.data.StaffType;
+import com.attendance.models.Category;
+import com.attendance.models.Certification;
+import com.attendance.repos.AttendancesRepository;
+import com.attendance.repos.CertificationRepository;
 import com.attendance.repos.LeaveRepository;
 import com.attendance.repos.OvertimeRepository;
 import com.attendance.repos.SchoolRepository;
 import com.attendance.repos.ShiftRepository;
-import com.attendance.repos.StaffRepository;
+import com.attendance.repos.StaffService;
 import com.attendance.repos.UserRepo;
+import com.attendance.repositories.BankRepository;
 import com.attendance.services.StaffExtractor;
 import com.attendance.services.Utilities;
 
 @Controller
 public class StaffController {
 	@Autowired
-	StaffRepository staffRepo;
+	StaffService staffRepo;
+
 	@Autowired
 	UserRepo repo;
+
 	@Autowired
 	ShiftRepository shiftRepo;
 
 	@Autowired
 	SchoolRepository schoolRepo;
+	
+	@Autowired
+	BankRepository bankRepository;
 
 	@Autowired
 	OvertimeRepository overtimeRepo;
+	@Value("${file.upload-dir}")
+	String UPLOADED_FOLDER;
 
-	private static String UPLOADED_FOLDER;
 	@Autowired
-	AttendanceRepository attendanceRepo;
+	AttendancesRepository attendanceRepo;
+
 	@Autowired
 	LeaveRepository leaveeRepo;
 
-	static {
-		StaffController.UPLOADED_FOLDER = "/home/bryan/data/";
-	}
+	@Autowired
+	CertificationRepository cert;
+	
+
+	
 
 	@RequestMapping("/admin/all/staff")
 	public String getUsers(Model model) {
-		List<Staff> staff = staffRepo.getStaff();
+		List<Staff> staff = staffRepo.getAllStaff();
 		List<String> gender = new ArrayList<String>();
 		gender.add("Male");
 		gender.add("Female");
@@ -75,9 +93,9 @@ public class StaffController {
 		model.addAttribute("rel", staffRepo.getReligion());
 		model.addAttribute("rela", staffRepo.getRelation());
 		model.addAttribute("marry", staffRepo.getRelationship());
-		model.addAttribute("cert", staffRepo.getCert());
+		model.addAttribute("cert", cert.findAll());
 		model.addAttribute("gender", gender);
-
+		model.addAttribute("banks", bankRepository.findAll());
 		model.addAttribute("countries", staffRepo.getCountries());
 
 		return "/admin/allstaff";
@@ -86,15 +104,11 @@ public class StaffController {
 	@RequestMapping("/admin/my/department/staff")
 	public String getDepartmenttaff(Principal principal, Model model) {
 		Staff staff = staffRepo.getStaffByEmail(principal.getName());
-		List<Staff> staffs = staffRepo.getStaffInDepartment(staff.getDepartmentId());
+		List<Staff> staffs = staffRepo.getStaffInDepartment(staff.getDepartment().getId());
 		model.addAttribute("staff", staffs);
 		return "/admin/allstaff";
 	}
 
-
-	
-	
-	
 	@RequestMapping("/admin/my/staff")
 	public String getSuperviceortaff(Principal principal, Model model) {
 		Staff staff = staffRepo.getStaffByEmail(principal.getName());
@@ -103,8 +117,6 @@ public class StaffController {
 		return "/supervisor/allstaff";
 	}
 
-	
-	
 	@RequestMapping("/admin/apply/overtime")
 	public String applyOvertime(Model model) {
 		List<Staff> staff = staffRepo.getStaff();
@@ -140,20 +152,19 @@ public class StaffController {
 		model.addAttribute("edu", staffRepo.getEducation(staff.getId()));
 		return "/admin/qualification";
 	}
-	
+
 	@RequestMapping("/admin/supervisor/staff")
 	public String supervisorStaff(Model model, Principal principal) {
-	
+
 		model.addAttribute("staff", staffRepo.getUnassignedStaff());
 		return "/admin/supervisor";
 	}
-	
-	
+
 	@PostMapping("/admin/add/supervisor/staff")
 	@ResponseBody
-	public void addSupervisorStaff(@RequestParam("superid") long superId,@RequestParam("staffid") List<Long> staff) {
+	public void addSupervisorStaff(@RequestParam("superid") long superId, @RequestParam("staffid") List<Long> staff) {
 		staffRepo.addSupervisor(staff, superId);
-	
+
 	}
 
 	@RequestMapping("/admin/my/emergency/contact")
@@ -195,10 +206,10 @@ public class StaffController {
 		int[] dates = attendanceRepo.getMaxDate();
 		Staff staff = staffRepo.getStaffByID(id);
 		String summary = "";
-		List<Attendance> att = attendanceRepo.getStaffAttendanceInYear(dates[1],
-				new StringBuilder(String.valueOf(id)).toString());
-		List<MonthAggregate> agg = attendanceRepo.getStaffYearAggregate(dates[1], id);
-		List<String> sum = attendanceRepo.getStaffYearlyAggregateSummary(dates[1], id);
+		List<Attendances> att = attendanceRepo.getStaffAttendanceInYear(dates[1],
+				new StringBuilder(String.valueOf(staff.getBioid())).toString());
+		List<MonthAggregate> agg = attendanceRepo.getStaffYearAggregate(dates[1], staff.getBioid());
+		List<String> sum = attendanceRepo.getStaffYearlyAggregateSummary(dates[1],staff.getBioid());
 		double deficit = 0.0;
 		try {
 			summary = Utilities.stringToTime(Long.parseLong(sum.get(3).split("\\.")[0]));
@@ -227,8 +238,8 @@ public class StaffController {
 		int[] dates = attendanceRepo.getMaxDate();
 		Staff staff = staffRepo.getStaffByEmail(principal.getName());
 		String summary = "";
-		List<Attendance> att = attendanceRepo.getStaffAttendanceInYear(dates[1],
-				new StringBuilder(String.valueOf(staff.getBioID())).toString());
+		List<Attendances> att = attendanceRepo.getStaffAttendanceInYear(dates[1],
+				new StringBuilder(String.valueOf(staff.getBioid())).toString());
 		List<MonthAggregate> agg = attendanceRepo.getStaffYearAggregate(dates[1], staff.getId());
 		List<String> sum = attendanceRepo.getStaffYearlyAggregateSummary(dates[1], staff.getId());
 		double deficit = 0.0;
@@ -259,8 +270,8 @@ public class StaffController {
 		int[] dates = attendanceRepo.getMaxDate();
 		Staff staff = staffRepo.getStaffByEmail(principal.getName());
 		String summary = "";
-		List<Attendance> att = attendanceRepo.getStaffAttendanceInYear(dates[1],
-				new StringBuilder(String.valueOf(staff.getBioID())).toString());
+		List<Attendances> att = attendanceRepo.getStaffAttendanceInYear(dates[1],
+				new StringBuilder(String.valueOf(staff.getBioid())).toString());
 		List<MonthAggregate> agg = attendanceRepo.getStaffYearAggregate(dates[1], staff.getId());
 		List<String> sum = attendanceRepo.getStaffYearlyAggregateSummary(dates[1], staff.getId());
 		double deficit = 0.0;
@@ -309,7 +320,7 @@ public class StaffController {
 		}
 		try {
 			byte[] bytes = file.getBytes();
-			Path path = Paths.get(String.valueOf(StaffController.UPLOADED_FOLDER) + file.getOriginalFilename(),
+			Path path = Paths.get(String.valueOf(UPLOADED_FOLDER) + file.getOriginalFilename(),
 					new String[0]);
 			Files.write(path, bytes, new OpenOption[0]);
 			redirectAttributes.addFlashAttribute("message",
@@ -318,7 +329,7 @@ public class StaffController {
 			e.printStackTrace();
 		}
 		StaffExtractor ex = new StaffExtractor();
-		ex.extract(String.valueOf(StaffController.UPLOADED_FOLDER) + file.getOriginalFilename());
+		ex.extract(String.valueOf(UPLOADED_FOLDER) + file.getOriginalFilename());
 		staffRepo.insertBatchStaff(ex.getStaffs());
 		return "redirect:/admin/dashboard";
 	}
@@ -332,19 +343,13 @@ public class StaffController {
 	public String getProfile(@PathVariable("id") long id, Model model) {
 		int[] dates = attendanceRepo.getMaxDate();
 		model.addAttribute("staffid", id);
-		Staff staff = null;
-		try {
-			staff = staffRepo.getStaffByID(id);
-		} catch (Exception e) {
-			staff = staffRepo.getStaffByBoid(id);
-
-		}
+		Staff staff = staffRepo.getStaffByID(id);
 
 		String summary = "";
-		List<Attendance> att = attendanceRepo.getStaffAttendanceInYear(dates[1],
-				new StringBuilder(String.valueOf(staff.getBioID())).toString());
-		List<MonthAggregate> agg = attendanceRepo.getStaffYearAggregate(dates[1], staff.getBioID());
-		List<String> sum = attendanceRepo.getStaffYearlyAggregateSummary(dates[1], staff.getBioID());
+		List<Attendances> att = attendanceRepo.getStaffAttendanceInYear(dates[1],
+				new StringBuilder(String.valueOf(staff.getBioid())).toString());
+		List<MonthAggregate> agg = attendanceRepo.getStaffYearAggregate(dates[1], staff.getBioid());
+		List<String> sum = attendanceRepo.getStaffYearlyAggregateSummary(dates[1], staff.getBioid());
 		long deficit = 0;
 		try {
 			summary = Utilities.stringToTime(Long.parseLong(sum.get(3).split("\\.")[0]));
@@ -364,7 +369,7 @@ public class StaffController {
 		model.addAttribute("summary", summary);
 		model.addAttribute("def", (deficit));
 		model.addAttribute("in", sum.get(2));
-		model.addAttribute("staffs", staffRepo.getStaffInDept(staff.getId()));
+		model.addAttribute("staffs", staffRepo.getStaffInDept(staff.getDepartment().getId(), staff.getId()));
 		model.addAttribute("leaves", leaveeRepo.getStaffLeaves(staff.getId()));
 		model.addAttribute("age", staffRepo.getStaffAgeAge(staff.getId()));
 		model.addAttribute("year", staffRepo.getStaffYearsSpent(staff.getId()));
@@ -376,7 +381,7 @@ public class StaffController {
 
 		return "/admin/profile";
 	}
-	
+
 	@RequestMapping("/admin/my/staff/{id}/profile")
 	public String getStaffDataProfile(@PathVariable("id") long id, Model model) {
 		int[] dates = attendanceRepo.getMaxDate();
@@ -390,10 +395,10 @@ public class StaffController {
 		}
 
 		String summary = "";
-		List<Attendance> att = attendanceRepo.getStaffAttendanceInYear(dates[1],
-				new StringBuilder(String.valueOf(staff.getBioID())).toString());
-		List<MonthAggregate> agg = attendanceRepo.getStaffYearAggregate(dates[1], staff.getBioID());
-		List<String> sum = attendanceRepo.getStaffYearlyAggregateSummary(dates[1], staff.getBioID());
+		List<Attendances> att = attendanceRepo.getStaffAttendanceInYear(dates[1],
+				new StringBuilder(String.valueOf(staff.getBioid())).toString());
+		List<MonthAggregate> agg = attendanceRepo.getStaffYearAggregate(dates[1], staff.getBioid());
+		List<String> sum = attendanceRepo.getStaffYearlyAggregateSummary(dates[1], staff.getBioid());
 		long deficit = 0;
 		try {
 			summary = Utilities.stringToTime(Long.parseLong(sum.get(3).split("\\.")[0]));
@@ -455,6 +460,7 @@ public class StaffController {
 		model.addAttribute("depts", staffRepo.getDepartments());
 		model.addAttribute("types", staffRepo.getStaffTypes());
 		model.addAttribute("cat", staffRepo.getStaffCategory());
+		model.addAttribute("cert", cert.findAll());
 		model.addAttribute("countries", staffRepo.getCountries());
 		model.addAttribute("religions", staffRepo.getReligions());
 		model.addAttribute("banks", staffRepo.getBanks());
@@ -465,39 +471,54 @@ public class StaffController {
 	@ResponseBody
 	public int addHoliday(@PathVariable("pic") String pic, @RequestParam("dob") String dob,
 			@RequestParam("lname") String lname, @RequestParam("type") String type, @RequestParam("mobile") String mob,
-			@RequestParam("address") String address, @RequestParam("fname") String fname, @RequestParam("tin") String tinNumber,
-			@RequestParam("bioid") long bioid, @RequestParam("weekend") boolean weekendWorker, @RequestParam("address2") String add2,
-			@RequestParam("email") String email, @RequestParam("cat") int cat, @RequestParam("sex") String sex, @RequestParam("accno") String accNo,
-			@RequestParam("country") String country, @RequestParam("dept") String dept, @RequestParam("emp") String emp,
-			@RequestParam("cert") String cert, @RequestParam("relation") String relation, @RequestParam("bank") int bankid,
+			@RequestParam("address") String address, @RequestParam("fname") String fname, @RequestParam("mname") String mname,
+			@RequestParam("tin") String tinNumber, @RequestParam("bioid") long bioid,@RequestParam("sortcode") String sortCode,
+			@RequestParam("weekend") boolean weekendWorker, @RequestParam("address2") String add2,
+			@RequestParam("email") String email, @RequestParam("cat") int cat, @RequestParam("sex") String sex,
+			@RequestParam("accno") String accNo, @RequestParam("country") String country,
+			@RequestParam("dept") String dept, @RequestParam("emp") String emp, @RequestParam("cert") String cert,
+			@RequestParam("relation") String relation, @RequestParam("bankid") int bankid,
 			@RequestParam("ssn") String ssn, @RequestParam("religion") String rel,
 			@RequestParam("staffid") String staffid) {
 		Staff staff = new Staff();
 		staff.setAddress(address);
 		staff.setDob(dob);
 		staff.setPicture(pic);
-		staff.setDepartment(dept);
+		Departments dep = new Departments();
+		dep.setId(Long.parseLong(dept));
+		staff.setDepartment(dep);
 		staff.setMobile(mob);
 		staff.setNationality(country);
+		staff.setSortCode(sortCode);
 		staff.setGender(sex);
+		staff.setTinNumber(tinNumber);
+		Category cate = new Category();
+		cate.setId(cat);
+		staff.setCategory(cate);
 		staff.setEmail(email);
 		staff.setWeekendWorker(weekendWorker);
 		staff.setName(lname);
 		staff.setOtherNames(fname);
-		staff.setStaffType(type);
+		staff.setMiddleName(mname);
+		StaffType typer = new StaffType();
+		typer.setId(Integer.parseInt(type));
+		staff.setStatus(typer);
 		staff.setDateJoined(emp);
 		staff.setReligion(rel);
-		staff.setHighestQualification(cert);
+		Certification certs = new Certification();
+		certs.setId(Long.parseLong(cert));
+		staff.setHighestQualification(certs);
 		staff.setRelationshipStatus(relation);
 		staff.setSocialSecurityNumber(ssn);
-		staff.setStaffId(staffid);
-		staff.setBioID(bioid);
-		staff.setCategoryId(cat);
-		staff.setTinNumber(tinNumber);
+		staff.setStaffid(staffid);
+		staff.setBioid(bioid);
 		staff.setAddress2(add2);
-		staff.setBankid(bankid);
-		staff.setAccNumber(accNo);
-		return staffRepo.saveStaff(staff);
+		Bank bank = new Bank();
+		bank.setId(bankid);
+		staff.setBank(bank);
+		staff.setAccountNumber(accNo);
+		Staff ser = staffRepo.saveStaff(staff);
+		return (int) ser.getId();
 
 	}
 
@@ -505,35 +526,51 @@ public class StaffController {
 	@ResponseBody
 	public int updateStaff(@PathVariable("id") long id, @RequestParam("dob") String dob,
 			@RequestParam("lname") String lname, @RequestParam("type") String type, @RequestParam("mobile") String mob,
-			@RequestParam("address") String address, @RequestParam("fname") String fname,
-			@RequestParam("bioid") long bioid, @RequestParam("weekend") boolean weekendWorker,
+			@RequestParam("address") String address, @RequestParam("fname") String fname, @RequestParam("mname") String mname,
+			@RequestParam("bioid") long bioid, @RequestParam("weekend") boolean weekendWorker,@RequestParam("sortcode") String sortCode,
 			@RequestParam("email") String email, @RequestParam("cat") int cat, @RequestParam("sex") String sex,
 			@RequestParam("country") String country, @RequestParam("dept") String dept, @RequestParam("emp") String emp,
-			@RequestParam("cert") String cert, @RequestParam("relation") String relation,
-			@RequestParam("ssn") String ssn, @RequestParam("religion") String rel,
+			@RequestParam("cert") String cert, @RequestParam("relation") String relation, @RequestParam("accno") String accno,
+			@RequestParam("ssn") String ssn, @RequestParam("religion") String rel, @RequestParam("bankid") int bankid,
 			@RequestParam("staffid") String staffid) {
 		Staff staff = new Staff();
+		staff.setId(id);
 		staff.setAddress(address);
 		staff.setDob(dob);
 
-		staff.setDepartment(dept);
+		Departments dep = new Departments();
+		dep.setId(Long.parseLong(dept));
+		staff.setDepartment(dep);
+		Category cate = new Category();
+		cate.setId(cat);
+		staff.setCategory(cate);
+		Bank bank = new Bank();
+		bank.setId(bankid);
+		staff.setBank(bank);
 		staff.setMobile(mob);
+		staff.setSortCode(sortCode);
 		staff.setNationality(country);
 		staff.setGender(sex);
 		staff.setEmail(email);
 		staff.setWeekendWorker(weekendWorker);
 		staff.setName(lname);
+		staff.setMiddleName(mname);
 		staff.setOtherNames(fname);
-		staff.setStaffType(type);
+		StaffType typer = new StaffType();
+		typer.setId(Integer.parseInt(type));
+		staff.setStatus(typer);
 		staff.setDateJoined(emp);
 		staff.setReligion(rel);
-		staff.setHighestQualification(cert);
+		Certification certs = new Certification();
+		certs.setId(Long.parseLong(cert));
+		System.err.println("cert "+cert);
+		staff.setHighestQualification(certs);
 		staff.setRelationshipStatus(relation);
 		staff.setSocialSecurityNumber(ssn);
-		staff.setStaffId(staffid);
-		staff.setBioID(bioid);
-		staff.setCategoryId(cat);
-		return staffRepo.updateStaff(staff, id);
+		staff.setAccountNumber(accno);
+		staff.setStaffid(staffid);
+		staff.setBioid(bioid);
+		return staffRepo.updateStaff(staff);
 
 	}
 
@@ -554,7 +591,7 @@ public class StaffController {
 		try {
 			filename = System.currentTimeMillis() + ".jpg";
 			byte[] bytes = data.getBytes();
-			Path path = Paths.get("/home/bryan/Downloads/akoo/" + filename);
+			Path path = Paths.get(UPLOADED_FOLDER + filename);
 			Files.write(path, bytes);
 
 		} catch (IOException e) {
@@ -614,14 +651,15 @@ public class StaffController {
 	}
 
 	@ResponseBody
-	@RequestMapping("/admin/delete/staff/{id}")
+	@GetMapping("/admin/delete/staff/{id}")
 	public int deleteStaffData(@PathVariable("id") long id) {
+		System.err.println("----------yeeeeeeeeeeeee-----------");
 		return staffRepo.deleteStaff(id);
 
 	}
 
 	@ResponseBody
-	@RequestMapping("/admin/staff/update/contact/{id}")
+	@GetMapping("/admin/staff/update/contact/{id}")
 	public int updateContact(@PathVariable("id") long id, @RequestParam("name") String name,
 			@RequestParam("contact") String contact) {
 		return staffRepo.updateContact(id, name, contact);
@@ -653,26 +691,27 @@ public class StaffController {
 
 	@ResponseBody
 	@PostMapping("/admin/staff/add/kin")
-	public int addKin(@RequestParam("name") String name, @RequestParam("contact") String contact, @RequestParam("id") String id,
-			@RequestParam("relation") String relationship, @RequestParam("gender") String gender, Principal principal) {
+	public int addKin(@RequestParam("name") String name, @RequestParam("contact") String contact,
+			@RequestParam("id") String id, @RequestParam("relation") String relationship,
+			@RequestParam("gender") String gender, Principal principal) {
 		return staffRepo.addKin(name, relationship, gender, contact, id);
 
 	}
 
 	@ResponseBody
 	@PostMapping("/admin/staff/add/emergency/")
-	public int addContact(@RequestParam("name") String name, @RequestParam("contact") String contact,@RequestParam("relation") String relationship,
-			@RequestParam("id") String id) {
-	
-		return staffRepo.addContact(name, contact, id,relationship);
+	public int addContact(@RequestParam("name") String name, @RequestParam("contact") String contact,
+			@RequestParam("relation") String relationship, @RequestParam("id") String id) {
+
+		return staffRepo.addContact(name, contact, id, relationship);
 
 	}
 
 	@ResponseBody
 	@PostMapping("/admin/staff/add/education")
 	public int addQualification(@RequestParam("name") String name, @RequestParam("cert") String cert,
-			@RequestParam("start") String start, @RequestParam("end") String to,@RequestParam("id") String id) {
-	
+			@RequestParam("start") String start, @RequestParam("end") String to, @RequestParam("id") String id) {
+
 		return staffRepo.addQualification(name, cert, start, to, id);
 
 	}
@@ -688,7 +727,7 @@ public class StaffController {
 	@RequestMapping("/add/schools")
 	public int schoolRepo() {
 		schoolRepo.insertHighSchool();
-	
+
 		return 1;
 	}
 
@@ -698,7 +737,7 @@ public class StaffController {
 		schoolRepo.insertUniversity();
 		return 1;
 	}
-	
+
 	@ResponseBody
 	@RequestMapping("/add/bank")
 	public int banksAdd() {

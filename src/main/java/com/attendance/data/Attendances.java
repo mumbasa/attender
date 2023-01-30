@@ -7,10 +7,11 @@ package com.attendance.data;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import com.attendance.services.Utilities;
-import com.attendance.sys.Tester;
 
-public class Attendance {
+import com.attendance.Tester;
+import com.attendance.services.Utilities;
+
+public class Attendances {
 	private String date;
 	private String id;
 	private String timeIn;
@@ -29,10 +30,10 @@ public class Attendance {
 		return Utilities.dateConvert(date);
 	}
 
-	public Attendance() {
+	public Attendances() {
 	}
 
-	public Attendance(String keys, String value) {
+	public Attendances(String keys, String value) {
 		String[] dateID = keys.split("/");
 		String[] times = value.split("/");
 		this.id = dateID[1];
@@ -51,7 +52,7 @@ public class Attendance {
 		this.timeInMins = Utilities.stringToMinutes(this.timeIn);
 		this.timeOuMins = Utilities.stringToMinutes(this.timeOut);
 		System.out.println(staff.getShifts().size() + "shift size");
-		lateness = Tester.getLateness(staff.getShifts(), timeInMins, Attendance.this);
+		lateness = Tester.getLateness(staff.getShifts(), timeInMins, Attendances.this);
 		label = (lateness > 0 ? "Late" : "Early");
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-M-dd HH:mm:ss");
 		// g LocalDateTime dateTime1 = LocalDateTime.parse(String.valueOf(this.date) + "
@@ -68,14 +69,14 @@ public class Attendance {
 		this.closedEarly = (Tester.getRun(staff.getShifts(), timeOuMins) < 0 ? "Y" : "N");
 	}
 
-	public Attendance(String id, String date, long hours, Staff staff) {
+	public Attendances(String id, String date, long hours, Staff staff) {
 		this.date = date;
 		this.id = id;
 		this.hoursWorked = hours;
 		this.staff = staff;
 	}
 
-	public Attendance(String id, String timeIn, String timeOut, String date, Staff staff) {
+	public Attendances(String id, String timeIn, String timeOut, String date, Staff staff) {
 		this.id = id;
 		this.timeIn = timeIn;
 		this.timeOut = timeOut;
@@ -84,7 +85,7 @@ public class Attendance {
 		this.setUp();
 	}
 
-	public Attendance(int id, String timeIn, String timeOut, String date, Staff staff) {
+	public Attendances(int id, String timeIn, String timeOut, String date, Staff staff) {
 		this.id = String.valueOf(id);
 		this.timeIn = timeIn;
 		this.timeOut = timeOut;

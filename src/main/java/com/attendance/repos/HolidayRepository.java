@@ -92,6 +92,11 @@ public class HolidayRepository implements HolidayDAO
         return template.update(sql, new Object[] { holiday.getDate(), holiday.getHoliday(), holiday.getRealHoliday(), holiday.getRealDay(), holiday.getYear(), "Institutional Break" });
     }
     
+    public List<Holiday> getHolidays(final int year,int month) {
+        final String sql = "SELECT * FROM attendance.holidays where year =? and month(realdate)=?;";
+        return template.query(sql, new HolidayMapper(), year,month);
+    }
+    
     public void addBreaks(final String f, final String t, final String type, final String name) {
         final String sql = "INSERT INTO holidays(date,holiday,realdate,realday,year,type) VALUES(?,?,?,?,?,?)";
         final List<Holiday> holidays = getHolidaysFromDate(getDatesBetween(f, t), type, name);

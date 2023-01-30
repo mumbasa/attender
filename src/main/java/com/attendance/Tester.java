@@ -2,7 +2,7 @@
 // Decompiled by Procyon v0.5.36
 // 
 
-package com.attendance.sys;
+package com.attendance;
 
 import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
@@ -15,7 +15,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import com.attendance.data.Attendance;
+import com.attendance.data.Attendances;
 import com.attendance.data.ShiftType;
 
 import java.io.IOException;
@@ -141,7 +141,7 @@ public class Tester {
 
 	}
 
-	public static long getLateness(List<ShiftType> times, long timeIn, Attendance attendance) {
+	public static long getLateness(List<ShiftType> times, long timeIn, Attendances attendance) {
 		System.err.println("-----------computing");
 		int index = 0;
 		for (int i = 0; i < times.size(); i++) {

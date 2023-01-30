@@ -29,6 +29,10 @@ public class KeyValue {
 	public void setQuantity2(long quantity2) {
 		this.quantity2 = quantity2;
 	}
+	public void setValue2(String string) {
+		// TODO Auto-generated method stub
+		
+	}
 	
 
 }

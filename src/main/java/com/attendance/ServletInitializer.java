@@ -2,7 +2,7 @@
 // Decompiled by Procyon v0.5.36
 // 
 
-package com.attendance.sys;
+package com.attendance;
 
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;

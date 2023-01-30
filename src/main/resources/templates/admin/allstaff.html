@@ -10,8 +10,10 @@
 
 	<div layout:fragment="content">
 		<script type="text/javascript" th:inline="javascript">
-		var url=[[@{/admin/staff/delete/contact/}]];
       function delKin(id){
+  
+  		var url=[[@{/admin/delete/staff/}]];
+        
 			$.ajax({
 			url:url+id,
 			type:'get',
@@ -41,24 +43,40 @@
 		  
 		
 
+			
 	
 }
 		
   	function upKin(id){
+  		$.toast({
+			heading: 'Updating please wait!',
+			text: '<p>Staff contact updating please wait</p>',
+			position: 'top-right',
+			loaderBg:'#f68daf',
+			class: 'jq-toast-dark',
+			hideAfter: 1500, 
+			stack: 6,
+			showHideTransition: 'fade'
+		});
+  	
   			var form = $('.former'+id);
   		var formdata = false;
   		formdata = new FormData(form[0]);
 		var url=[[@{/admin/update/staff/}]];
-
+        $('#ajaxspinner').show();
   			$.ajax({
-  				url:url+id,
+  				url:url+id, 
   				data:formdata,
   				type:'post',
   				processData : false,
   				contentType : false,
   				cache : false,
   				success:function(data){
-  					//if(data==1){
+
+						
+  					if(data===1){
+  			          $('#ajaxspinner').hide();
+  					
   						$.toast({
   							heading: 'Success!',
   							text: '<p>Staff contact updated successfully</p>',
@@ -70,8 +88,9 @@
   							showHideTransition: 'fade'
   						});
   				       
-  						 form[0].reset();
-  						
+  						$('#edit'+id).modal('toggle')
+  						// form[0].reset();
+  					}
   						
   				
   				}
@@ -96,8 +115,7 @@
 
 		<!-- Container -->
 		<div>
-
-			<!-- Title -->
+				<!-- Title -->
 			<div class="hk-pg-header">
 				<h4 class="hk-pg-title">
 					<span class="pg-title-icon"><span class="feather-icon"><i
@@ -109,6 +127,7 @@
 			<!-- Row -->
 			<div class="row">
 				<div class="col-xl-12">
+		
 					<section class="hk-sec-wrapper">
 						<div class="row">
 							<div class="col-sm">
@@ -129,11 +148,11 @@
 										<tbody>
 											<tr th:each="a,i:${staff}">
 												<td th:text="${i.index+1}">Tiger Nixon</td>
-												<td th:text="${a.name}" style="text-transform: capitalize;">System
-													Architect</td>
+												<td th:text="${a.name +' '+a.middleName+' ' +a.otherNames}"
+													style="text-transform: capitalize;">System Architect</td>
 
 												<td th:text="${a.dob}">System Architect</td>
-												<td th:text="${a.department}">Edinburgh</td>
+												<td th:text="${a.department.department}">Edinburgh</td>
 												<td th:text="${a.dateJoined}">61</td>
 												<td th:text=${a.mobile}>2011/04/25</td>
 												<td><a th:href="@{'/admin/staff/'+${a.id}+'/profile'}"
@@ -166,13 +185,20 @@
 																					<div class="col-sm">
 																						<form th:class="'former'+${a.id}">
 																							<div class="row">
-																								<div class="col-md-6 form-group">
+																								<div class="col-md-4 form-group">
 																									<label for="firstName">First name</label> <input
 																										class="form-control" id="firstName"
 																										name="fname" th:value="${a.otherNames}"
 																										placeholder="" value="" type="text">
 																								</div>
-																								<div class="col-md-6 form-group">
+																								
+																								<div class="col-md-4 form-group">
+																									<label for="lastName">Middle name</label> <input
+																										class="form-control" id="middleName"
+																										name="mname" th:value="${a.middleName}"
+																										placeholder="" value="" type="text">
+																								</div>
+																								<div class="col-md-4 form-group">
 																									<label for="lastName">Last name</label> <input
 																										class="form-control" id="lastName"
 																										name="lname" th:value="${a.name}"
@@ -210,6 +236,7 @@
 																								</div>
 
 																							</div>
+																							
 																							<hr>
 																							<h6 class="form-group">Contact Details</h6>
 
@@ -254,7 +281,7 @@
 																								<div class="col-md-4 mb-10">
 																									<label for="emp">Staff Number</label> <input
 																										class="form-control" id="stfid"
-																										th:value="${a.staffId}"
+																										th:value="${a.staffid}"
 																										placeholder="your staff number" name="staffid"
 																										type="text">
 
@@ -265,8 +292,8 @@
 																										id="state" name="dept">
 																										<option th:each="b:${depts}"
 																											th:value="${b.id}"
-																											th:selected="${b==a.departmentId}"
-																											th:text="${a.department}">Choose...</option>
+																											th:selected="${b==a.department.id}"
+																											th:text="${b.department}">Choose...</option>
 																									</select>
 																								</div>
 
@@ -285,9 +312,7 @@
 																										class="form-control custom-select d-block w-100"
 																										id="type" name="type">
 																										<option th:each="b:${types}"
-																											th:value="${b.id}"
-																											th:selected="${b==a.staffType}"
-																											th:text="${b .value}">Choose...</option>
+																											th:value="${b.id}" th:text="${b.type}">Choose...</option>
 
 																									</select>
 																								</div>
@@ -317,16 +342,35 @@
 																							<div class="row">
 
 
-																								<div class="col-md-12 mt-10">
+																								<div class="col-md-4 mt-10">
 																									<label for="address2">Staff Category</label> <select
 																										class="form-control custom-select d-block w-100"
 																										id="state" name="cat">
 																										<option value="" selected="selected"
 																											disabled="disabled">--select one --</option>
 																										<option th:each="b:${cat}" th:value="${b.id}"
-																											th:selected="${b.id==a.categoryId}"
-																											th:text="${b.value}">Choose...</option>
+																											th:selected="${b.id==a.category.id}"
+																											th:text="${b.category}">Choose...</option>
 																									</select>
+																								</div>
+																								<div class="col-md-4 mt-10">
+																									<label for="address2">Staff Bank</label> <select
+																										class="form-control custom-select d-block w-100"
+																										id="state" name="bankid">
+																										<option value="" selected="selected"
+																											disabled="disabled">--select one --</option>
+																										<option th:each="b:${banks}"
+																											th:value="${b.id}"
+																											th:selected="${b.id==a.bank.id}"
+																											th:text="${b.bank}">Choose...</option>
+																									</select>
+																								</div>
+
+																								<div class="col-md-4 mt-10">
+																									<label for="address2">Staff Account
+																										number</label> <input class="form-control" id="accno"
+																										th:value="${a.accountNumber}" name="accno"
+																										placeholder="your acount number" type="text">
 																								</div>
 
 
@@ -379,9 +423,10 @@
 																										id="type" name="cert">
 																										<option value="" selected="selected"
 																											disabled="disabled">-- select one --</option>
-																										<option th:each="b:${cert}" th:value="${b}"
-																											th:selected="${b==a.highestQualification}"
-																											th:text="${b}">Choose...</option>
+																										<option th:each="b:${cert}" th:value="${b.id}"
+																											th:id="${b.id}"
+																											th:selected="${b.id==a.highestQualification.id}"
+																											th:text="${b.certs}">Choose...</option>
 																									</select>
 																								</div>
 
@@ -397,7 +442,7 @@
 																								<div class="col-md-12 mb-10">
 																									<label for="bio">Staff Biometric ID</label> <input
 																										class="form-control" id="bio"
-																										th:value="${a.bioID}"
+																										th:value="${a.bioid}"
 																										placeholder="biometric id" name="bioid"
 																										type="text">
 																								</div>

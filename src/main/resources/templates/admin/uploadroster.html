@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org"
+  layout:decorate="~{fragments/blank}" >
+<head>
+<meta charset="UTF-8">
+<title>Upload Report</title>
+</head>
+<body>
+
+     <div layout:fragment="content">
+       
+           <!-- Breadcrumb -->
+            <nav class="hk-breadcrumb" aria-label="breadcrumb">
+                <ol class="breadcrumb breadcrumb-light bg-transparent">
+                    <li class="breadcrumb-item"><a href="#">Attendance</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Data Upload</li>
+                </ol>
+            </nav>
+            <!-- /Breadcrumb -->
+
+            <!-- Container -->
+            <div class="container">
+
+                <!-- Title -->
+                <div class="hk-pg-header">
+                    <h4 class="hk-pg-title"><span class="pg-title-icon"><span class="feather-icon"><i data-feather="database"></i></span></span>Upload Report</h4>
+                </div>
+                <!-- /Title -->
+
+                <!-- Row -->
+                <div class="row">
+                <div class="col-xl-12">
+                    <section class="hk-sec-wrapper">
+							<h5 class="hk-sec-title">Dropzone</h5>
+							<p class="mb-40">Upload Monthly Roster</p>
+							<div  class="row">
+								<div class="col-lg">
+									<form th:action="@{/upload/roster}" class="dropzone" id="remove_link">
+										<div class="fallback">
+											<input name="file" type="file" multiple />
+										</div>
+									</form>
+								</div>
+							</div>
+						</section>
+						</div>
+						  
+                                   </div>
+                            
+						 <div class="row">
+                    <div class="col-xl-12">
+                        <section class="hk-sec-wrapper">
+                            <div class="row">
+                                <div class="col-sm">
+                                    <div class="table-wrap">
+                                        <table id="datable_1" class="table table-hover w-100 display pb-30">
+                                            <thead>
+                                                <tr>
+                                                <th>#</th>
+                                                    <th>Filename</th>
+                                                    <th>Month-Year</th>
+                                                    <th>Date Uploaded</th>
+                                                    <th>Comment </th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr th:each="a,i:${dept}">
+                                                    <td th:text="${i.index+1}">Tiger Nixon</td>
+                                            <td th:text="${a.department}" style="text-transform: capitalize;">System Architect</td>
+                                                    
+                                                    <td th:text="${a.size}">System Architect</td>
+                                                    <td ></td>
+                                                    <td><a th:href="@{'/admin/department/'+${a.id}+'/profile'}" class="btn  btn-sm btn-info">View Details</a></td>
+                                                </tr>
+                                           
+                                            </tbody>
+                                            <tfoot>
+                                                <tr>
+                                                <th>#</th>
+                                                     <th>#</th>
+                                                    <th>Filename</th>
+                                                    <th>Month-Year</th>
+                                                    <th>Date Uploaded</th>
+                                                    <th>Comment </th>
+                                                </tr>
+                                            </tfoot>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+                      </div>
+                </div>
+            
+                </div>
+                <!-- /Row -->
+
+            </div>
+            <!-- /Container -->
+     
+     
+     
+    
+     
+</body>
+</html>

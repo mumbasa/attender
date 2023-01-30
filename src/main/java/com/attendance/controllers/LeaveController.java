@@ -1,34 +1,32 @@
 
 package com.attendance.controllers;
 
-import com.attendance.data.KeyValue;
-import com.attendance.data.Leave;
-import com.attendance.data.Staff;
-
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import java.util.Map;
-import java.util.List;
 import java.io.IOException;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.security.Principal;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import com.attendance.data.StaffLeave;
-import com.attendance.repos.StaffRepository;
-import com.attendance.services.HolidayExtractor;
+import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
-
-import com.attendance.repos.HolidayRepository;
-import com.attendance.repos.LeaveRepository;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
+
+import com.attendance.data.KeyValue;
+import com.attendance.data.Leave;
+import com.attendance.data.Staff;
+import com.attendance.data.StaffLeave;
+import com.attendance.repos.LeaveRepository;
+import com.attendance.services.HolidayExtractor;
 
 @Controller
 public class LeaveController
@@ -36,8 +34,7 @@ public class LeaveController
     @Autowired
     LeaveRepository leaveRepository;
     
-    @Autowired
-    StaffRepository staffRepo;
+
     
     @Autowired
     HolidayExtractor holidayExtractor;
@@ -81,7 +78,7 @@ public class LeaveController
     @PostMapping( "/add/staff/leave" )
     public String staffApplyLeave(Principal principal,@RequestParam("start") String from,@RequestParam("days") int days,@RequestParam("type") int type) {
          List<StaffLeave> staffLeaves = new ArrayList<StaffLeave>();
-         Staff staff  = staffRepo.getStaffByEmail(principal.getName());
+         Staff staff  = leaveRepository.getStaffByEmail(principal.getName());
         LocalDate endDate = leaveRepository.getLeaveEndDate(from, days);
          Map<String, List<String>> data = leaveRepository.getLeaveIntervals(from, endDate.toString());
         for ( List<String> a : data.values()) {
@@ -100,7 +97,7 @@ public class LeaveController
     @ResponseBody
     @PostMapping( "/admin/add/staff/leave" )
     public int staffApplyLeaveClerk(Principal principal,@RequestParam("start") String from,@RequestParam("days") int days,@RequestParam("type") int type,@RequestParam("doc") MultipartFile file) {
-        Staff staff  = staffRepo.getStaffByEmail(principal.getName());
+        Staff staff  = leaveRepository.getStaffByEmail(principal.getName());
         LocalDate endDate = leaveRepository.getLeaveEndDate(from,days);
 
         
@@ -151,9 +148,8 @@ public class LeaveController
     public String newLeave( Model model) {
          StaffLeave h = new StaffLeave();
         model.addAttribute("staffleave", h);
-        model.addAttribute("stafflist", staffRepo.getStaff());
+        model.addAttribute("stafflist", leaveRepository.getAllStaff());
         model.addAttribute("leaves", leaveRepository.getLeaveTypes());
-        System.out.println(staffRepo.getIds().size());
         return "/admin/addleave";
     }
     
@@ -161,9 +157,8 @@ public class LeaveController
     public String newLeaves( Model model) {
          StaffLeave h = new StaffLeave();
         model.addAttribute("staffleave", h);
-        model.addAttribute("stafflist", staffRepo.getStaff());
+        model.addAttribute("stafflist", leaveRepository.getAllStaff());
         model.addAttribute("leaves", leaveRepository.getLeaves());
-        System.out.println(staffRepo.getIds().size());
         return "/admin/staffleave2";
     }
     
@@ -189,7 +184,7 @@ public class LeaveController
     
     @RequestMapping( "/admin/staff/apply/leave" )
     public String newstaffLeaves(Principal principal, Model model) {
-    	Staff staff  = staffRepo.getStaffByEmail(principal.getName());
+    	Staff staff  = leaveRepository.getStaffByEmail(principal.getName());
        model.addAttribute("days", leaveRepository.getStaffLeaveDataSummary(staff.getId()));
         model.addAttribute("leaves", leaveRepository.getLeaveTypes());
         return "/admin/staffapplyleave";
@@ -200,7 +195,7 @@ public class LeaveController
     
     @RequestMapping( "/admin/my/leaves" )
     public String deleteLeaves(Principal principal,Model model) {
-    	Staff staff  = staffRepo.getStaffByEmail(principal.getName());
+    	Staff staff  = leaveRepository.getStaffByEmail(principal.getName());
         model.addAttribute("leaves", leaveRepository.getStaffLeavesApplications(staff.getId()));
         model.addAttribute("leavesum", leaveRepository.getStaffLeaveYears(staff.getId()));
 
@@ -227,8 +222,8 @@ public class LeaveController
     
     @RequestMapping( "/admin/my/department/leave/applications" )
     public String getLeavesInDept(Principal principal, Model model) {
-         Staff staff  = staffRepo.getStaffByEmail(principal.getName());
-         List<Leave> leaves = leaveRepository.getStaffLeavesInDept(staff.getDepartmentId());
+         Staff staff  = leaveRepository.getStaffByEmail(principal.getName());
+         List<Leave> leaves = leaveRepository.getStaffLeavesInDept(staff.getDepartment().getId());
 
          model.addAttribute("staffleave", leaves);
         return "/admin/leaves";
@@ -236,8 +231,8 @@ public class LeaveController
     
     @RequestMapping( "/admin/my/department/pending/leave/applications" )
     public String getLeavesInDeptPending(Principal principal, Model model) {
-         Staff staff  = staffRepo.getStaffByEmail(principal.getName());
-         List<Leave> leaves = leaveRepository.getStaffLeavesInDeptPending(staff.getDepartmentId());
+         Staff staff  = leaveRepository.getStaffByEmail(principal.getName());
+         List<Leave> leaves = leaveRepository.getStaffLeavesInDeptPending(staff.getDepartment().getId());
 
          model.addAttribute("staffleave", leaves);
         return "/admin/leaves";
@@ -245,7 +240,7 @@ public class LeaveController
     
     @RequestMapping( "/admin/my/staff/pending/leave/applications" )
     public String getLeavesStaffSupervisorPending(Principal principal, Model model) {
-         Staff staff  = staffRepo.getStaffByEmail(principal.getName());
+         Staff staff  = leaveRepository.getStaffByEmail(principal.getName());
          List<Leave> leaves = leaveRepository.getStaffLeavesofSupertvisorPending(staff.getId());
 
          model.addAttribute("staffleave", leaves);
@@ -254,7 +249,7 @@ public class LeaveController
     
     @RequestMapping( "/admin/my/staff/on/leave" )
     public String getLeavesSupervisorStaffOnLeave(Principal principal, Model model) {
-         Staff staff  = staffRepo.getStaffByEmail(principal.getName());
+         Staff staff  = leaveRepository.getStaffByEmail(principal.getName());
          List<Leave> leaves = leaveRepository.getMyStaffOnLeave(staff.getId());
 
          model.addAttribute("staffleave", leaves);
@@ -279,7 +274,7 @@ public class LeaveController
     }
     
     
-    @RequestMapping("/admin/mount/holidays")
+    @GetMapping("/admin/mount/holidays")
     @ResponseBody
     public void mountHoliday() {
     	holidayExtractor.Extact(""+LocalDate.now().getYear());
@@ -292,7 +287,7 @@ public class LeaveController
     @ResponseBody
     public KeyValue mountLeaves(Principal principal,@RequestParam("id") long id) {
     	System.out.println("---"+id);
-    	return leaveRepository.getLeaveTypeDays(id, staffRepo.getStaffByEmail(principal.getName()).getId());
+    	return leaveRepository.getLeaveTypeDays(id, leaveRepository.getStaffByEmail(principal.getName()).getId());
     
     }
     

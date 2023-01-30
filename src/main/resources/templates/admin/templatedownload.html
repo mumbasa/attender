@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	xmlns:th="http://www.thymeleaf.org"
+	layout:decorate="~{fragments/blank}">
+<head>
+<meta charset="UTF-8">
+<title>Attendance Roster  Download</title>
+
+</head>
+<body>
+
+	<div layout:fragment="content">
+
+
+		<script type="text/javascript"  th:inline="javascript">
+	
+	function query(){
+		url = [[@{/admin/roster/template}]]
+	    date = $("#datem").val();
+
+		window.open( url+"?date="+date);
+	
+	
+		
+	}
+	
+	</script>
+
+
+
+
+		<nav class="hk-breadcrumb" aria-label="breadcrumb">
+			<ol class="breadcrumb breadcrumb-light bg-transparent">
+				<li class="breadcrumb-item"><a href="#">Query</a></li>
+				<li class="breadcrumb-item active" aria-current="page">Shift</li>
+			</ol>
+		</nav>
+		<!-- /Breadcrumb -->
+
+		<!-- Container -->
+		<div class="container">
+			<!-- Title -->
+			<div class="hk-pg-header">
+				<h4 class="hk-pg-title">
+					<span class="pg-title-icon"><span class="feather-icon"><i
+							data-feather="align-left"></i></span></span>Get Department Roster Template
+				</h4>
+			</div>
+			<!-- /Title -->
+
+			<!-- Row -->
+			<div class="row">
+				<div class="col-xl-12">
+					<section class="hk-sec-wrapper">
+						<div class="row">
+							<div class="col-sm">
+								<form class="former">
+									<div class="row">
+										
+										<div class="col-md-5 form-group">
+											<label for="lastName">Choose Date</label> <input
+												class="form-control" id="datem" name="date"
+												placeholder="" value="" type="date">
+										</div>
+
+										<div class="col-md-4 form-group">
+											<label></label>
+											<button type="button" class="btn btn-info mt-4"
+												onclick="query()">Download Template</button>
+
+										</div>
+									</div>
+								</form>
+
+
+
+
+							</div>
+						</div>
+					</section>
+				</div>
+			</div>
+			<!-- /Row -->
+		</div>
+		<!-- /Container -->
+
+
+	</div>
+
+
+</body>
+</html>

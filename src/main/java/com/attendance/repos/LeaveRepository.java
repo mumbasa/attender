@@ -15,6 +15,7 @@ import java.util.HashMap;
 import java.util.Map;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import com.attendance.data.StaffLeave;
+import com.attendance.repositories.StaffRepositoies;
 
 import java.io.File;
 import java.io.IOException;
@@ -44,7 +45,7 @@ public class LeaveRepository {
 	@Autowired
 	JdbcTemplate template;
 	@Autowired
-	StaffRepository staffRepository;
+	StaffRepositoies staffRepository;
 	@Autowired
 	MessageService messagerService;
 
@@ -74,12 +75,25 @@ public class LeaveRepository {
 			LeaveSummary leaveSum = getStaffLeaveDataSummary(leave.getStaffid());
 			leave.setLeaveDaysRemaining((leaveSum.getLeaveDaysSum() - leaveSum.getDaysTakenSum()));
 			// System.out.println(leaveSum.getLeaveDaysSum());
-			leave.setStaff(staffRepository.getStaffByID(leave.getStaffid()));
+			leave.setStaff(staffRepository.findById(leave.getStaffid()).get());
 
 		}
 		return leaves;
 	}
 
+	public List<Staff> getAllStaff(){
+		
+		return staffRepository.findAll();
+		
+	}
+
+	
+public Staff getStaffByEmail(String emal){
+		
+		return staffRepository.findByEmail(emal);
+		
+	}
+	
 	public List<Leave> getStaffLeavesOfSupervisor(long id) {
 		final String sql = "SELECT *,(SELECT name from staff where id=l.staffid),(SELECT leavetype from leavetypes as t where t.id=l.type) ,datediff(end_date,curdate()) FROM staff_leave as l  where staffid IN(SELECT staff_id from supervisors where supervisor_id=?)";
 		List<Leave> leaves = template.query(sql, new StaffLeaveMapping(), id);
@@ -87,7 +101,7 @@ public class LeaveRepository {
 			LeaveSummary leaveSum = getStaffLeaveDataSummary(leave.getStaffid());
 			leave.setLeaveDaysRemaining((leaveSum.getLeaveDaysSum() - leaveSum.getDaysTakenSum()));
 			// System.out.println(leaveSum.getLeaveDaysSum());
-			leave.setStaff(staffRepository.getStaffByID(leave.getStaffid()));
+			leave.setStaff(staffRepository.findById(leave.getStaffid()).get());
 
 		}
 		return leaves;
@@ -97,7 +111,7 @@ public class LeaveRepository {
 		final String sql = "SELECT *,(SELECT name from staff where id=l.staffid),(SELECT leavetype from leavetypes as t where t.id=l.type),datediff(end_date,curdate())  FROM staff_leave as l  where staffid=? and hr_approve=1";
 		List<Leave> leaves = template.query(sql, new StaffLeaveMapping(), id);
 		for (Leave leave : leaves) {
-			leave.setStaff(staffRepository.getStaffByID(id));
+			leave.setStaff(staffRepository.findById(leave.getStaffid()).get());
 
 			LeaveSummary leaveSum = getStaffLeaveDataSummary(leave.getStaffid());
 			leave.setLeaveDaysRemaining((leaveSum.getLeaveDaysSum() - leaveSum.getDaysTakenSum()));
@@ -109,7 +123,7 @@ public class LeaveRepository {
 		final String sql = "SELECT *,(SELECT name from staff where id=l.staffid),(SELECT leavetype from leavetypes as t where t.id=l.type) ,datediff(end_date,curdate()) FROM staff_leave as l  where staffid IN(SELECT id from staff where department=?) and hod_approved is null";
 		List<Leave> leaves = template.query(sql, new StaffLeaveMapping(), id);
 		for (Leave leave : leaves) {
-			leave.setStaff(staffRepository.getStaffByID(leave.getStaffid()));
+			leave.setStaff(staffRepository.findById(leave.getStaffid()).get());
 			LeaveSummary leaveSum = getStaffLeaveDataSummary(leave.getStaffid());
 			leave.setLeaveDaysRemaining((leaveSum.getLeaveDaysSum() - leaveSum.getDaysTakenSum()));
 		}
@@ -120,7 +134,7 @@ public class LeaveRepository {
 		final String sql = "SELECT *,(SELECT name from staff where id=l.staffid),(SELECT leavetype from leavetypes as t where t.id=l.type) ,datediff(end_date,curdate()) FROM staff_leave as l  where staffid IN(SELECT staff_id FROM supervisors where supervisor_id=?) and hod_approved is null";
 		List<Leave> leaves = template.query(sql, new StaffLeaveMapping(), id);
 		for (Leave leave : leaves) {
-			leave.setStaff(staffRepository.getStaffByID(leave.getStaffid()));
+			leave.setStaff(staffRepository.findById(leave.getStaffid()).get());
 			LeaveSummary leaveSum = getStaffLeaveDataSummary(leave.getStaffid());
 			leave.setLeaveDaysRemaining((leaveSum.getLeaveDaysSum() - leaveSum.getDaysTakenSum()));
 		}
@@ -132,7 +146,7 @@ public class LeaveRepository {
 		List<Leave> leaves = template.query(sql, new StaffLeaveMapping(), id);
 		for (Leave leave : leaves) {
 			LeaveSummary leaveSum = getStaffLeaveDataSummary(leave.getStaffid());
-			leave.setStaff(staffRepository.getStaffByID(leave.getStaffid()));
+			leave.setStaff(staffRepository.findById(leave.getStaffid()).get());
 			leave.setLeaveDaysRemaining((leaveSum.getLeaveDaysSum() - leaveSum.getDaysTakenSum()));
 		}
 		return leaves;
@@ -143,7 +157,7 @@ public class LeaveRepository {
 		List<Leave> leaves = template.query(sql, new StaffLeaveMapping(), id);
 		for (Leave leave : leaves) {
 			LeaveSummary leaveSum = getStaffLeaveDataSummary(leave.getStaffid());
-			leave.setStaff(staffRepository.getStaffByID(leave.getStaffid()));
+			leave.setStaff(staffRepository.findById(leave.getStaffid()).get());
 
 			leave.setLeaveDaysRemaining((leaveSum.getLeaveDaysSum() - leaveSum.getDaysTakenSum()));
 		}
@@ -154,7 +168,7 @@ public class LeaveRepository {
 		final String sql = "SELECT *,(SELECT name from staff where id=l.staffid),(SELECT leavetype from leavetypes as t where t.id=l.type) ,datediff(end_date,curdate()) FROM staff_leave as l  where hod_approved=1 and hr_approve is null";
 		List<Leave> leaves = template.query(sql, new StaffLeaveMapping());
 		for (Leave leave : leaves) {
-			leave.setStaff(staffRepository.getStaffByID(leave.getStaffid()));
+			leave.setStaff(staffRepository.findById(leave.getStaffid()).get());
 			LeaveSummary leaveSum = getStaffLeaveDataSummary(leave.getStaffid());
 			leave.setLeaveDaysRemaining((leaveSum.getLeaveDaysSum() - leaveSum.getDaysTakenSum()));
 		}
@@ -165,7 +179,7 @@ public class LeaveRepository {
 		final String sql = "SELECT *,(SELECT name from staff where id=l.staffid),(SELECT leavetype from leavetypes as t where t.id=l.type),datediff(end_date,curdate()) FROM staff_leave as l  where hod_approved=1 and hr_approve =1 and end_date>=curdate() ";
 		List<Leave> leaves = template.query(sql, new StaffLeaveMapping());
 		for (Leave leave : leaves) {
-			leave.setStaff(staffRepository.getStaffByID(leave.getStaffid()));
+			leave.setStaff(staffRepository.findById(leave.getStaffid()).get());
 
 			LeaveSummary leaveSum = getStaffLeaveDataSummary(leave.getStaffid());
 			leave.setLeaveDaysRemaining((leaveSum.getLeaveDaysSum() - leaveSum.getDaysTakenSum()));
@@ -178,7 +192,7 @@ public class LeaveRepository {
 		final String sql = "SELECT *,(SELECT name from staff where id=l.staffid),(SELECT leavetype from leavetypes as t where t.id=l.type),datediff(end_date,curdate()) FROM staff_leave as l  where hod_approved=1 and hr_approve =1 and end_date>=curdate() and l.staffid IN (SELECT staff_id FROM supervisors where supervisor_id=?)";
 		List<Leave> leaves = template.query(sql, new StaffLeaveMapping(), id);
 		for (Leave leave : leaves) {
-			leave.setStaff(staffRepository.getStaffByID(leave.getStaffid()));
+			leave.setStaff(staffRepository.findById(leave.getStaffid()).get());
 
 			LeaveSummary leaveSum = getStaffLeaveDataSummary(leave.getStaffid());
 			leave.setLeaveDaysRemaining((leaveSum.getLeaveDaysSum() - leaveSum.getDaysTakenSum()));
@@ -191,7 +205,7 @@ public class LeaveRepository {
 		final String sql = "SELECT *,(SELECT name from staff where id=l.staffid),(SELECT leavetype from leavetypes as t where t.id=l.type),datediff(end_date,curdate()) FROM staff_leave as l  where hod_approved=1 and hr_approve =1 and start_date>=curdate() ";
 		List<Leave> leaves = template.query(sql, new StaffLeaveMapping());
 		for (Leave leave : leaves) {
-			leave.setStaff(staffRepository.getStaffByID(leave.getStaffid()));
+			leave.setStaff(staffRepository.findById(leave.getStaffid()).get());
 
 			LeaveSummary leaveSum = getStaffLeaveDataSummary(leave.getStaffid());
 			leave.setLeaveDaysRemaining((leaveSum.getLeaveDaysSum() - leaveSum.getDaysTakenSum()));
@@ -204,7 +218,7 @@ public class LeaveRepository {
 		final String sql = "SELECT *,(SELECT name from staff where id=l.staffid),(SELECT leavetype from leavetypes as t where t.id=l.type),datediff(end_date,curdate()) FROM staff_leave as l  where hod_approved=1 and hr_approve =1 and start_date>=? and start_date <=? ";
 		List<Leave> leaves = template.query(sql, new StaffLeaveMapping(), start, to);
 		for (Leave leave : leaves) {
-			leave.setStaff(staffRepository.getStaffByID(leave.getStaffid()));
+			leave.setStaff(staffRepository.findById(leave.getStaffid()).get());
 
 			LeaveSummary leaveSum = getStaffLeaveDataSummary(leave.getStaffid());
 			leave.setLeaveDaysRemaining((leaveSum.getLeaveDaysSum() - leaveSum.getDaysTakenSum()));
@@ -217,7 +231,7 @@ public class LeaveRepository {
 		final String sql = "SELECT *,(SELECT name from staff where id=l.staffid),(SELECT leavetype from leavetypes as t where t.id=l.type) ,datediff(end_date,curdate()) FROM staff_leave as l  where hod_approved=0";
 		List<Leave> leaves = template.query(sql, new StaffLeaveMapping(), id);
 		for (Leave leave : leaves) {
-			leave.setStaff(staffRepository.getStaffByID(leave.getStaffid()));
+			leave.setStaff(staffRepository.findById(leave.getStaffid()).get());
 
 			LeaveSummary leaveSum = getStaffLeaveDataSummary(leave.getStaffid());
 			leave.setLeaveDaysRemaining((leaveSum.getLeaveDaysSum() - leaveSum.getDaysTakenSum()));
@@ -229,7 +243,7 @@ public class LeaveRepository {
 		final String sql = "SELECT *,(SELECT name from staff where id=l.staffid),(SELECT leavetype from leavetypes as t where t.id=l.type),datediff(end_date,curdate())  FROM staff_leave as l  where hr_approve=1";
 		List<Leave> leaves = template.query(sql, new StaffLeaveMapping(), id);
 		for (Leave leave : leaves) {
-			leave.setStaff(staffRepository.getStaffByID(leave.getStaffid()));
+			leave.setStaff(staffRepository.findById(leave.getStaffid()).get());
 
 			LeaveSummary leaveSum = getStaffLeaveDataSummary(leave.getStaffid());
 			leave.setLeaveDaysRemaining((leaveSum.getLeaveDaysSum() - leaveSum.getDaysTakenSum()));
@@ -241,7 +255,7 @@ public class LeaveRepository {
 		final String sql = "SELECT *,(SELECT name from staff where id=l.staffid),(SELECT leavetype from leavetypes as t where t.id=l.type) ,datediff(endDate,curdate()) FROM staff_leave as l  where hr_approve=0";
 		List<Leave> leaves = template.query(sql, new StaffLeaveMapping(), id);
 		for (Leave leave : leaves) {
-			leave.setStaff(staffRepository.getStaffByID(leave.getStaffid()));
+			leave.setStaff(staffRepository.findById(leave.getStaffid()).get());
 			LeaveSummary leaveSum = getStaffLeaveDataSummary(leave.getStaffid());
 			System.out.println(leaveSum.getLeaveDaysSum() - leaveSum.getDaysTakenSum());
 			leave.setLeaveDaysRemaining((leaveSum.getLeaveDaysSum() - leaveSum.getDaysTakenSum()));
@@ -256,7 +270,7 @@ public class LeaveRepository {
 		while (set.next()) {
 			LeaveSummary sum = new LeaveSummary();
 			sum.setLeaveDaysSum((long) set.getDouble(2) + (long) set.getDouble(3));
-			sum.setStaff(staffRepository.getStaffByID(set.getLong(1)));
+			sum.setStaff(staffRepository.findById(set.getLong(1)).get());
 			sum.setDaysTakenSum((long) set.getDouble(4));
 			sum.setCurrentTaken((int) set.getDouble(5));
 			leaveSum.add(sum);
@@ -264,6 +278,20 @@ public class LeaveRepository {
 		return leaveSum;
 
 	}
+	
+
+	public List<String> getLeavesDatesForAttendance(long id, int month, int year) {
+		final String sql = "SELECT * FROM leaves as l where l.staffid=? and year(startdate)=? and month(startdate)=?";
+		List<String> leaves = new ArrayList<String>();
+		SqlRowSet rs = template.queryForRowSet(sql, id, year, month);
+		while (rs.next()) {
+			leaves.addAll(Utilities.getDateForLeave(rs.getString(3), rs.getString(4)));
+
+		}
+		return leaves;
+
+	}
+
 
 	public LeaveSummary getStaffLeaveDataSummary(long id) {
 		LeaveSummary sum = null;
@@ -273,7 +301,7 @@ public class LeaveRepository {
 			System.err.println(set.getDouble(2));
 			sum = new LeaveSummary();
 			sum.setLeaveDaysSum((long) set.getDouble(2) + (long) set.getDouble(3));
-			sum.setStaff(staffRepository.getStaffByID(id));
+			sum.setStaff(staffRepository.findById(id).get());
 			sum.setDaysTakenSum((long) set.getDouble(4));
 			sum.setCurrentTaken((int) set.getDouble(5));
 
@@ -288,7 +316,7 @@ public class LeaveRepository {
 		SqlRowSet set = template.queryForRowSet(sql);
 		while (set.next()) {
 			Leave l = new Leave();
-			l.setStaff(staffRepository.getStaffByID(l.getStaffid()));
+			l.setStaff(staffRepository.findById(l.getStaffid()).get());
 
 			l.setStaffName(set.getString(1));
 			l.setStart(set.getString(3));
@@ -312,7 +340,7 @@ public class LeaveRepository {
 	}
 
 	public void mountLeaves() {
-		List<Staff> staff = staffRepository.getStaff(true);
+		List<Staff> staff = staffRepository.findAll();
 		System.err.println(staff.size());
 		Map<Integer, Long> days = getStaffCategoryLeaves();
 		String sql = "INSERT INTO `attendance`.`leave_mount` ( `year`, `staffid`, `date`,days) VALUES (year(curdate()),?,curdate(),?)";
@@ -321,14 +349,15 @@ public class LeaveRepository {
 		// map named days
 		template.batchUpdate(sql, new BatchPreparedStatementSetter() {
 
+			@SuppressWarnings("unlikely-arg-type")
 			@Override
 			public void setValues(PreparedStatement ps, int arg1) throws SQLException {
 				// TODO Auto-generated method stub
 				Staff employee = staff.get(arg1);
-				System.err.println(days.get(employee.getCategoryId()));
+				System.err.println();
 
 				ps.setLong(1, employee.getId());
-				ps.setLong(2, days.get(employee.getCategoryId()));
+				ps.setLong(2, days.get(days.get(employee.getCategory().getId())));
 			}
 
 			@Override
@@ -347,7 +376,7 @@ public class LeaveRepository {
 		if (set.next()) {
 			leaves = new Leave();
 			leaves.setId(set.getLong(1));
-			leaves.setStaff(staffRepository.getStaffByID(leaves.getStaffid()));
+			leaves.setStaff(staffRepository.findById(leaves.getStaffid()).get());
 
 			leaves.setStaffName(set.getString(10));
 			leaves.setStart(set.getString(3));
@@ -365,7 +394,7 @@ public class LeaveRepository {
 		SqlRowSet set = template.queryForRowSet(sql, dept);
 		while (set.next()) {
 			Leave l = new Leave();
-			l.setStaff(staffRepository.getStaffByID(l.getStaffid()));
+			l.setStaff(staffRepository.findById(l.getStaffid()).get());
 
 			l.setStaffName(set.getString(1));
 			l.setStart(set.getString(3));
@@ -450,7 +479,7 @@ public class LeaveRepository {
 		Leave leave = getLeaveById(id);
 		String message = "Hello " + leave.getStaffName() + " your leave from " + leave.getStart() + " to "
 				+ leave.getEnd() + " has been ";
-		Staff staff = staffRepository.getStaffByID(leave.getStaffid());
+		Staff staff = staffRepository.findById(leave.getStaffid()).get();
 		String decide = (decision.equalsIgnoreCase("1")) ? "approved " : "rejected";
 		messagerService.sendSms(message + decide, staff.getMobile());
 		return template.update(sql, decision, id);

@@ -6,13 +6,13 @@ package com.attendance.rowmappers;
 
 import java.sql.SQLException;
 import java.sql.ResultSet;
-import com.attendance.data.Attendance;
+import com.attendance.data.Attendances;
 import org.springframework.jdbc.core.RowMapper;
 
-public class AttendanceMapper implements RowMapper<Attendance>
+public class AttendanceMapper implements RowMapper<Attendances>
 {
-    public Attendance mapRow(final ResultSet rs, final int rowNum) throws SQLException {
-        final Attendance attendance = new Attendance();
+    public Attendances mapRow(final ResultSet rs, final int rowNum) throws SQLException {
+        final Attendances attendance = new Attendances();
         attendance.setDate(rs.getString(8));
         attendance.setClosedEarly((rs.getString(9) == null) ? "Absent" : rs.getString(9));
         attendance.setId(rs.getString(2));

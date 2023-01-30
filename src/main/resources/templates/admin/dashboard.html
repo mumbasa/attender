@@ -530,7 +530,7 @@
                                             <thead>
                                                 <tr>
                                                     <th>Name</th>
-                                                    <th>Position</th>
+                                                    <th>Department</th>
                                                     <th>Date</th>
                                                     <!-- <th>Age</th>
                                                     <th>Days More</th> -->
@@ -539,7 +539,7 @@
                                             <tbody>
                                                 <tr th:each="a:${dbays}">
                                                     <td th:text="${a.name}">Tiger Nixon</td>
-                                                    <td th:text="${a.staffType}">System Architect</td>
+                                                    <td th:text="${a.department.department}">System Architect</td>
                                                     <td th:text="${a.dob}">Edinburgh</td>
                                                   
                                                   

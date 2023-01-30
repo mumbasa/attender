@@ -10,6 +10,7 @@ import com.attendance.rowmappers.UserRowMapper;
 import com.attendance.data.KeyValue;
 import com.attendance.data.User;
 
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -56,6 +57,24 @@ public class UserRepo implements UserDAO {
 		return null;
 	}
 
+	
+	public User getUserbyEmail(Principal principal) {
+		String sql = "SELECT * FROM users where email=?";
+		User u = null;
+		SqlRowSet rs = template.queryForRowSet(sql, principal.getName());
+		if (rs.next()) {
+			 u = new User();
+			u.setId(rs.getLong(1));
+			u.setDepartmentId(rs.getLong(6));
+			u.setEmail(rs.getString("email"));
+			u.setName(rs.getString("name"));
+		
+
+	
+		
+		}
+		return u;
+	}
 	public int addUser(final User e) {
 		final String insert = "INSERT INTO users(email,password,name,role,dept) VALUES(?,?,?,?,?)";
 		return this.template.update(insert,

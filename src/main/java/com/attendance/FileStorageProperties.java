@@ -1,11 +1,11 @@
-package com.attendance.sys;
+package com.attendance;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.stereotype.Component;
 
 @ConfigurationProperties(prefix = "file")
-
-
+@Component
 public class FileStorageProperties {
 	
 	@Value("${spring.application.name}")

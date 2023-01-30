@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org"
+  layout:decorate="~{fragments/blank}" >
+<head>
+<meta charset="UTF-8">
+<title>Add New School</title>
+
+</head>
+<body>
+
+  <div layout:fragment="content">
+
+
+	<script type="text/javascript" th:inline="javascript">
+	
+	function sele(){
+		
+
+		var form = $('.former');
+		var formdata = false;
+		formdata = new FormData(form[0]);
+		
+			 
+			$.ajax({
+				url:[[@{/add/new/school}]],
+				data:formdata,
+				type:'post',
+				processData : false,
+				contentType : false,
+				cache : false,
+				success:function(data){
+			
+						$.toast({
+							heading: 'Success!',
+							text: '<p>Bank added successfully',
+							position: 'top-right',
+							loaderBg:'#f68daf',
+							class: 'jq-toast-success',
+							hideAfter: 3500, 
+							stack: 6,
+							showHideTransition: 'fade'
+						});
+				       
+						 form[0].reset();
+						  location.reload();						
+
+						
+				
+				}
+				
+			}); 
+			  
+			 }
+	
+	
+		
+	
+	function deleter(id){
+		
+		 
+		$.ajax({
+			url:[[@{/delete/school/}]]+id,
+			type:'get',
+			contentType : false,
+			cache : false,
+			success:function(data){
+		
+					$.toast({
+						heading: 'Success!',
+						text: '<p>Qualification deleted successfully',
+						position: 'top-right',
+						loaderBg:'#f68daf',
+						class: 'jq-toast-success',
+						hideAfter: 3500, 
+						stack: 6,
+						showHideTransition: 'fade'
+					});
+			       
+					  location.reload();						
+					
+			
+			}
+			
+		}); 
+		  
+		 }
+
+
+	
+	</script>
+	
+		
+	
+	
+		  
+  
+   <nav class="hk-breadcrumb" aria-label="breadcrumb">
+                <ol class="breadcrumb breadcrumb-light bg-transparent">
+                    <li class="breadcrumb-item"><a href="#">Forms</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Add New School</li>
+                </ol>
+            </nav>
+            <!-- /Breadcrumb -->
+
+            <!-- Container -->
+            <div >
+                <!-- Title -->
+                <div class="hk-pg-header">
+                    <h4 class="hk-pg-title"><span class="pg-title-icon"><span class="feather-icon"><i data-feather="align-left"></i></span></span>Add New School</h4>
+                </div>
+                <!-- /Title -->
+
+            
+                
+                                <div class="row">
+                    <div class="col-xl-4">
+                        <section class="hk-sec-wrapper">
+                            <div class="row">
+                                <div class="col-sm">
+                                    <form class="former">
+                                      
+
+										
+                                   
+								                                        <div class="row">
+                                            <div class="col-md-12 mb-10">
+                                                <label for="number">School</label>
+                                               <input class="form-control" id="number" placeholder="school" name="school" type="text">
+
+                                            </div>
+                                         
+                                            
+                                        </div>
+                                        
+									  <div class="row">
+                                            <div class="col-md-12 mb-10">
+                                                <label for="type">School Type</label>
+                                                <select class="form-control custom-select d-block w-100" id="type" name="type">
+                                    <option value="primary" >Primary</option>
+                                    <option value="secondary" >Secondary</option>
+                                    <option value="tertiary" >Tertiary</option>
+
+                                                </select>
+                                            </div>
+                                            
+                                           
+                                        </div>
+                                       
+                                        <button class="btn btn-primary col-md-12 mt-4" type="button" onclick="sele()">Add School</button>
+                                    </form>
+
+
+                                </div>
+                            </div>
+                        </section>
+                     </div>
+              
+                                  <div class="col-xl-8">
+                        <section class="hk-sec-wrapper">
+                            <div class="row">
+                                <div class="col-sm">
+
+								<div class="table-wrap">
+									<table id="datable_1"
+										class="table table-hover w-100 display pb-30">
+										<thead>
+											<tr>
+												<th>#</th>
+												<th>Name</th>
+												<th></th>
+											</tr>
+										</thead>
+										<tbody>
+											<tr th:each="a,i:${schools}">
+												<td th:text="${i.index+1}">Tiger Nixon</td>
+												<td th:text="${a.value}"
+													style="text-transform: capitalize;">System Architect</td>
+
+												<td><button	th:onclick="'deleter('+${a.id}+')'"	class="btn  btn-sm btn-danger">Delete</button>
+													
+													
+													</td>
+											</tr>
+
+										</tbody>
+										<tfoot>
+											<tr>
+												<th>#</th>
+												<th>Name</th>
+												<th></th>
+											</tr>
+										</tfoot>
+									</table>
+								</div>
+
+
+                                </div>
+                            </div>
+                        </section>
+                     </div>
+              
+                </div>
+                
+            </div>
+            <!-- /Container -->
+  
+  
+  </div>
+  
+  
+</body>
+</html>

@@ -2,7 +2,7 @@
 // Decompiled by Procyon v0.5.36
 // 
 
-package com.attendance.sys;
+package com.attendance;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;

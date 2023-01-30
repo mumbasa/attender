@@ -31,7 +31,7 @@ public class ShiftRepository {
 	LeaveRepository leaveRepository;
 	
 	@Autowired
-	StaffRepository staffRepository;
+	StaffService staffRepository;
 
 	public int saveUnwantedShift(JSONArray array, String staffid) {
 		List<JSONObject> objs = new ArrayList<JSONObject>();

@@ -9,7 +9,7 @@ import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
-import com.attendance.sys.Tester;
+import com.attendance.Tester;
 
 @Repository
 public class SchoolRepository {

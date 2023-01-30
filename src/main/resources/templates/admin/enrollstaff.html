@@ -126,12 +126,17 @@ $( document ).ready(function() {
 							<div class="col-sm">
 								<form class="former">
 									<div class="row">
-										<div class="col-md-6 form-group">
+										<div class="col-md-4 form-group">
 											<label for="firstName">First name</label> <input
 												class="form-control" id="firstName" name="fname"
 												placeholder="" value="" type="text">
 										</div>
-										<div class="col-md-6 form-group">
+										<div class="col-md-4 form-group">
+											<label for="lastName">Middle name</label> <input
+												class="form-control" id="middleName" name="mname"
+												placeholder="" value="" type="text">
+										</div>
+										<div class="col-md-4 form-group">
 											<label for="lastName">Last name</label> <input
 												class="form-control" id="lastName" name="lname"
 												placeholder="" value="" type="text">
@@ -521,7 +526,7 @@ $( document ).ready(function() {
 												class="form-control custom-select d-block w-100" id="type"
 												name="type">
 												<option th:each="a:${types}" th:value="${a.id}"
-													th:text="${a.value}">Choose...</option>
+													th:text="${a.type}">Choose...</option>
 
 											</select>
 										</div>
@@ -533,7 +538,7 @@ $( document ).ready(function() {
 												name="cat">
 												<option value="" selected="selected" disabled="disabled">--select one --</option>
 												<option th:each="a:${cat}" th:value="${a.id}"
-													th:text="${a.value}">Choose...</option>
+													th:text="${a.category}">Choose...</option>
 											</select>
 											
 
@@ -552,12 +557,12 @@ $( document ).ready(function() {
 										<hr>
 									<h6 class="form-group">Financial Details</h6>
 									<div class="row">
-										<div class="col-md-8 mb-10">
+										<div class="col-md-6 mb-10">
 											<label for="email">Bank</label><select
 												class="form-control custom-select d-block w-100" id="bank"
-												name="bank">
+												name="bankid">
 												<option th:each="a:${banks}" th:value="${a.id}"
-													th:text="${a.value}">Choose...</option>
+													th:text="${a.bank}">Choose...</option>
 											</select>
 										</div>
 										<div class="col-md-4 mb-10">
@@ -566,7 +571,12 @@ $( document ).ready(function() {
 												placeholder="your account number" name="accno" type="tel">
 
 										</div>
+<div class="col-md-2 mb-10">
+											<label for="sortcode">Sort Code</label> <input
+												class="form-control" id="sortcode"
+												placeholder="your account number" name="sortcode" type="tel">
 
+										</div>
 									</div>
 									
 									
@@ -637,22 +647,10 @@ $( document ).ready(function() {
 
 										<div class="col-md-12 mb-10">
 											<label for="emp">Highest Education Level</label> <select
-												class="form-control custom-select d-block w-100" id="type"
+												class="form-control custom-select d-block w-100" id="state"
 												name="cert">
-												<option value="" selected="selected" disabled="disabled">--
-													select one --</option>
-												<option value="No formal education">No formal
-													education</option>
-												<option value="Primary education">Primary education</option>
-												<option value="Secondary education">Secondary
-													education or high school</option>
-												<option value="GED">GED</option>
-												<option value="Vocational qualification">Vocational
-													qualification</option>
-												<option value="Bachelor's degree">Bachelor's degree</option>
-												<option value="Master's degree">Master's degree</option>
-												<option value="Doctorate or higher">Doctorate or
-													higher</option>
+												<option th:each="a:${cert}" th:value="${a.id}"
+													th:text="${a.certs}">Choose...</option>
 											</select>
 										</div>
 										

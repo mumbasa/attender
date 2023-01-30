@@ -1,4 +1,4 @@
-package com.attendance.sys;
+package com.attendance;
 
 import java.io.IOException;
 import java.util.Collection;

@@ -1,27 +1,29 @@
 
 package com.attendance.controllers;
 
-import com.attendance.data.YearMonthData;
-import com.attendance.data.Staff;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+
 import com.attendance.data.MonthAggregate;
-import java.util.List;
-import org.springframework.web.bind.annotation.PathVariable;
+import com.attendance.data.Staff;
+import com.attendance.data.YearMonthData;
+import com.attendance.repos.AttendancesRepository;
 import com.attendance.repos.HolidayRepository;
-import com.attendance.repos.StaffRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import com.attendance.repos.AttendanceRepository;
-import org.springframework.stereotype.Controller;
 
 @Controller
 public class AttendanceController
 {
     @Autowired
-    AttendanceRepository attendance;
-    @Autowired
-    StaffRepository staffRepo;
+    AttendancesRepository attendance;
+    
+    
+   
     @Autowired
     HolidayRepository rep;
     
@@ -40,7 +42,7 @@ public class AttendanceController
     
     @RequestMapping( "/admin/view/report" )
     public String getUsers(final Model model) {
-        final List<Staff> staff = this.staffRepo.getStaff();
+        List<Staff> staff = attendance.getAllStaff();
         System.err.println(staff.size());
         model.addAttribute("staff", (Object)staff);
         return "/admin/report";

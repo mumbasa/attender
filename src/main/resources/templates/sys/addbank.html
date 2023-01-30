@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org"
+  layout:decorate="~{fragments/blank}" >
+<head>
+<meta charset="UTF-8">
+<title>Add New Bank</title>
+
+</head>
+<body>
+
+  <div layout:fragment="content">
+
+
+	<script type="text/javascript" th:inline="javascript">
+	
+	function sele(){
+		
+
+		var form = $('.former');
+		var formdata = false;
+		formdata = new FormData(form[0]);
+		
+			 
+			$.ajax({
+				url:[[@{/add/new/bank}]],
+				data:formdata,
+				type:'post',
+				processData : false,
+				contentType : false,
+				cache : false,
+				success:function(data){
+			
+						$.toast({
+							heading: 'Success!',
+							text: '<p>Bank added successfully',
+							position: 'top-right',
+							loaderBg:'#f68daf',
+							class: 'jq-toast-success',
+							hideAfter: 3500, 
+							stack: 6,
+							showHideTransition: 'fade'
+						});
+				       
+						 form[0].reset();
+						
+						
+				
+				}
+				
+			}); 
+			  
+			 }
+	
+	
+		
+	
+	
+	</script>
+	
+		
+	
+	
+		  
+  
+   <nav class="hk-breadcrumb" aria-label="breadcrumb">
+                <ol class="breadcrumb breadcrumb-light bg-transparent">
+                    <li class="breadcrumb-item"><a href="#">Forms</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Add New Bank</li>
+                </ol>
+            </nav>
+            <!-- /Breadcrumb -->
+
+            <!-- Container -->
+            <div class="container">
+                <!-- Title -->
+                <div class="hk-pg-header">
+                    <h4 class="hk-pg-title"><span class="pg-title-icon"><span class="feather-icon"><i data-feather="align-left"></i></span></span>Add New Bank</h4>
+                </div>
+                <!-- /Title -->
+
+                <!-- Row -->
+                <div class="row">
+                    <div class="col-xl-6">
+                        <section class="hk-sec-wrapper">
+                            <div class="row">
+                                <div class="col-sm">
+                                    <form class="former">
+                                      
+
+										
+                                   
+								                                        <div class="row">
+                                            <div class="col-md-12 mb-10">
+                                                <label for="number">Bank</label>
+                                               <input class="form-control" id="number" placeholder="Bank" name="bank" type="text">
+
+                                            </div>
+                                         
+                                            
+                                        </div>
+                                        
+									
+                                       
+                                        <button class="btn btn-primary col-md-12 mt-4" type="button" onclick="sele()">Add Bank</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </section>
+                     </div>
+                </div>
+                <!-- /Row -->
+            </div>
+            <!-- /Container -->
+  
+  
+  </div>
+  
+  
+</body>
+</html>

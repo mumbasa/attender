@@ -15,8 +15,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.attendance.data.Shift;
 import com.attendance.data.Staff;
+import com.attendance.repos.ConfgurationRepository;
 import com.attendance.repos.ShiftRepository;
-import com.attendance.repos.StaffRepository;
+import com.attendance.repos.StaffService;
 import com.attendance.services.Utilities;
 
 import kong.unirest.json.JSONArray;
@@ -27,7 +28,9 @@ public class ShiftController {
 	@Autowired
 	ShiftRepository shiftRepository;
 	@Autowired
-	StaffRepository staffRepository;
+	StaffService staffService;
+	@Autowired
+	ConfgurationRepository configRepo;
 	
 	@ResponseBody
 	@RequestMapping("/admin/get/staff/{id}/shifts")
@@ -41,15 +44,14 @@ public class ShiftController {
 	@ResponseBody
 	@PostMapping("/admin/get/dept/shifts")
 	public List<Shift> getStaffShift(Principal principal,@RequestParam("startDate") String start,@RequestParam("endDate") String end){
-		Staff staff = staffRepository.getStaffByEmail(principal.getName());
-
-			return shiftRepository.getDeptShifts(staff.getDepartmentId(),start,end);
+		Staff staff = staffService.getStaffByEmail(principal.getName());
+			return shiftRepository.getDeptShifts(staff.getDepartment().getId(),start,end);
 		
 	}
 	
 	@RequestMapping("/admin/staff/{id}/get/shifts")
 	public String setStaffWorkTimes(Model model,@PathVariable("id") long id) {
-		Staff staff = staffRepository.getStaffByID(id);
+		Staff staff = staffService.getStaffByID(id);
 		model.addAttribute("staff", staff);
 		model.addAttribute("shifts", shiftRepository.getStaffShifts(id));
 		return "admin/staffshift";
@@ -78,25 +80,26 @@ public class ShiftController {
 	@ResponseBody
 	@PostMapping("/admin/add/staff/unavailable")
 	public int setUnavailableDays(Principal principal, @RequestParam("dates") JSONArray dates) {
-		Staff staff = staffRepository.getStaffByEmail(principal.getName());
+		Staff staff = staffService.getStaffByEmail(principal.getName());
 		return shiftRepository.saveUnwantedShift(dates, String.valueOf(staff.getId()));
 
 	}
 
 	@RequestMapping("/admin/new/shift")
 	public String newShift(Model model) {
-		model.addAttribute("stafftypes", staffRepository.getStaffTypes());
-		return "/admin/newshift";
+		model.addAttribute("stafftypes", staffService.getStaffTypes());
+		model.addAttribute("depts", configRepo.getDepartments());
+		return "admin/newshift";
 	}
 	
 	@RequestMapping("/admin/put/shift")
 	public String putShift(Model model,@RequestParam("date") String date,Principal principal) {
-		Staff staff = staffRepository.getStaffByEmail(principal.getName());
+		Staff staff = staffService.getStaffByEmail(principal.getName());
 
-		model.addAttribute("staff", staffRepository.getStaffShiftReady(staff.getId(),date));
+		model.addAttribute("staff", staffService.getStaffShiftReady(staff.getId(),date));
 		model.addAttribute("shift",shiftRepository.getShiftTypes());
 		model.addAttribute("date", Utilities.dateConvert(date) +" -");
-		return "/admin/putstaffshit";
+		return "admin/putstaffshit";
 	}
 
 
@@ -112,40 +115,44 @@ public class ShiftController {
 	
 	@RequestMapping("/admin/set/staff/shift")
 	public String newStaffShift(Model model) {
-		model.addAttribute("stafftypes", staffRepository.getStaffTypes());
-		return "/admin/setstaffshift";
+		model.addAttribute("stafftypes", staffService.getStaffTypes());
+		return "admin/setstaffshift";
+	}
+	
+	@RequestMapping("/admin/roster/scheduling")
+	public String rosterSched(Model model) {
+		return "admin/templatedownload";
 	}
 
 	@RequestMapping("/admin/department/staff/roster")
 	public String newStaffShift(Model model, Principal principal) {
-		Staff staff = staffRepository.getStaffByEmail(principal.getName());
-
-		model.addAttribute("staff", staffRepository.getShiftStaffInDepartment(staff.getDepartmentId()));
-		return "/admin/shiftworkers";
+		Staff staff = staffService.getStaffByEmail(principal.getName());
+		model.addAttribute("staff", staffService.getShiftStaffInDepartment(staff.getDepartment().getId()));
+		return "admin/shiftworkers";
 	}
 
 	@RequestMapping("/admin/my/unavailable/shifts")
 	public String unavailableShifts(Model model, Principal principal) {
-		Staff staff = staffRepository.getStaffByEmail(principal.getName());
+		Staff staff = staffService.getStaffByEmail(principal.getName());
 		model.addAttribute("shifts", shiftRepository.getStaffUnavbailableShifts(staff.getId()));
-		return "/admin/unavailableshift";
+		return "admin/unavailableshift";
 	}
 
 	
 	@RequestMapping("/admin/my/staff/set/shifts")
 	public String upertunavailableShifts(Model model, Principal principal) {
-		Staff staff = staffRepository.getStaffByEmail(principal.getName());
+		Staff staff = staffService.getStaffByEmail(principal.getName());
 		model.addAttribute("shifts", shiftRepository.getStaffUnavbailableShifts(staff.getId()));
-		return "/admin/dateshift";
+		return "admin/dateshift";
 	}
 
 	
 	
 	@RequestMapping("/admin/department/roster")
 	public String setDeptStaffWorkTimes(Model model,Principal principal) {
-		Staff staff = staffRepository.getStaffByEmail(principal.getName());
+		Staff staff = staffService.getStaffByEmail(principal.getName());
 		model.addAttribute("staff", staff);
-		model.addAttribute("shifts", shiftRepository.getDeptShifts(staff.getDepartmentId()));
+		model.addAttribute("shifts", shiftRepository.getDeptShifts(staff.getDepartment().getId()));
 		return "admin/staffshiftquery";
 	}
 	
@@ -164,14 +171,14 @@ public class ShiftController {
 	@ResponseBody
 	@RequestMapping("/admin/staff/shifts")
 	public List<Shift> myStaffWorkTimes(Model model,Principal principal) {
-		Staff staff = staffRepository.getStaffByEmail(principal.getName());
+		//Staff staff = staffRepository.getStaffByEmail(principal.getName());
 		
 		
 		return shiftRepository.getDeptShifts();
 	}
 	@RequestMapping("/admin/my/shifts")
 	public String setStaffWorkTimes(Model model,Principal principal) {
-		Staff staff = staffRepository.getStaffByEmail(principal.getName());
+		Staff staff = staffService.getStaffByEmail(principal.getName());
 		model.addAttribute("shifts", shiftRepository.getStaffShifts(staff.getId()));
 		model.addAttribute("staff", staff);
 

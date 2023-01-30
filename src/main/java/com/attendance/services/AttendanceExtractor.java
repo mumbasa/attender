@@ -13,12 +13,12 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Paths;
 import java.util.HashSet;
 import java.util.HashMap;
-import com.attendance.data.Attendance;
+import com.attendance.data.Attendances;
 import java.util.List;
 import java.util.Map;
 
 public class AttendanceExtractor {
-	private List<Attendance> attendance;
+	private List<Attendances> attendance;
 	private HashMap<String, String> data;
 	private HashSet<String> days;
 	private HashSet<String> weekEnds;
@@ -53,7 +53,7 @@ public class AttendanceExtractor {
 		this.staff = staff;
 	}
 
-	public List<Attendance> getAttendance() {
+	public List<Attendances> getAttendance() {
 		return this.attendance;
 	}
 
@@ -89,9 +89,9 @@ public class AttendanceExtractor {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		this.attendance = new ArrayList<Attendance>();
+		this.attendance = new ArrayList<Attendances>();
 		for (final String a : data.keySet()) {
-			final Attendance attend = new Attendance(a, data.get(a));
+			final Attendances attend = new Attendances(a, data.get(a));
 			this.attendance.add(attend);
 		}
 	}
@@ -99,7 +99,7 @@ public class AttendanceExtractor {
 	public void setup2(final String upload) {
 		System.err.println(staff.size() + "-size---- i3d");
 
-		attendance = new ArrayList<Attendance>();
+		attendance = new ArrayList<Attendances>();
 		final DateTimeFormatter fmt = DateTimeFormatter.ofPattern("dd-MM-yyyy");
 		final Path file = Paths.get(upload, new String[0]);
 		try {
@@ -123,22 +123,22 @@ public class AttendanceExtractor {
 							Staff staffer = staff.get(staffId);
 
 							if (staffer != null) {
-								if (staffer.getStaffType() != null) {
+								if (staffer.getStatus().getType() != null) {
 									// System.out.println(line);
 
-									Attendance att = new Attendance(fields[0], Utilities.hourPadding(fields[3]),
+									Attendances att = new Attendances(fields[0], Utilities.hourPadding(fields[3]),
 											Utilities.hourPadding(fields[4]), date, staffer);
 									// checking for staff without type to test
-									System.err.println(att.getStaff().getBioID() + "------ id");
+									System.err.println(att.getStaff().getBioid() + "------ id");
 
 									attendance.add(att);
 								}
 							}
 						}
 					} else if (fields.length == 4) {
-						final Attendance att = new Attendance(fields[0], Utilities.hourPadding(fields[3]),
+						final Attendances att = new Attendances(fields[0], Utilities.hourPadding(fields[3]),
 								Utilities.hourPadding(fields[3]), date, staff.get(staffId));
-						if (att.getStaff().getStaffType() != null) {
+						if (att.getStaff().getStatus().getType() != null) {
 							this.attendance.add(att);
 						}
 					}

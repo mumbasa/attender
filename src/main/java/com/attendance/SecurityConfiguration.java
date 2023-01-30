@@ -2,7 +2,7 @@
 // Decompiled by Procyon v0.5.36
 // 
 
-package com.attendance.sys;
+package com.attendance;
 
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.web.util.matcher.RequestMatcher;

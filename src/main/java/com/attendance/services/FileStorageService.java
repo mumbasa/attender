@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.attendance.sys.FileStorageProperties;
+import com.attendance.FileStorageProperties;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
