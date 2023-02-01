@@ -15,10 +15,10 @@ public class FileStorageProperties {
     private String uploadDir;
 
     public String getUploadDir() {
-        return uploadDir;
+        return "C:\\Users\\bryan.laryea\\Downloads\\Telegram Desktop\\attendance\\";
     }
 
     public void setUploadDir(String uploadDir) {
-        this.uploadDir = uploadDir+appName;
+        this.uploadDir = "C:\\Users\\bryan.laryea\\Downloads\\Telegram Desktop\\attendance\\";
     }
 }

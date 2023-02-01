@@ -5,10 +5,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.Table;
-
-import com.attendance.data.Staff;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -38,8 +35,8 @@ public class Attendance {
 	@Column(name="workhours")
 	private long hoursToWork;
 	private long staffid;
-	@JoinColumn(name="staffid",referencedColumnName = "bioid",updatable = true,insertable = true)
-	private Staff staff;
+	//@JoinColumn(name="staffid",referencedColumnName = "bioid",updatable = true,insertable = true)
+	//private Staff staff;
 	
 	
 }

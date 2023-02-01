@@ -60,4 +60,11 @@ public class AttendanceController
         this.attendance.deleteData(year, month);
         return "/admin/data";
     }
+    @RequestMapping( "admin/attendance/query" )
+    public String attenaceQuery(final Model model) {
+        model.addAttribute("staff", attendance.getAllStaff());
+
+        return "admin/attendancequery";
+    }
+    
 }

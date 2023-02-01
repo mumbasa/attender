@@ -40,8 +40,7 @@
                                                 <tr>
                                                 <th>#</th>
                                                     <th>Name</th>
-                                                    <th>Supervisor</th>
-                                                    <th>Workforce</th>
+                                               <!--      <th>Population</th> -->
                                                     <th>  </th>
                                                 </tr>
                                             </thead>
@@ -50,9 +49,8 @@
                                                     <td th:text="${i.index+1}">Tiger Nixon</td>
                                             <td th:text="${a.department}" style="text-transform: capitalize;">System Architect</td>
                                                     
-                                                    <td th:text="${a.size}">System Architect</td>
-                                                    <td >Edinburgh</td>
-                                                    <td><a th:href="@{'/admin/department/'+${a.id}+'/dashboard'}" class="btn  btn-sm btn-info">View Details</a></td>
+<!--                                                     <td th:text="${a.size}">System Architect</td>
+ -->                                                    <td><a th:href="@{'/admin/department/'+${a.id}+'/dashboard'}" class="btn  btn-sm btn-info">View Details</a></td>
                                                 </tr>
                                            
                                             </tbody>

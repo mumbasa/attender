@@ -15,7 +15,7 @@ public class DepartmentMapper implements RowMapper<Departments>
         final Departments dep = new Departments();
         dep.setId(rs.getLong(1));
         dep.setDepartment(rs.getString(2));
-        dep.setSize(rs.getLong(3));
+        dep.setSize(rs.getLong(4));
         
         return dep;
     }

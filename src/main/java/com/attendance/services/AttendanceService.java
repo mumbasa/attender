@@ -30,7 +30,6 @@ import org.apache.poi.ss.util.CellRangeAddressList;
 import org.apache.poi.ss.util.CellReference;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.hibernate.boot.model.relational.Loggable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -181,12 +180,17 @@ public class AttendanceService {
 	}
 
 	public String createAttendanceReport(int month, int year, Staff staff) {
-		System.err.println(year + " ---------" + staff.getId());
+		LocalDate start = LocalDate.of(year, month, 1);
+		LocalDate end = LocalDate.of(year, month, start.lengthOfMonth());
+		System.err.println(month + "/" + year + " ---------" + staff.getId());
 		List<Attendances> attendance = getStaffAttendanceInMonth(year, month, (staff.getBioid()));
 		long timeWorked = attendance.stream().mapToLong(Attendances::getHoursWorked).sum();
+		long lateness = attendance.stream().mapToLong(Attendances::getLateness).sum();
+		long deficit = attendance.stream().mapToLong(Attendances::getDeficit).sum();
+
 		System.err.println(" lists " + attendance.size() + "\t" + timeWorked);
 		String fileName = System.currentTimeMillis() + staff.getOtherNames() + staff.getBioid() + ".pdf";
-		File file = new File(folderLocation + appName + "/" + fileName);
+		File file = new File(folderLocation+appName + fileName);
 
 		Document document = new Document(PageSize.LEGAL);
 		// document.setMargins(0.0f, 0.0f, 15.0f, 2.0f);
@@ -199,14 +203,33 @@ public class AttendanceService {
 			// step 3: we open the document
 			document.open();
 			document.add(jpg);
-			PdfPTable aggreTable = new PdfPTable(3);
+			PdfPTable aggreTable = new PdfPTable(5);
 			aggreTable.setSpacingBefore(30);
 			aggreTable.setWidthPercentage(100);
 			aggreTable.addCell(new Paragraph("Name :" + staff.getOtherNames() + " " + staff.getName(), font));
-			aggreTable.addCell(new Paragraph("Staff ID:" + staff.getBioid(), font));
+			aggreTable.addCell(new Paragraph(start.getMonth().name() + " / " + end.getYear(), font));
 			aggreTable.addCell(
-					new Paragraph("Time worked:" + timeWorked / 60 + "hrs :" + timeWorked % 60 + " mins", font));
+					new Paragraph("Time worked:" + timeWorked / 60 + "h :" + timeWorked % 60 + " m", font));
+			PdfPCell latenessDisplay = new PdfPCell(
+					new Paragraph("Lateness:" + lateness / 60 + "h :" + lateness % 60 + " m", font));
+			if (lateness > 0) {
+				latenessDisplay.setBackgroundColor(new Color(0xff, 0x50, 0x50));
+			} else {
+				latenessDisplay.setBackgroundColor(new Color(0x00, 0xff, 0x10));
 
+			}
+
+			PdfPCell deficitDisplay = new PdfPCell(
+					new Paragraph("Deficit:" + deficit / 60 + "h:" + deficit % 60 + " m", font));
+			if (deficit < 0) {
+				deficitDisplay.setBackgroundColor(new Color(0xff, 0x50, 0x50));
+			} else {
+				deficitDisplay.setBackgroundColor(new Color(0x00, 0xff, 0x10));
+
+			}
+			aggreTable.addCell(latenessDisplay);
+
+			aggreTable.addCell(deficitDisplay);
 			document.add(aggreTable);
 
 			PdfPTable table = new PdfPTable(6);
@@ -358,7 +381,8 @@ public class AttendanceService {
 		workbook.setActiveSheet(1);
 
 		FileOutputStream out;
-		String fileName = folderLocation + appName + "/" + System.currentTimeMillis() + "-" + deptId + ".xlsx";
+		String fileName = folderLocation+appName+ System.currentTimeMillis() + "-"
+				+ deptId + ".xlsx";
 
 		try {
 			out = new FileOutputStream(fileName);
@@ -616,8 +640,7 @@ public class AttendanceService {
 			Path path = Paths.get(fileName);
 
 			lines = Files.readAllLines(path);
-			dateLine = lines.get(0).split("\t")[1].split(" ")[0];
-			System.err.println(dateLine + "00000000000000000000");
+			dateLine = lines.get(0).strip().split("\t")[1].strip().split(" ")[0];
 
 		} catch (IOException e1) {
 			// TODO Auto-generated catch block
@@ -625,6 +648,7 @@ public class AttendanceService {
 		}
 
 		List<Attendance> attendances = new ArrayList<Attendance>();
+		// getting month days
 		int month = Integer.parseInt(dateLine.split("-")[1]);
 		int year = Integer.parseInt(dateLine.split("-")[0]);
 		List<String> holidays = holidayRepo.getHolidays(year, month).stream().map(Holiday::getRealHoliday)
@@ -644,61 +668,115 @@ public class AttendanceService {
 
 		// setting up days of the month to remove the holidays
 		Set<String> dates = (Utilities.getDateinDays(start.toString(), end.toString()));
-		dates.removeAll(holidays);
-		HashMap<Long, Long> staffBioIDs = new HashMap<Long, Long>();
+		// dates.removeAll(holidays);
 		HashMap<Long, StaffData> staffShift = new HashMap<Long, StaffData>();
+
 		Set<Long> dataBioid = new HashSet<Long>();
 
 		Map<Long, StaffData> loger = new HashMap<Long, StaffData>();
 
 		// initialising the map
+
 		for (String line : lines) {
-			String[] rowData = line.split("\t");
+			String[] rowData = line.strip().split("\t");
+
 			long bioid = Long.parseLong(rowData[0].strip());
 			if (!dataBioid.contains(bioid)) {
 				dataBioid.add(bioid);
-				loger.put(bioid, new StaffData());
-				loger.get(bioid).setDayData(new HashMap<String, DayData>());
-				try {
-				loger.get(bioid).setType(staffMap.get(bioid).getStatus().getId());
-			} catch (Exception e) {
-					// TODO: handle exception
-				}
+				StaffData staffData = new StaffData();
+				Map<String, DayData> dayMap = new HashMap<String, DayData>();
 				dates.stream().forEach(e -> {
-					System.err.println("-----------"+e);
 					DayData dayData = new DayData();
 					dayData.setDay(e);
-					//Map<String, DayData>  dataset = new HashMap<String,DayData>();
-					loger.get(bioid).getDayData().put(e, dayData);
-
+					dayMap.put(e, dayData);
 				});
+				staffData.setDayData(dayMap);
+				loger.put(bioid, staffData);
+
+				try {
+					loger.get(bioid).setType(staffMap.get(bioid).getStatus().getId());
+				} catch (Exception e) {
+					// TODO: handle exception
+					loger.get(bioid).setType(0);
+					System.out.println("error BIOID id no found in list of staff");
+				}
+
 			}
 
 		}
 
+		System.err.println(loger.keySet());
+
 		for (String line : lines) {
-			String[] rowData = line.split("\t");
-			
+			String[] rowData = line.strip().split("\t");
+
 			String day = rowData[1].split(" ")[0].strip();
-			System.err.println(day);
-			
+
 			String time = rowData[1].split(" ")[1].strip();
 			long bioid = Long.parseLong(rowData[0].strip());
-			loger.get(bioid).getDayData().get(day).dataAdd(time);
 
+			try {
+				loger.get(bioid).getDayData().get(day).dataAdd(time);
+			} catch (Exception e) { // TODO: handle exception
+
+				Map<String, DayData> dataset = new HashMap<String, DayData>();
+				DayData dayData = new DayData();
+				dayData.setDay(day);
+				dayData.dataAdd(time);
+				dataset.put(day, dayData);
+				loger.get(bioid).setDayData(dataset);
+
+				System.err.println(line);
+
+			}
 		}
-		System.err.println(loger.keySet());
-		
-		for(long id : loger.keySet()) {
+
+		shiftRepos.findShiftsByMonthAndYear(month, year).forEach(e -> {
+			long bioId = staffMap.get(e.getStaffid()).getBioid();
+			if (staffShift.containsKey(bioId)) {
+
+				// adding date if attendance is recorded despite holiday
+
+				DayData data = new DayData();
+				data.setDay(e.getDate());
+				data.setTimeIn(e.getWorkTime().getStartstring());
+				data.setTimeOut(e.getWorkTime().getClosestring());
+				staffShift.get(bioId).getDayData().put(e.getDate(), data);
+
+			} else {
+
+				StaffData staffDetails = new StaffData();
+				staffDetails.setId(bioId);
+				staffDetails.setDayData(new HashMap<String, DayData>());
+				DayData data = new DayData();
+				data.setDay(e.getDate());
+				data.setTimeIn(e.getWorkTime().getStartstring());
+				data.setTimeOut(e.getWorkTime().getClosestring());
+				staffDetails.getDayData().put(e.getDate(), data);
+				staffShift.put(bioId, staffDetails);
+			}
+
+		});
+
+		for (long id : loger.keySet()) {
+			// removing days to remove from days of themonth less holiday for
 			StaffData staffAttData = loger.get(id);
 			Map<String, DayData> daysData = staffAttData.getDayData();
-			for(String day : daysData.keySet()) {
-				if(daysData.get(day).getTimeIn() !=null) {
+			if (staffMap.get(id) != null) {
+				List<String> daysToRemove = leaveRepository.getLeavesDatesForAttendance(staffMap.get(id).getId(), month,
+						year);
+
+				for (String dayToRemove : daysToRemove) {
+					daysData.remove(dayToRemove);
+				}
+			}
+			for (String day : daysData.keySet()) {
+				if (daysData.get(day).getTimeIn() != null) {
 					Attendance attendance = new Attendance();
 					attendance.setDate(day);
 					attendance.setStaffid(id);
-					String timeIn = daysData.get(day).getTimeIn();
-					// System.err.println(timeIn);
+					String timeIn = daysData.get(day).getTimeIn(); //
+					System.err.println(timeIn);
 					String timeOut = daysData.get(day).getTimeOut();
 					attendance.setTimein(timeIn);
 					long timeInMinutes = 0;
@@ -712,21 +790,18 @@ public class AttendanceService {
 					try {
 						timeOutMinutes = Utilities.stringToMinutes(timeOut);
 					} catch (Exception e) {
-						// TODO: handle exception
-						timeOutMinutes = 0;
+						// TODO: handleexception timeOutMinutes = 0;
 
 					}
 					attendance.setTimeoutmins(timeOutMinutes);
 					long timeWorked = 0;
 					attendance.setHoursWorked(timeWorked);
 					attendances.add(attendance);
-					
+					timeWorked = timeOutMinutes - timeInMinutes;
+					attendance.setHoursWorked(timeWorked);
+
 					try {
-						timeWorked = timeOutMinutes - timeInMinutes;
-						attendance.setHoursWorked(timeWorked);
-
-						
-
+						if (staffMap.get(id).getStatus().getId() == 0) {
 							long startTime = Utilities.stringToMinutes("08:00");
 							long closetTime = Utilities.stringToMinutes("17:00");
 							long timeToWork = closetTime - startTime;
@@ -737,7 +812,7 @@ public class AttendanceService {
 								late = (Utilities.stringToMinutes(timeIn) - startTime) > 0 ? "Late" : "Early";
 								run = (Utilities.stringToMinutes(timeOut) - closetTime) > 0 ? "Y" : "N";
 							} catch (Exception e) {
-								// TODO: handle exception
+								// TODO: handle exception }
 							}
 							attendance.setClosedEarly(run);
 							attendance.setIslate(late);
@@ -746,35 +821,35 @@ public class AttendanceService {
 
 							attendance.setDeficit(deficit);
 							attendances.add(attendance);
+						} else {
+							if (staffShift.containsKey(id)) {
+								String shiftTime = staffShift.get(id).getDayData().get(day).getTimeIn();
+								if (!shiftTime.contains("0:00") & (timeIn != null)) {
 
-							/*
-							 * System.out.println(s + "\t" + k + "\t" + timeIn + "\t" + timeOut + "\t" +
-							 * timeWorked + "\t" + timeToWork + "\t" + deficit + "\t" + deficit / 60 + "\t "
-							 * + late + "\t" + run + "\t");
-							 */
-						
-						
-						// System.out.println(s + "\t" + k + "\t" + timeIn + "\t" + timeOut + "\t" +
-						// timeWorked);
+									attendance.setLateness(
+											(Utilities.stringToMinutes(timeIn) - Utilities.stringToMinutes(shiftTime)));
+									attendance.setIslate(attendance.getLateness() > 0 ? "Late" : "Early");
+									attendances.add(attendance);
 
+								} else {
+									attendances.add(attendance);
+
+								}
+
+							}
+
+						}
 					} catch (Exception e) {
-						// TODO: handle exception
+						attendances.add(attendance);
+
 					}
-					// 
-					
 				}
-				
-		
-			
-			
-			
-			
+
+			}
+
 		}
-		}
-		
-		
-		
 		attendanceRepository.saveAll(attendances);
+
 		return "done";
 	}
 

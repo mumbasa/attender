@@ -49,11 +49,11 @@
                                             <tbody>
                                                 <tr th:each="a,i:${staff}">
                                                     <td th:text="${i.index+1}">Tiger Nixon</td>
-                                            <td th:text="${a.name}" style="text-transform: capitalize;">System Architect</td>
+                                            <td th:text="${a.name +' ' +a.middleName+ ' ' +a.otherNames}" style="text-transform: capitalize;">System Architect</td>
                                                     
                                                     <td th:text="${a.gender}">System Architect</td>
-                                                    <td th:text="${a.staffType}">Edinburgh</td>
-                                                    <td th:text="${a.department}">61</td>
+                                                    <td th:text="${a.status.type}">Edinburgh</td>
+                                                    <td th:text="${a.department.department}">61</td>
                                                     <td><a class="btn btn-sm text-white btn-info" th:href="@{'/admin/staff/'+${a.id}+'/set/shifts'}">Set Shifts</a> <a class="btn btn-sm text-white btn-success" th:href="@{'/admin/staff/'+${a.id}+'/get/shifts'}">View Shifts</a> <a class="btn btn-sm text-white btn-danger">View Unavailable Days</a> </td>
                                                 </tr>
                                            

@@ -604,8 +604,8 @@ public class StaffService {
 
 	public String getStaffGendrRAtiobyDept(long id) {
 		String stat = "";
-		String sql = "SELECT (SELECT count(*) from staff where gender='Male'),(SELECT count(*) from staff where gender='Female') from staff where department=? LIMIT 1;";
-		SqlRowSet set = template.queryForRowSet(sql, id);
+		String sql = "SELECT (SELECT count(*) from staff where gender='Male'  AND  department=?),(SELECT count(*) from staff where gender='Female'  AND department=?);";
+		SqlRowSet set = template.queryForRowSet(sql, id,id);
 		if (set.next()) {
 			stat = set.getString(1) + ":" + set.getString(2);
 

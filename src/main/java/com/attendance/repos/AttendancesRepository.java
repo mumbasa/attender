@@ -210,7 +210,7 @@ public class AttendancesRepository implements AttendanceDAO {
 	
 	public List<MonthAggregate> getDepartmentAgg( long dept) {
 		List<MonthAggregate> data = new ArrayList<MonthAggregate>();
-		final String sql = "SELECT name,gender,(SELECT type from stafftype where id=s.status),(SELECT count(*) from attendance as ad where ad.staffid=s.bioid and ad.islate='Early' group by ad.staffid), (SELECT count(*) from attendance as af where af.staffid=s.bioid and af.islate ='Late' group by af.staffid) , (SELECT count(*) from attendance as af where af.staffid=s.bioid and af.islate is null group by af.staffid) ,(SELECT sum(deficit) from attendance as af where af.staffid=s.bioid and af.islate is null group by af.staffid) , (SELECT sum(minuteslate) from attendance as af where af.staffid=s.bioid group by af.staffid),s.bioid FROM attendance.staff as s where department=?";
+		final String sql = "SELECT concat(name,' ',othernames),gender,(SELECT type from stafftype where id=s.status),(SELECT count(*) from attendance as ad where ad.staffid=s.bioid and ad.islate='Early' group by ad.staffid), (SELECT count(*) from attendance as af where af.staffid=s.bioid and af.islate ='Late' group by af.staffid) , (SELECT count(*) from attendance as af where af.staffid=s.bioid and af.islate is null group by af.staffid) ,(SELECT sum(deficit) from attendance as af where af.staffid=s.bioid and af.islate is null group by af.staffid) , (SELECT sum(minuteslate) from attendance as af where af.staffid=s.bioid group by af.staffid),s.bioid FROM attendance.staff as s where department=?";
 		SqlRowSet set= this.template.queryForRowSet(sql, dept);
 		while (set.next()) {
 			MonthAggregate m = new MonthAggregate();
