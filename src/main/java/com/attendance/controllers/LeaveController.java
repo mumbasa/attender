@@ -115,7 +115,7 @@ public class LeaveController
     
     
     @ResponseBody
-    @PostMapping( "/admin/query/leave" )
+    @PostMapping( "admin/query/leave" )
     public List<Leave> hodApprove(@RequestParam("start") String start,@RequestParam("end") String to) {
     	
           return leaveRepository.getStaffLeaveQuery(start, to);
@@ -150,7 +150,7 @@ public class LeaveController
         model.addAttribute("staffleave", h);
         model.addAttribute("stafflist", leaveRepository.getAllStaff());
         model.addAttribute("leaves", leaveRepository.getLeaveTypes());
-        return "/admin/addleave";
+        return "admin/addleave";
     }
     
     @RequestMapping( "/admin/add/leave" )
@@ -159,25 +159,25 @@ public class LeaveController
         model.addAttribute("staffleave", h);
         model.addAttribute("stafflist", leaveRepository.getAllStaff());
         model.addAttribute("leaves", leaveRepository.getLeaves());
-        return "/admin/staffleave2";
+        return "admin/staffleave2";
     }
     
     @RequestMapping( "/admin/staff/on/leave" )
     public String staffOnLeaves( Model model) {
         model.addAttribute("leaves", leaveRepository.getStaffOnLeave());
-        return "/admin/staffonleave";
+        return "admin/staffonleave";
     }
     
     @RequestMapping( "/admin/staff/pending/leave" )
     public String staffLeaves( Model model) {
         model.addAttribute("leaves", leaveRepository.getStaffPendingLeave());
-        return "/admin/staffonleave";
+        return "admin/staffonleave";
     }
     
     
     @RequestMapping( "/admin/leave/data" )
     public String staffLeavesData( Model model) {
-        return "/admin/leavequery";
+        return "admin/leavequery";
     }
     
     
@@ -187,7 +187,7 @@ public class LeaveController
     	Staff staff  = leaveRepository.getStaffByEmail(principal.getName());
        model.addAttribute("days", leaveRepository.getStaffLeaveDataSummary(staff.getId()));
         model.addAttribute("leaves", leaveRepository.getLeaveTypes());
-        return "/admin/staffapplyleave";
+        return "admin/staffapplyleave";
     }
     
     
@@ -200,21 +200,21 @@ public class LeaveController
         model.addAttribute("leavesum", leaveRepository.getStaffLeaveYears(staff.getId()));
 
         
-        return "/admin/staffleaveapp";
+        return "admin/staffleaveapp";
     }
     
     
     @RequestMapping( "/admin/delete/leave" )
     public String deleteLeaves(@RequestParam("id")  int id) {
         leaveRepository.deleteLeave(id);
-        return "redirect:/admin/get/leaves";
+        return "redirect:admin/get/leaves";
     }
     
     @RequestMapping( "/admin/staff/leaves" )
     public String getLeaves( Model model) {
          List<Leave> leaves = leaveRepository.getStaffHODApprovedLeavesApplications();
         model.addAttribute("staffleave", leaves);
-        return "/admin/leaves";
+        return "admin/leaves";
     }
     
     
@@ -226,7 +226,7 @@ public class LeaveController
          List<Leave> leaves = leaveRepository.getStaffLeavesInDept(staff.getDepartment().getId());
 
          model.addAttribute("staffleave", leaves);
-        return "/admin/leaves";
+        return "admin/leaves";
     }
     
     @RequestMapping( "/admin/my/department/pending/leave/applications" )
@@ -235,7 +235,7 @@ public class LeaveController
          List<Leave> leaves = leaveRepository.getStaffLeavesInDeptPending(staff.getDepartment().getId());
 
          model.addAttribute("staffleave", leaves);
-        return "/admin/leaves";
+        return "admin/leaves";
     }
     
     @RequestMapping( "/admin/my/staff/pending/leave/applications" )
@@ -244,7 +244,7 @@ public class LeaveController
          List<Leave> leaves = leaveRepository.getStaffLeavesofSupertvisorPending(staff.getId());
 
          model.addAttribute("staffleave", leaves);
-        return "/admin/supervisorleaveapprove";
+        return "admin/supervisorleaveapprove";
     }
     
     @RequestMapping( "/admin/my/staff/on/leave" )
@@ -253,7 +253,7 @@ public class LeaveController
          List<Leave> leaves = leaveRepository.getMyStaffOnLeave(staff.getId());
 
          model.addAttribute("staffleave", leaves);
-        return "/admin/staffOnleaveDays";
+        return "admin/staffOnleaveDays";
     }
     
     
@@ -307,7 +307,7 @@ public class LeaveController
     @RequestMapping("/admin/staff/sum/leaves")
     public String mountLeave(Model model) {
     	model.addAttribute("days", leaveRepository.getLeaveDataSummary());
-    return	"/admin/leavesdays";
+    return	"admin/leavesdays";
     
     }
     

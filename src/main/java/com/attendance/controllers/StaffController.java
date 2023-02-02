@@ -98,7 +98,7 @@ public class StaffController {
 		model.addAttribute("banks", bankRepository.findAll());
 		model.addAttribute("countries", staffRepo.getCountries());
 
-		return "/admin/allstaff";
+		return "admin/allstaff";
 	}
 
 	@RequestMapping("/admin/my/department/staff")
@@ -106,7 +106,7 @@ public class StaffController {
 		Staff staff = staffRepo.getStaffByEmail(principal.getName());
 		List<Staff> staffs = staffRepo.getStaffInDepartment(staff.getDepartment().getId());
 		model.addAttribute("staff", staffs);
-		return "/admin/allstaff";
+		return "admin/allstaff";
 	}
 
 	@RequestMapping("/admin/my/staff")
@@ -114,7 +114,7 @@ public class StaffController {
 		Staff staff = staffRepo.getStaffByEmail(principal.getName());
 		List<Staff> staffs = staffRepo.getStaffOfSupervisor(staff.getId());
 		model.addAttribute("staff", staffs);
-		return "/supervisor/allstaff";
+		return "supervisor/allstaff";
 	}
 
 	@RequestMapping("/admin/apply/overtime")
@@ -122,42 +122,42 @@ public class StaffController {
 		List<Staff> staff = staffRepo.getStaff();
 
 		model.addAttribute("staff", staff);
-		return "/admin/newovertime";
+		return "admin/newovertime";
 	}
 
 	@RequestMapping("/admin/my/biodata")
 	public String mybiodata(Model model, Principal principal) {
 
 		model.addAttribute("staff", staffRepo.getStaffByEmail(principal.getName()));
-		return "/admin/biodata";
+		return "admin/biodata";
 	}
 
 	@RequestMapping("/admin/my/overtime")
 	public String myOvertime(Model model, Principal principal) {
 		Staff staff = staffRepo.getStaffByEmail(principal.getName());
 		model.addAttribute("overtimes", overtimeRepo.getOvertimes(staff.getId()));
-		return "/admin/myovertime";
+		return "admin/myovertime";
 	}
 
 	@RequestMapping("/admin/my/kins")
 	public String myKins(Model model, Principal principal) {
 		Staff staff = staffRepo.getStaffByEmail(principal.getName());
 		model.addAttribute("kins", staffRepo.getKin(staff.getId()));
-		return "/admin/kins";
+		return "admin/kins";
 	}
 
 	@RequestMapping("/admin/my/qualification")
 	public String myQualification(Model model, Principal principal) {
 		Staff staff = staffRepo.getStaffByEmail(principal.getName());
 		model.addAttribute("edu", staffRepo.getEducation(staff.getId()));
-		return "/admin/qualification";
+		return "admin/qualification";
 	}
 
 	@RequestMapping("/admin/supervisor/staff")
 	public String supervisorStaff(Model model, Principal principal) {
 
 		model.addAttribute("staff", staffRepo.getUnassignedStaff());
-		return "/admin/supervisor";
+		return "admin/supervisor";
 	}
 
 	@PostMapping("/admin/add/supervisor/staff")
@@ -171,14 +171,14 @@ public class StaffController {
 	public String myEmergencyContact(Model model, Principal principal) {
 		Staff staff = staffRepo.getStaffByEmail(principal.getName());
 		model.addAttribute("contacts", staffRepo.getContacts(staff.getId()));
-		return "/admin/emergency";
+		return "admin/emergency";
 	}
 
 	@RequestMapping("/admin/staff/{id}/set/shifts")
 	public String unavailableShifts(Model model, @PathVariable("id") long id) {
 		model.addAttribute("id", id);
 		model.addAttribute("shifts", shiftRepo.getStaffUnavbailableShifts(id));
-		return "/admin/setstaffshift";
+		return "admin/setstaffshift";
 	}
 
 	@ResponseBody
@@ -230,7 +230,7 @@ public class StaffController {
 		model.addAttribute("summary", summary);
 		model.addAttribute("def", deficit);
 		model.addAttribute("in", sum.get(2));
-		return "/profile/profile";
+		return "profile/profile";
 	}
 
 	@RequestMapping("/admin/my/profile")
@@ -262,7 +262,7 @@ public class StaffController {
 		model.addAttribute("summary", summary);
 		model.addAttribute("def", deficit);
 		model.addAttribute("in", sum.get(2));
-		return "/profile/profile";
+		return "profile/profile";
 	}
 
 	@RequestMapping("/admin/my/attendance")
@@ -294,7 +294,7 @@ public class StaffController {
 		model.addAttribute("summary", summary);
 		model.addAttribute("def", deficit);
 		model.addAttribute("in", sum.get(2));
-		return "/admin/attendance";
+		return "admin/attendance";
 	}
 
 	@RequestMapping("/admin/delete/staff")
@@ -336,7 +336,7 @@ public class StaffController {
 
 	@RequestMapping("/admin/staff/batch")
 	public String getLogs() {
-		return "/admin/batch";
+		return "admin/batch";
 	}
 
 	@RequestMapping("/admin/staff/{id}/profile")
@@ -379,7 +379,7 @@ public class StaffController {
 		model.addAttribute("edu", staffRepo.getEducation(staff.getId()));
 		model.addAttribute("schools", staffRepo.getSchools());
 
-		return "/admin/profile";
+		return "admin/profile";
 	}
 
 	@RequestMapping("/admin/my/staff/{id}/profile")
@@ -422,7 +422,7 @@ public class StaffController {
 		model.addAttribute("countries", staffRepo.getCountries());
 		model.addAttribute("contacts", staffRepo.getContacts(staff.getId()));
 
-		return "/admin/staffdataprofile";
+		return "admin/staffdataprofile";
 	}
 
 	@RequestMapping("/admin/get/staff/shifts")
@@ -464,7 +464,7 @@ public class StaffController {
 		model.addAttribute("countries", staffRepo.getCountries());
 		model.addAttribute("religions", staffRepo.getReligions());
 		model.addAttribute("banks", staffRepo.getBanks());
-		return "/admin/enrollstaff";
+		return "admin/enrollstaff";
 	}
 
 	@PostMapping("/admin/add/staff/{pic}")

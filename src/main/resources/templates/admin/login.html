@@ -52,9 +52,12 @@ License: You must have a valid license purchased only from themeforest to legall
                         </div>
                     </div>
                     <div class="col-xl-7 pa-0">
+
                         <div class="auth-form-wrap py-xl-0 py-50">
                             <div class="auth-form w-xxl-55 w-xl-75 w-sm-90 w-xs-100">
                                 <form th:action="@{/login}" method="post">
+                                                                      <img class="brand-img d-inline-block" th:src="@{/new/dist/img/unnamed.png}"  alt="HR ATTENDANCE MANAGEMENT" /> 
+                                
                                     <h1 class="display-4 mb-10">Welcome Back :)</h1>
                                     <p class="mb-30">Sign in to your account </p>
                                     <div class="form-group">
@@ -72,7 +75,7 @@ License: You must have a valid license purchased only from themeforest to legall
                                         <input class="custom-control-input" id="same-address" type="checkbox" checked>
                                         <label class="custom-control-label font-14" for="same-address">Keep me logged in</label>
                                     </div>
-                                    <button class="btn btn-pink btn-block" type="submit">Login</button>
+                                    <button class="btn btn-red btn-block" type="submit">Login</button>
                                    <!--  <p class="font-14 text-center mt-15">Having trouble logging in?</p>
                                     <div class="option-sep">or</div>
                                    

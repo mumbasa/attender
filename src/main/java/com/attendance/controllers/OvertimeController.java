@@ -15,7 +15,6 @@ import com.attendance.data.KeyValue;
 import com.attendance.data.Overtime;
 import com.attendance.data.Staff;
 import com.attendance.repos.OvertimeRepository;
-import com.attendance.repos.StaffService;
 
 @Controller
 public class OvertimeController {
@@ -54,7 +53,7 @@ public class OvertimeController {
 	public String myStaffOvertime(Model model,Principal principal) {
 		Staff staff = overtimeRepo.getStaffByEmail(principal.getName());
 		model.addAttribute("overtimes",overtimeRepo.getOvertimesStaffPending(staff.getId()) );
-		return "/admin/overtimeapps";
+		return "admin/overtimeapps";
 	}
 	
 	
@@ -62,26 +61,26 @@ public class OvertimeController {
 	public String myOvertime(Model model) {
 		
 		model.addAttribute("overtimes",overtimeRepo.getOvertimesApproved() );
-		return "/admin/overtimeapplications";
+		return "admin/overtimeapplications";
 	}
 	
 	
 	@RequestMapping("/admin/overtime/agg/data")
 	public String myOvertimes() {
 		
-		return "/admin/otquery";
+		return "admin/otquery";
 	}
 	
 	
 	@RequestMapping("/admin/overtime/agg/month")
 	public String myMonthOvertimes(Model model) {
 		model.addAttribute("agg", overtimeRepo.getOvertimesMonthAggraegate());
-		return "/admin/otmonth";
+		return "admin/otmonth";
 	}
 	
 	@RequestMapping("/admin/my/department/overtime/query")
 	public String deptOertime(Model model,Principal principal) {
-		return "/admin/queryovertime";
+		return "admin/queryovertime";
 	}
 
 	@ResponseBody

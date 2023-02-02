@@ -45,20 +45,20 @@ public class AttendanceController
         List<Staff> staff = attendance.getAllStaff();
         System.err.println(staff.size());
         model.addAttribute("staff", (Object)staff);
-        return "/admin/report";
+        return "admin/report";
     }
     
     @RequestMapping( "/admin/view/data" )
     public String getDta(final Model model) {
         final List<YearMonthData> att = this.attendance.getDataCountFrommonth();
         model.addAttribute("att", (Object)att);
-        return "/admin/operation";
+        return "admin/operation";
     }
     
     @RequestMapping( "/admin/delete/data/{month}/{year}" )
     public String geDelete(@PathVariable("year") final int year, @PathVariable("month") final int month) {
         this.attendance.deleteData(year, month);
-        return "/admin/data";
+        return "admin/data";
     }
     @RequestMapping( "admin/attendance/query" )
     public String attenaceQuery(final Model model) {

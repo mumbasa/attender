@@ -109,7 +109,7 @@ public class RegistrationController {
 	@PostMapping("/add/department" )
 	public String addDept(@ModelAttribute("dept") Departments day) {
 		staffRepo.addDept(day);
-		return "redirect:/admin/dashboard";
+		return "redirect:admin/dashboard";
 	}
 
 	@RequestMapping("/admin/upload/attendance" )
@@ -134,7 +134,7 @@ public class RegistrationController {
 			e.printStackTrace();
 		}
 		System.err.println(holiRepo.getDaysWithoutHoliday(file.getOriginalFilename()).size());
-		return "redirect:/admin/dashboard";
+		return "redirect:admin/dashboard";
 	}
 
 	@PostMapping("/upload/staffattendance" )
@@ -157,7 +157,7 @@ public class RegistrationController {
 		//attendanceRepo.addAttendanceBatch(String.valueOf(UPLOADED_FOLDER) + file.getOriginalFilename());
 		attendanceService.boop2(String.valueOf(UPLOADED_FOLDER) + appName+"/"+file.getOriginalFilename());
 
-		return "redirect:/admin/dashboard";
+		return "redirect:admin/dashboard";
 	}
 	
 	
@@ -179,6 +179,6 @@ public class RegistrationController {
 			e.printStackTrace();
 		}
 		attendanceService.readFile((String.valueOf(UPLOADED_FOLDER) + appName+"/"+file.getOriginalFilename()));
-		return "redirect:/admin/dashboard";
+		return "redirect:admin/dashboard";
 	}
 }

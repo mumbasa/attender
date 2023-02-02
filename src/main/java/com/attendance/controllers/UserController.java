@@ -35,7 +35,7 @@ public class UserController
         model.addAttribute("roles", repo.getRoles());
         model.addAttribute("staff", staffRepo.getStaff());
         model.addAttribute("depts", staffRepo.getDepartments());
-        return "/admin/adduser";
+         return "admin/adduser";
     }
     
     @RequestMapping( "/admin/all/users" )
@@ -44,7 +44,7 @@ public class UserController
         model.addAttribute("users", users);
         model.addAttribute("roles", repo.getRoles());
 
-        return "/admin/allusers";
+         return "admin/allusers";
     }
     
   
@@ -52,7 +52,7 @@ public class UserController
     @RequestMapping( "/admin/change/password" )
     public String changePassword() {
         
-        return "/admin/changepass";
+         return "admin/changepass";
     }
     
     
