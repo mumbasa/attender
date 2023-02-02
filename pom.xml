@@ -12,7 +12,7 @@
 	<groupId>com.attend</groupId>
 	<artifactId>attend</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<packaging>war</packaging>
+	<packaging>jar</packaging>
 	<name>attend</name>
 	<description>Demo project for Spring Boot</description>
 
