@@ -54,7 +54,7 @@ public class PageController {
 		model.addAttribute("genstat", staffRepo.getStaffGendrRAtio());
 		model.addAttribute("dbays", staffRepo.getStaffUpcomingBirtday());
 		model.addAttribute("depperformance", staffRepo.getDeptStat());
-		return "/admin/dashboard";
+		return "admin/dashboard";
 
 	}
 
@@ -68,7 +68,7 @@ public class PageController {
 		model.addAttribute("stafonleave", leaveRepo.getStaffOnLeveDAteResume(id));
 		model.addAttribute("avgage", staffRepo.getDeptAvgAge(id));
 
-		return "/admin/deptdash";
+		return "admin/deptdash";
 
 	}
 
@@ -84,7 +84,7 @@ public class PageController {
 		model.addAttribute("stafonleave", leaveRepo.getStaffOnLeveDAteResume(staff.getDepartment().getId()));
 		model.addAttribute("avgage", staffRepo.getDeptAvgAge(staff.getDepartment().getId()));
 
-		return "/admin/deptdash";
+		return "admin/deptdash";
 
 	}
 
